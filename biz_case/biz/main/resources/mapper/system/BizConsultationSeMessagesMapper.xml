@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizConsultationSeMessagesMapper">
+    
+    <resultMap type="BizConsultationSeMessages" id="BizConsultationSeMessagesResult">
+        <result property="messagesId"    column="messages_id"    />
+        <result property="sessionId"    column="session_id"    />
+        <result property="messageOrder"    column="message_order"    />
+        <result property="senderType"    column="sender_type"    />
+        <result property="messageContent"    column="message_content"    />
+        <result property="messageType"    column="message_type"    />
+        <result property="timestamp"    column="timestamp"    />
+        <result property="responseTime"    column="response_time"    />
+        <result property="createdAt"    column="created_at"    />
+    </resultMap>
+
+    <sql id="selectBizConsultationSeMessagesVo">
+        select messages_id, session_id, message_order, sender_type, message_content, message_type, timestamp, response_time, created_at from biz_consultation_se_messages
+    </sql>
+
+    <select id="selectBizConsultationSeMessagesList" parameterType="BizConsultationSeMessages" resultMap="BizConsultationSeMessagesResult">
+        <include refid="selectBizConsultationSeMessagesVo"/>
+        <where>  
+            <if test="sessionId != null  and sessionId != ''"> and session_id = #{sessionId}</if>
+            <if test="messageOrder != null  and messageOrder != ''"> and message_order = #{messageOrder}</if>
+            <if test="senderType != null "> and sender_type = #{senderType}</if>
+            <if test="messageContent != null  and messageContent != ''"> and message_content = #{messageContent}</if>
+            <if test="messageType != null  and messageType != ''"> and message_type = #{messageType}</if>
+            <if test="timestamp != null "> and timestamp = #{timestamp}</if>
+            <if test="responseTime != null  and responseTime != ''"> and response_time = #{responseTime}</if>
+            <if test="createdAt != null "> and created_at = #{createdAt}</if>
+        </where>
+    </select>
+    
+    <select id="selectBizConsultationSeMessagesByMessagesId" parameterType="String" resultMap="BizConsultationSeMessagesResult">
+        <include refid="selectBizConsultationSeMessagesVo"/>
+        where messages_id = #{messagesId}
+    </select>
+
+    <insert id="insertBizConsultationSeMessages" parameterType="BizConsultationSeMessages" useGeneratedKeys="true" keyProperty="messagesId">
+        insert into biz_consultation_se_messages
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null and sessionId != ''">session_id,</if>
+            <if test="messageOrder != null and messageOrder != ''">message_order,</if>
+            <if test="senderType != null">sender_type,</if>
+            <if test="messageContent != null and messageContent != ''">message_content,</if>
+            <if test="messageType != null and messageType != ''">message_type,</if>
+            <if test="timestamp != null">timestamp,</if>
+            <if test="responseTime != null">response_time,</if>
+            <if test="createdAt != null">created_at,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null and sessionId != ''">#{sessionId},</if>
+            <if test="messageOrder != null and messageOrder != ''">#{messageOrder},</if>
+            <if test="senderType != null">#{senderType},</if>
+            <if test="messageContent != null and messageContent != ''">#{messageContent},</if>
+            <if test="messageType != null and messageType != ''">#{messageType},</if>
+            <if test="timestamp != null">#{timestamp},</if>
+            <if test="responseTime != null">#{responseTime},</if>
+            <if test="createdAt != null">#{createdAt},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizConsultationSeMessages" parameterType="BizConsultationSeMessages">
+        update biz_consultation_se_messages
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sessionId != null and sessionId != ''">session_id = #{sessionId},</if>
+            <if test="messageOrder != null and messageOrder != ''">message_order = #{messageOrder},</if>
+            <if test="senderType != null">sender_type = #{senderType},</if>
+            <if test="messageContent != null and messageContent != ''">message_content = #{messageContent},</if>
+            <if test="messageType != null and messageType != ''">message_type = #{messageType},</if>
+            <if test="timestamp != null">timestamp = #{timestamp},</if>
+            <if test="responseTime != null">response_time = #{responseTime},</if>
+            <if test="createdAt != null">created_at = #{createdAt},</if>
+        </trim>
+        where messages_id = #{messagesId}
+    </update>
+
+    <delete id="deleteBizConsultationSeMessagesByMessagesId" parameterType="String">
+        delete from biz_consultation_se_messages where messages_id = #{messagesId}
+    </delete>
+
+    <delete id="deleteBizConsultationSeMessagesByMessagesIds" parameterType="String">
+        delete from biz_consultation_se_messages where messages_id in 
+        <foreach item="messagesId" collection="array" open="(" separator="," close=")">
+            #{messagesId}
+        </foreach>
+    </delete>
+</mapper>

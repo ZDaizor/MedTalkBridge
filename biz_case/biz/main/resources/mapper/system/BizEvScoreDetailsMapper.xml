@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizEvScoreDetailsMapper">
+    
+    <resultMap type="BizEvScoreDetails" id="BizEvScoreDetailsResult">
+        <result property="scoreId"    column="score_id"    />
+        <result property="evaluationId"    column="evaluation_id"    />
+        <result property="itemId"    column="item_id"    />
+        <result property="scoreAchieved"    column="score_achieved"    />
+        <result property="scoreMax"    column="score_max"    />
+        <result property="scoreType"    column="score_type"    />
+    </resultMap>
+
+    <sql id="selectBizEvScoreDetailsVo">
+        select score_id, evaluation_id, item_id, score_achieved, score_max, score_type from biz_ev_score_details
+    </sql>
+
+    <select id="selectBizEvScoreDetailsList" parameterType="BizEvScoreDetails" resultMap="BizEvScoreDetailsResult">
+        <include refid="selectBizEvScoreDetailsVo"/>
+        <where>  
+            <if test="evaluationId != null "> and evaluation_id = #{evaluationId}</if>
+            <if test="itemId != null "> and item_id = #{itemId}</if>
+            <if test="scoreAchieved != null "> and score_achieved = #{scoreAchieved}</if>
+            <if test="scoreMax != null "> and score_max = #{scoreMax}</if>
+            <if test="scoreType != null "> and score_type = #{scoreType}</if>
+        </where>
+    </select>
+    
+    <select id="selectBizEvScoreDetailsByScoreId" parameterType="Long" resultMap="BizEvScoreDetailsResult">
+        <include refid="selectBizEvScoreDetailsVo"/>
+        where score_id = #{scoreId}
+    </select>
+
+    <insert id="insertBizEvScoreDetails" parameterType="BizEvScoreDetails" useGeneratedKeys="true" keyProperty="scoreId">
+        insert into biz_ev_score_details
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="evaluationId != null">evaluation_id,</if>
+            <if test="itemId != null">item_id,</if>
+            <if test="scoreAchieved != null">score_achieved,</if>
+            <if test="scoreMax != null">score_max,</if>
+            <if test="scoreType != null">score_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="evaluationId != null">#{evaluationId},</if>
+            <if test="itemId != null">#{itemId},</if>
+            <if test="scoreAchieved != null">#{scoreAchieved},</if>
+            <if test="scoreMax != null">#{scoreMax},</if>
+            <if test="scoreType != null">#{scoreType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizEvScoreDetails" parameterType="BizEvScoreDetails">
+        update biz_ev_score_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="evaluationId != null">evaluation_id = #{evaluationId},</if>
+            <if test="itemId != null">item_id = #{itemId},</if>
+            <if test="scoreAchieved != null">score_achieved = #{scoreAchieved},</if>
+            <if test="scoreMax != null">score_max = #{scoreMax},</if>
+            <if test="scoreType != null">score_type = #{scoreType},</if>
+        </trim>
+        where score_id = #{scoreId}
+    </update>
+
+    <delete id="deleteBizEvScoreDetailsByScoreId" parameterType="Long">
+        delete from biz_ev_score_details where score_id = #{scoreId}
+    </delete>
+
+    <delete id="deleteBizEvScoreDetailsByScoreIds" parameterType="String">
+        delete from biz_ev_score_details where score_id in 
+        <foreach item="scoreId" collection="array" open="(" separator="," close=")">
+            #{scoreId}
+        </foreach>
+    </delete>
+</mapper>

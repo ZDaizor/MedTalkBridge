@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizScoreTemplatesMapper">
+    
+    <resultMap type="BizScoreTemplates" id="BizScoreTemplatesResult">
+        <result property="templatesId"    column="templates_id"    />
+        <result property="caseId"    column="case_id"    />
+        <result property="stepId"    column="step_id"    />
+        <result property="itemName"    column="item_name"    />
+        <result property="defaultMaxScore"    column="default_max_score"    />
+        <result property="displayOrder"    column="display_order"    />
+        <result property="isActive"    column="is_active"    />
+        <result property="templateType"    column="template_type"    />
+    </resultMap>
+
+    <sql id="selectBizScoreTemplatesVo">
+        select templates_id, case_id, step_id, item_name, default_max_score, display_order, is_active, template_type from biz_score_templates
+    </sql>
+
+    <select id="selectBizScoreTemplatesList" parameterType="BizScoreTemplates" resultMap="BizScoreTemplatesResult">
+        <include refid="selectBizScoreTemplatesVo"/>
+        <where>  
+            <if test="caseId != null "> and case_id = #{caseId}</if>
+            <if test="stepId != null "> and step_id = #{stepId}</if>
+            <if test="itemName != null  and itemName != ''"> and item_name like concat('%', #{itemName}, '%')</if>
+            <if test="defaultMaxScore != null "> and default_max_score = #{defaultMaxScore}</if>
+            <if test="displayOrder != null "> and display_order = #{displayOrder}</if>
+            <if test="isActive != null "> and is_active = #{isActive}</if>
+            <if test="templateType != null "> and template_type = #{templateType}</if>
+        </where>
+    </select>
+    
+    <select id="selectBizScoreTemplatesByTemplatesId" parameterType="Long" resultMap="BizScoreTemplatesResult">
+        <include refid="selectBizScoreTemplatesVo"/>
+        where templates_id = #{templatesId}
+    </select>
+
+    <insert id="insertBizScoreTemplates" parameterType="BizScoreTemplates">
+        insert into biz_score_templates
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="templatesId != null">templates_id,</if>
+            <if test="caseId != null">case_id,</if>
+            <if test="stepId != null">step_id,</if>
+            <if test="itemName != null">item_name,</if>
+            <if test="defaultMaxScore != null">default_max_score,</if>
+            <if test="displayOrder != null">display_order,</if>
+            <if test="isActive != null">is_active,</if>
+            <if test="templateType != null">template_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="templatesId != null">#{templatesId},</if>
+            <if test="caseId != null">#{caseId},</if>
+            <if test="stepId != null">#{stepId},</if>
+            <if test="itemName != null">#{itemName},</if>
+            <if test="defaultMaxScore != null">#{defaultMaxScore},</if>
+            <if test="displayOrder != null">#{displayOrder},</if>
+            <if test="isActive != null">#{isActive},</if>
+            <if test="templateType != null">#{templateType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizScoreTemplates" parameterType="BizScoreTemplates">
+        update biz_score_templates
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="caseId != null">case_id = #{caseId},</if>
+            <if test="stepId != null">step_id = #{stepId},</if>
+            <if test="itemName != null">item_name = #{itemName},</if>
+            <if test="defaultMaxScore != null">default_max_score = #{defaultMaxScore},</if>
+            <if test="displayOrder != null">display_order = #{displayOrder},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            <if test="templateType != null">template_type = #{templateType},</if>
+        </trim>
+        where templates_id = #{templatesId}
+    </update>
+
+    <delete id="deleteBizScoreTemplatesByTemplatesId" parameterType="Long">
+        delete from biz_score_templates where templates_id = #{templatesId}
+    </delete>
+
+    <delete id="deleteBizScoreTemplatesByTemplatesIds" parameterType="String">
+        delete from biz_score_templates where templates_id in 
+        <foreach item="templatesId" collection="array" open="(" separator="," close=")">
+            #{templatesId}
+        </foreach>
+    </delete>
+</mapper>
