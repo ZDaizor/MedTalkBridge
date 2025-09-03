@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizCaseEvaluationsMapper">
+    
+    <resultMap type="BizCaseEvaluations" id="BizCaseEvaluationsResult">
+        <result property="evaluationId"    column="evaluation_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="caseId"    column="case_id"    />
+        <result property="stepId"    column="step_id"    />
+        <result property="totleScore"    column="totle_score"    />
+        <result property="totleMaxScore"    column="totle_max_score"    />
+    </resultMap>
+
+    <sql id="selectBizCaseEvaluationsVo">
+        select evaluation_id, user_id, case_id, step_id, totle_score, totle_max_score from biz_case_evaluations
+    </sql>
+
+    <select id="selectBizCaseEvaluationsList" parameterType="BizCaseEvaluations" resultMap="BizCaseEvaluationsResult">
+        <include refid="selectBizCaseEvaluationsVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="caseId != null "> and case_id = #{caseId}</if>
+            <if test="stepId != null "> and step_id = #{stepId}</if>
+            <if test="totleScore != null "> and totle_score = #{totleScore}</if>
+            <if test="totleMaxScore != null "> and totle_max_score = #{totleMaxScore}</if>
+        </where>
+    </select>
+    
+    <select id="selectBizCaseEvaluationsByEvaluationId" parameterType="Long" resultMap="BizCaseEvaluationsResult">
+        <include refid="selectBizCaseEvaluationsVo"/>
+        where evaluation_id = #{evaluationId}
+    </select>
+
+    <insert id="insertBizCaseEvaluations" parameterType="BizCaseEvaluations" useGeneratedKeys="true" keyProperty="evaluationId">
+        insert into biz_case_evaluations
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="caseId != null">case_id,</if>
+            <if test="stepId != null">step_id,</if>
+            <if test="totleScore != null">totle_score,</if>
+            <if test="totleMaxScore != null">totle_max_score,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="caseId != null">#{caseId},</if>
+            <if test="stepId != null">#{stepId},</if>
+            <if test="totleScore != null">#{totleScore},</if>
+            <if test="totleMaxScore != null">#{totleMaxScore},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizCaseEvaluations" parameterType="BizCaseEvaluations">
+        update biz_case_evaluations
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="caseId != null">case_id = #{caseId},</if>
+            <if test="stepId != null">step_id = #{stepId},</if>
+            <if test="totleScore != null">totle_score = #{totleScore},</if>
+            <if test="totleMaxScore != null">totle_max_score = #{totleMaxScore},</if>
+        </trim>
+        where evaluation_id = #{evaluationId}
+    </update>
+
+    <delete id="deleteBizCaseEvaluationsByEvaluationId" parameterType="Long">
+        delete from biz_case_evaluations where evaluation_id = #{evaluationId}
+    </delete>
+
+    <delete id="deleteBizCaseEvaluationsByEvaluationIds" parameterType="String">
+        delete from biz_case_evaluations where evaluation_id in 
+        <foreach item="evaluationId" collection="array" open="(" separator="," close=")">
+            #{evaluationId}
+        </foreach>
+    </delete>
+</mapper>

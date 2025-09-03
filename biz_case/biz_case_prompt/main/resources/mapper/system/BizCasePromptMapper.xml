@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizCasePromptMapper">
+    
+    <resultMap type="BizCasePrompt" id="BizCasePromptResult">
+        <result property="promptId"    column="prompt_id"    />
+        <result property="promptContent"    column="prompt_content"    />
+        <result property="promptType"    column="prompt_type"    />
+        <result property="caseId"    column="case_id"    />
+        <result property="stepId"    column="step_id"    />
+    </resultMap>
+
+    <sql id="selectBizCasePromptVo">
+        select prompt_id, prompt_content, prompt_type, case_id, step_id from biz_case_prompt
+    </sql>
+
+    <select id="selectBizCasePromptList" parameterType="BizCasePrompt" resultMap="BizCasePromptResult">
+        <include refid="selectBizCasePromptVo"/>
+        <where>  
+            <if test="promptContent != null  and promptContent != ''"> and prompt_content = #{promptContent}</if>
+            <if test="promptType != null "> and prompt_type = #{promptType}</if>
+            <if test="caseId != null "> and case_id = #{caseId}</if>
+            <if test="stepId != null "> and step_id = #{stepId}</if>
+        </where>
+    </select>
+    
+    <select id="selectBizCasePromptByPromptId" parameterType="Long" resultMap="BizCasePromptResult">
+        <include refid="selectBizCasePromptVo"/>
+        where prompt_id = #{promptId}
+    </select>
+
+    <insert id="insertBizCasePrompt" parameterType="BizCasePrompt" useGeneratedKeys="true" keyProperty="promptId">
+        insert into biz_case_prompt
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="promptContent != null">prompt_content,</if>
+            <if test="promptType != null">prompt_type,</if>
+            <if test="caseId != null">case_id,</if>
+            <if test="stepId != null">step_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="promptContent != null">#{promptContent},</if>
+            <if test="promptType != null">#{promptType},</if>
+            <if test="caseId != null">#{caseId},</if>
+            <if test="stepId != null">#{stepId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizCasePrompt" parameterType="BizCasePrompt">
+        update biz_case_prompt
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="promptContent != null">prompt_content = #{promptContent},</if>
+            <if test="promptType != null">prompt_type = #{promptType},</if>
+            <if test="caseId != null">case_id = #{caseId},</if>
+            <if test="stepId != null">step_id = #{stepId},</if>
+        </trim>
+        where prompt_id = #{promptId}
+    </update>
+
+    <delete id="deleteBizCasePromptByPromptId" parameterType="Long">
+        delete from biz_case_prompt where prompt_id = #{promptId}
+    </delete>
+
+    <delete id="deleteBizCasePromptByPromptIds" parameterType="String">
+        delete from biz_case_prompt where prompt_id in 
+        <foreach item="promptId" collection="array" open="(" separator="," close=")">
+            #{promptId}
+        </foreach>
+    </delete>
+</mapper>
