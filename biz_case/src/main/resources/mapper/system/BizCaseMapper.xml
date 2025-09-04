@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizCaseMapper">
+    
+    <resultMap type="BizCase" id="BizCaseResult">
+        <result property="caseId"    column="case_id"    />
+        <result property="caseName"    column="case_name"    />
+        <result property="caseCode"    column="case_code"    />
+        <result property="caseStatus"    column="case_status"    />
+        <result property="patientName"    column="patient_name"    />
+        <result property="patientAge"    column="patient_age"    />
+        <result property="patientGender"    column="patient_gender"    />
+        <result property="caseSectionsType"    column="case_sections_type"    />
+        <result property="caseAbstract"    column="case_abstract"    />
+        <result property="caseHpi"    column="case_hpi"    />
+        <result property="caseHa"    column="case_ha"    />
+        <result property="casePh"    column="case_ph"    />
+        <result property="caseAic"    column="case_aic"    />
+        <result property="caseHe"    column="case_he"    />
+        <result property="caseAe"    column="case_ae"    />
+        <result property="caseFh"    column="case_fh"    />
+        <result property="caseHid"    column="case_hid"    />
+        <result property="caseDr"    column="case_dr"    />
+        <result property="contentWords"    column="content_words"    />
+        <result property="totleWords"    column="totle_words"    />
+        <result property="writeWords"    column="write_words"    />
+        <result property="caseMax"    column="case_max"    />
+    </resultMap>
+
+    <sql id="selectBizCaseVo">
+        select case_id, case_name, case_code, case_status, patient_name, patient_age, patient_gender, case_sections_type, case_abstract, case_hpi, case_ha, case_ph, case_aic, case_he, case_ae, case_fh, case_hid, case_dr, content_words, totle_words, write_words, case_max from biz_case
+    </sql>
+
+    <select id="selectBizCaseList" parameterType="BizCase" resultMap="BizCaseResult">
+        <include refid="selectBizCaseVo"/>
+        <where>  
+            <if test="caseName != null  and caseName != ''"> and case_name like concat('%', #{caseName}, '%')</if>
+            <if test="caseCode != null  and caseCode != ''"> and case_code = #{caseCode}</if>
+            <if test="caseStatus != null "> and case_status = #{caseStatus}</if>
+            <if test="patientName != null  and patientName != ''"> and patient_name like concat('%', #{patientName}, '%')</if>
+            <if test="patientAge != null "> and patient_age = #{patientAge}</if>
+            <if test="patientGender != null "> and patient_gender = #{patientGender}</if>
+            <if test="caseSectionsType != null "> and case_sections_type = #{caseSectionsType}</if>
+            <if test="caseAbstract != null  and caseAbstract != ''"> and case_abstract = #{caseAbstract}</if>
+            <if test="caseHpi != null  and caseHpi != ''"> and case_hpi = #{caseHpi}</if>
+            <if test="caseHa != null  and caseHa != ''"> and case_ha = #{caseHa}</if>
+            <if test="casePh != null  and casePh != ''"> and case_ph = #{casePh}</if>
+            <if test="caseAic != null  and caseAic != ''"> and case_aic = #{caseAic}</if>
+            <if test="caseHe != null  and caseHe != ''"> and case_he = #{caseHe}</if>
+            <if test="caseAe != null  and caseAe != ''"> and case_ae = #{caseAe}</if>
+            <if test="caseFh != null  and caseFh != ''"> and case_fh = #{caseFh}</if>
+            <if test="caseHid != null  and caseHid != ''"> and case_hid = #{caseHid}</if>
+            <if test="caseDr != null  and caseDr != ''"> and case_dr = #{caseDr}</if>
+            <if test="contentWords != null  and contentWords != ''"> and content_words = #{contentWords}</if>
+            <if test="totleWords != null  and totleWords != ''"> and totle_words = #{totleWords}</if>
+            <if test="writeWords != null  and writeWords != ''"> and write_words = #{writeWords}</if>
+            <if test="caseMax != null "> and case_max = #{caseMax}</if>
+        </where>
+    </select>
+    
+    <select id="selectBizCaseByCaseId" parameterType="Long" resultMap="BizCaseResult">
+        <include refid="selectBizCaseVo"/>
+        where case_id = #{caseId}
+    </select>
+
+    <insert id="insertBizCase" parameterType="BizCase" useGeneratedKeys="true" keyProperty="caseId">
+        insert into biz_case
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="caseName != null and caseName != ''">case_name,</if>
+            <if test="caseCode != null and caseCode != ''">case_code,</if>
+            <if test="caseStatus != null">case_status,</if>
+            <if test="patientName != null">patient_name,</if>
+            <if test="patientAge != null">patient_age,</if>
+            <if test="patientGender != null">patient_gender,</if>
+            <if test="caseSectionsType != null">case_sections_type,</if>
+            <if test="caseAbstract != null">case_abstract,</if>
+            <if test="caseHpi != null">case_hpi,</if>
+            <if test="caseHa != null">case_ha,</if>
+            <if test="casePh != null">case_ph,</if>
+            <if test="caseAic != null">case_aic,</if>
+            <if test="caseHe != null">case_he,</if>
+            <if test="caseAe != null">case_ae,</if>
+            <if test="caseFh != null">case_fh,</if>
+            <if test="caseHid != null">case_hid,</if>
+            <if test="caseDr != null">case_dr,</if>
+            <if test="contentWords != null">content_words,</if>
+            <if test="totleWords != null">totle_words,</if>
+            <if test="writeWords != null">write_words,</if>
+            <if test="caseMax != null">case_max,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="caseName != null and caseName != ''">#{caseName},</if>
+            <if test="caseCode != null and caseCode != ''">#{caseCode},</if>
+            <if test="caseStatus != null">#{caseStatus},</if>
+            <if test="patientName != null">#{patientName},</if>
+            <if test="patientAge != null">#{patientAge},</if>
+            <if test="patientGender != null">#{patientGender},</if>
+            <if test="caseSectionsType != null">#{caseSectionsType},</if>
+            <if test="caseAbstract != null">#{caseAbstract},</if>
+            <if test="caseHpi != null">#{caseHpi},</if>
+            <if test="caseHa != null">#{caseHa},</if>
+            <if test="casePh != null">#{casePh},</if>
+            <if test="caseAic != null">#{caseAic},</if>
+            <if test="caseHe != null">#{caseHe},</if>
+            <if test="caseAe != null">#{caseAe},</if>
+            <if test="caseFh != null">#{caseFh},</if>
+            <if test="caseHid != null">#{caseHid},</if>
+            <if test="caseDr != null">#{caseDr},</if>
+            <if test="contentWords != null">#{contentWords},</if>
+            <if test="totleWords != null">#{totleWords},</if>
+            <if test="writeWords != null">#{writeWords},</if>
+            <if test="caseMax != null">#{caseMax},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizCase" parameterType="BizCase">
+        update biz_case
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="caseName != null and caseName != ''">case_name = #{caseName},</if>
+            <if test="caseCode != null and caseCode != ''">case_code = #{caseCode},</if>
+            <if test="caseStatus != null">case_status = #{caseStatus},</if>
+            <if test="patientName != null">patient_name = #{patientName},</if>
+            <if test="patientAge != null">patient_age = #{patientAge},</if>
+            <if test="patientGender != null">patient_gender = #{patientGender},</if>
+            <if test="caseSectionsType != null">case_sections_type = #{caseSectionsType},</if>
+            <if test="caseAbstract != null">case_abstract = #{caseAbstract},</if>
+            <if test="caseHpi != null">case_hpi = #{caseHpi},</if>
+            <if test="caseHa != null">case_ha = #{caseHa},</if>
+            <if test="casePh != null">case_ph = #{casePh},</if>
+            <if test="caseAic != null">case_aic = #{caseAic},</if>
+            <if test="caseHe != null">case_he = #{caseHe},</if>
+            <if test="caseAe != null">case_ae = #{caseAe},</if>
+            <if test="caseFh != null">case_fh = #{caseFh},</if>
+            <if test="caseHid != null">case_hid = #{caseHid},</if>
+            <if test="caseDr != null">case_dr = #{caseDr},</if>
+            <if test="contentWords != null">content_words = #{contentWords},</if>
+            <if test="totleWords != null">totle_words = #{totleWords},</if>
+            <if test="writeWords != null">write_words = #{writeWords},</if>
+            <if test="caseMax != null">case_max = #{caseMax},</if>
+        </trim>
+        where case_id = #{caseId}
+    </update>
+
+    <delete id="deleteBizCaseByCaseId" parameterType="Long">
+        delete from biz_case where case_id = #{caseId}
+    </delete>
+
+    <delete id="deleteBizCaseByCaseIds" parameterType="String">
+        delete from biz_case where case_id in 
+        <foreach item="caseId" collection="array" open="(" separator="," close=")">
+            #{caseId}
+        </foreach>
+    </delete>
+</mapper>

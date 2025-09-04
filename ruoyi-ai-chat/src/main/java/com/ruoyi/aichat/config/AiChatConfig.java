@@ -9,7 +9,7 @@ import java.time.Duration;
 
 /**
  * AI对话配置类
- * 
+ *
  * @author ruoyi
  * @date 2025-09-03
  */
@@ -34,13 +34,5 @@ public class AiChatConfig {
                 .defaultHeader("Content-Type", "application/json")
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(10 * 1024 * 1024)) // 10MB
                 .build();
-    }
-
-    /**
-     * 获取AI配置属性
-     */
-    @Bean
-    public AiChatProperties aiChatProperties() {
-        return aiChatProperties;
     }
 }
