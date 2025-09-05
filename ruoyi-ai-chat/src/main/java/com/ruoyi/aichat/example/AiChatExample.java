@@ -26,7 +26,6 @@ public class AiChatExample {
         
         AiChatRequest request = new AiChatRequest();
         request.setUserMessage("医生，我明天要做腰穿手术，很紧张怎么办？");
-        request.setScenarioType("PRE_OPERATION");
         request.setSessionId("pre_op_session_001");
         
         AiChatResponse response = aiChatService.chat(request);
@@ -49,7 +48,6 @@ public class AiChatExample {
         
         AiChatRequest request = new AiChatRequest();
         request.setUserMessage("医生，我感觉有点疼，这正常吗？");
-        request.setScenarioType("DURING_OPERATION");
         request.setSessionId("during_op_session_001");
         
         AiChatResponse response = aiChatService.chat(request);
@@ -70,7 +68,6 @@ public class AiChatExample {
         
         AiChatRequest request = new AiChatRequest();
         request.setUserMessage("手术结束了，我需要注意什么？");
-        request.setScenarioType("POST_OPERATION");
         request.setSessionId("post_op_session_001");
         
         AiChatResponse response = aiChatService.chat(request);
@@ -95,7 +92,6 @@ public class AiChatExample {
         
         AiChatRequest request = new AiChatRequest();
         request.setUserMessage("医生，腰穿手术的风险大吗？");
-        request.setScenarioType("PRE_OPERATION");
         request.setSystemPrompt(customPrompt);
         request.setSessionId("custom_session_001");
         request.setMaxTokens(800);
@@ -124,42 +120,6 @@ public class AiChatExample {
             System.out.println("可以正常使用AI对话功能");
         } else {
             System.out.println("AI服务暂时不可用，请检查配置");
-        }
-    }
-
-    /**
-     * 获取默认提示词示例
-     */
-    public void getDefaultPromptExample() {
-        System.out.println("\n=== 获取默认提示词示例 ===");
-        
-        String preOpPrompt = aiChatService.getDefaultSystemPrompt("PRE_OPERATION");
-        String duringOpPrompt = aiChatService.getDefaultSystemPrompt("DURING_OPERATION");
-        String postOpPrompt = aiChatService.getDefaultSystemPrompt("POST_OPERATION");
-        
-        System.out.println("术前默认提示词: " + preOpPrompt.substring(0, Math.min(50, preOpPrompt.length())) + "...");
-        System.out.println("术中默认提示词: " + duringOpPrompt.substring(0, Math.min(50, duringOpPrompt.length())) + "...");
-        System.out.println("术后默认提示词: " + postOpPrompt.substring(0, Math.min(50, postOpPrompt.length())) + "...");
-    }
-
-    /**
-     * 运行所有示例
-     */
-    public void runAllExamples() {
-        try {
-            healthCheckExample();
-            
-            if (aiChatService.isServiceAvailable()) {
-                getDefaultPromptExample();
-                preOperationExample();
-                duringOperationExample();
-                postOperationExample();
-                customPromptExample();
-            } else {
-                System.out.println("AI服务不可用，跳过对话示例");
-            }
-        } catch (Exception e) {
-            System.out.println("运行示例时发生错误: " + e.getMessage());
         }
     }
 }

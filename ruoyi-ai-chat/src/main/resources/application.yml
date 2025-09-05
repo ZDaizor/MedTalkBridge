@@ -1,0 +1,29 @@
+# AI对话模块配置示例
+ai:
+  chat:
+    # 是否启用AI对话功能
+    enabled: true
+    
+    # AI服务提供商类型 (openai, azure, baidu, qianfan, etc.)
+    provider: openai
+    
+    # API密钥 (需要根据实际情况配置)
+    api-key: sk-FnpGSuXKc2kJ1H3_LrlEH4ZhBpaNXYH5vJqXOZcUJ8G2sM4ozp2jvw6aLK0
+    
+    # API基础URL
+    base-url: https://api.5202030.xyz
+    
+    # 使用的模型名称
+    model: claude-4-sonnet
+    
+    # 默认最大token数
+    max-tokens: 1000000
+    
+    # 默认温度参数 (0-1之间，值越高越随机)
+    temperature: 0.7
+    
+    # 请求超时时间（秒）
+    timeout: 30
+    
+    # 重试次数
+    retry-count: 3

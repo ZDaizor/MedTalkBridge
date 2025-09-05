@@ -2,7 +2,6 @@ package com.ruoyi.aichat.controller;
 
 import com.ruoyi.aichat.dto.AiChatRequest;
 import com.ruoyi.aichat.dto.AiChatResponse;
-import com.ruoyi.aichat.dto.ScenarioType;
 import com.ruoyi.aichat.service.IAiChatService;
 import com.ruoyi.common.core.domain.AjaxResult;
 import io.swagger.annotations.Api;
@@ -42,6 +41,7 @@ public class AiChatController {
      */
     @ApiOperation("AI对话")
     @PostMapping("/send")
+
     public AjaxResult chat(@Valid @RequestBody AiChatRequest request) {
         try {
             logger.info("收到AI对话请求: {}", request);
@@ -62,42 +62,6 @@ public class AiChatController {
             return AjaxResult.error("AI对话服务异常: " + e.getMessage());
         }
     }
-
-    /**
-     * 获取默认系统提示词
-     */
-    @ApiOperation("获取默认系统提示词")
-    @GetMapping("/prompt/{scenarioType}")
-    public AjaxResult getDefaultPrompt(
-            @ApiParam(value = "场景类型", required = true, example = "PRE_OPERATION")
-            @PathVariable String scenarioType) {
-        try {
-            String prompt = aiChatService.getDefaultSystemPrompt(scenarioType);
-            return AjaxResult.success("获取成功", prompt);
-        } catch (Exception e) {
-            logger.error("获取默认提示词失败", e);
-            return AjaxResult.error("获取默认提示词失败: " + e.getMessage());
-        }
-    }
-
-    /**
-     * 获取所有场景类型
-     */
-    @ApiOperation("获取所有场景4类型")
-    @GetMapping("/scenarios")
-    public AjaxResult getScenarios() {
-        try {
-            Map<String, String> scenarios = new HashMap<>();
-            for (ScenarioType type : ScenarioType.values()) {
-                scenarios.put(type.getCode(), type.getDescription());
-            }
-            return AjaxResult.success("获取成功", scenarios);
-        } catch (Exception e) {
-            logger.error("获取场景类型失败", e);
-            return AjaxResult.error("获取场景类型失败: " + e.getMessage());
-        }
-    }
-
     /**
      * 健康检查接口
      */

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 /**
  * AI对话响应DTO
- * 
+ *
  * @author ruoyi
  * @date 2025-09-03
  */
@@ -43,15 +43,15 @@ public class AiChatResponse {
         this.success = true;
     }
 
-    public AiChatResponse(String aiMessage, String sessionId, String scenarioType) {
+    public AiChatResponse(String aiMessage, String sessionId) {
         this();
         this.aiMessage = aiMessage;
         this.sessionId = sessionId;
         this.scenarioType = scenarioType;
     }
 
-    public static AiChatResponse success(String aiMessage, String sessionId, String scenarioType) {
-        return new AiChatResponse(aiMessage, sessionId, scenarioType);
+    public static AiChatResponse success(String aiMessage, String sessionId) {
+        return new AiChatResponse(aiMessage, sessionId);
     }
 
     public static AiChatResponse error(String errorMessage) {

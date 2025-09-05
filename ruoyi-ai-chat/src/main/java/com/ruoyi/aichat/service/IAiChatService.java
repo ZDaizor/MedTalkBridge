@@ -19,13 +19,6 @@ public interface IAiChatService {
      */
     AiChatResponse chat(AiChatRequest request);
 
-    /**
-     * 获取默认系统提示词
-     * 
-     * @param scenarioType 场景类型
-     * @return 系统提示词
-     */
-    String getDefaultSystemPrompt(String scenarioType);
 
     /**
      * 检查AI服务是否可用
