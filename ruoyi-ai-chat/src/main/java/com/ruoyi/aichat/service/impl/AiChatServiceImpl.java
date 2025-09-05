@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.aichat.config.AiChatProperties;
 import com.ruoyi.aichat.dto.AiChatRequest;
 import com.ruoyi.aichat.dto.AiChatResponse;
+import com.ruoyi.aichat.manager.ChatHistoryManager;
 import com.ruoyi.aichat.service.IAiChatService;
 import com.ruoyi.common.annotation.Log;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -26,16 +28,18 @@ import java.util.UUID;
  */
 @Service
 public class AiChatServiceImpl implements IAiChatService {
-
     private static final Logger logger = LoggerFactory.getLogger(AiChatServiceImpl.class);
 
     private final WebClient webClient;
     private final AiChatProperties aiChatProperties;
+    private final ChatHistoryManager chatHistoryManager; // 新增
 
     public AiChatServiceImpl(@Qualifier("aiChatWebClient") WebClient webClient,
-                             AiChatProperties aiChatProperties) {
+                             AiChatProperties aiChatProperties,
+                             ChatHistoryManager chatHistoryManager) { // 注入
         this.webClient = webClient;
         this.aiChatProperties = aiChatProperties;
+        this.chatHistoryManager = chatHistoryManager;
     }
 
     @Override
@@ -48,16 +52,27 @@ public class AiChatServiceImpl implements IAiChatService {
                 return AiChatResponse.error("AI对话服务未启用");
             }
 
+            // 确保有sessionId
+            String sessionId = StringUtils.hasText(request.getSessionId()) ?
+                    request.getSessionId() : UUID.randomUUID().toString();
+            request.setSessionId(sessionId);
 
-            // 构建请求体    .
-
-            JSONObject requestBody = buildRequestBody(request);
+            // 构建请求体（包含历史记录）
+            JSONObject requestBody = buildRequestBodyWithHistory(request);
 
             // 调用AI API
             String responseBody = callAiApi(requestBody);
 
             // 解析响应
             AiChatResponse response = parseResponse(responseBody, request);
+
+            // 保存对话历史
+            if (response.getSuccess()) {
+                // 保存用户消息
+                chatHistoryManager.addMessage(sessionId, "user", request.getUserMessage());
+                // 保存AI回复
+                chatHistoryManager.addMessage(sessionId, "assistant", response.getAiMessage());
+            }
 
             // 设置处理时间
             response.setProcessingTime(System.currentTimeMillis() - startTime);
@@ -72,6 +87,57 @@ public class AiChatServiceImpl implements IAiChatService {
         }
     }
 
+    /**
+     * 构建包含历史记录的请求体
+     */
+    private JSONObject buildRequestBodyWithHistory(AiChatRequest request) {
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("model", aiChatProperties.getModel());
+        requestBody.put("max_tokens", request.getMaxTokens() != null ?
+                request.getMaxTokens() : aiChatProperties.getMaxTokens());
+        requestBody.put("temperature", request.getTemperature() != null ?
+                request.getTemperature() : aiChatProperties.getTemperature());
+
+        // 构建消息数组
+        JSONArray messages = new JSONArray();
+
+        // 1. 系统消息
+        String systemPrompt = StringUtils.hasText(request.getSystemPrompt()) ?
+                request.getSystemPrompt() : "";
+        if (StringUtils.hasText(systemPrompt)) {
+            JSONObject systemMessage = new JSONObject();
+            systemMessage.put("role", "system");
+            systemMessage.put("content", systemPrompt);
+            messages.add(systemMessage);
+        }
+
+        // 2. 添加历史对话
+        List<ChatHistoryManager.ChatMessage> history = chatHistoryManager.getHistory(request.getSessionId());
+        for (ChatHistoryManager.ChatMessage msg : history) {
+            JSONObject historyMessage = new JSONObject();
+            historyMessage.put("role", msg.getRole());
+            historyMessage.put("content", msg.getContent());
+            messages.add(historyMessage);
+        }
+
+        // 3. 当前用户消息
+        JSONObject userMessage = new JSONObject();
+        userMessage.put("role", "user");
+        userMessage.put("content", request.getUserMessage());
+        messages.add(userMessage);
+
+        requestBody.put("messages", messages);
+
+        logger.info("对话历史数量: {}, SessionId: {}", history.size(), request.getSessionId());
+
+        return requestBody;
+    }
+
+    // 新增：清除会话历史的方法
+    public void clearChatHistory(String sessionId) {
+        chatHistoryManager.clearHistory(sessionId);
+        logger.info("已清除会话历史: {}", sessionId);
+    }
 
     @Override
     public boolean isServiceAvailable() {
@@ -122,7 +188,6 @@ public class AiChatServiceImpl implements IAiChatService {
     }
 
     /**
-     *
      * 调用AI API
      */
     private String callAiApi(JSONObject requestBody) {
