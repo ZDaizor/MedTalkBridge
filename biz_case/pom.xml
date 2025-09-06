@@ -9,7 +9,6 @@
         <version>3.9.0</version>
     </parent>
 
-    <packaging>jar</packaging>
     <artifactId>biz_case</artifactId>
 
     <properties>
@@ -23,10 +22,7 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-common</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-framework</artifactId>
-        </dependency>
+
 
     </dependencies>
 

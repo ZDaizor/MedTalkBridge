@@ -66,6 +66,10 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-ai-chat</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>biz_case</artifactId>
+        </dependency>
 
     </dependencies>
 
