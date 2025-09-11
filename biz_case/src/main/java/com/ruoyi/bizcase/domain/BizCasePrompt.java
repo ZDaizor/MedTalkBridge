@@ -7,91 +7,102 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 【请填写功能名称】对象 biz_case_prompt
- * 
+ *
  * @author daizor
  * @date 2025-09-04
  */
-public class BizCasePrompt extends BaseEntity
-{
+public class BizCasePrompt extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** $column.columnComment */
+    /**
+     * $column.columnComment
+     */
     private Long promptId;
 
-    /** 提示词内容 */
+    /**
+     * 提示词内容
+     */
     @Excel(name = "提示词内容")
     private String promptContent;
 
-    /** 提示词类型（1：内容；2：整体；3：病志书写） */
+    /**
+     * 提示词类型（1：内容；2：整体；3：病志书写）
+     */
     @Excel(name = "提示词类型", readConverterExp = "1=：内容；2：整体；3：病志书写")
     private Long promptType;
 
-    /** $column.columnComment */
+    /**
+     * $column.columnComment
+     */
     @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
     private Long caseId;
 
-    /** $column.columnComment */
+    /**
+     * $column.columnComment
+     */
     @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
     private Long stepId;
 
-    public void setPromptId(Long promptId) 
-    {
+    @Excel(name = "提示词标识")
+    private String promptKey;
+
+    public void setPromptId(Long promptId) {
         this.promptId = promptId;
     }
 
-    public Long getPromptId() 
-    {
+    public Long getPromptId() {
         return promptId;
     }
 
-    public void setPromptContent(String promptContent) 
-    {
+    public void setPromptContent(String promptContent) {
         this.promptContent = promptContent;
     }
 
-    public String getPromptContent() 
-    {
+    public String getPromptContent() {
         return promptContent;
     }
 
-    public void setPromptType(Long promptType) 
-    {
+    public void setPromptType(Long promptType) {
         this.promptType = promptType;
     }
 
-    public Long getPromptType() 
-    {
+    public Long getPromptType() {
         return promptType;
     }
 
-    public void setCaseId(Long caseId) 
-    {
+    public void setCaseId(Long caseId) {
         this.caseId = caseId;
     }
 
-    public Long getCaseId() 
-    {
+    public Long getCaseId() {
         return caseId;
     }
 
-    public void setStepId(Long stepId) 
-    {
+    public void setStepId(Long stepId) {
         this.stepId = stepId;
     }
 
-    public Long getStepId() 
-    {
+    public Long getStepId() {
         return stepId;
+    }
+
+    public String getPromptKey() {
+        return promptKey;
+    }
+
+    public void setPromptKey(String promptKey) {
+        this.promptKey = promptKey;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("promptId", getPromptId())
-            .append("promptContent", getPromptContent())
-            .append("promptType", getPromptType())
-            .append("caseId", getCaseId())
-            .append("stepId", getStepId())
-            .toString();
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("promptId", getPromptId())
+                .append("promptContent", getPromptContent())
+                .append("promptType", getPromptType())
+                .append("caseId", getCaseId())
+                .append("stepId", getStepId())
+                .append("promptKey", getPromptKey())
+                .toString();
     }
 }

@@ -26,6 +26,10 @@ public class BizCase extends BaseEntity
     @Excel(name = "病例编码")
     private String caseCode;
 
+    /** 病例难度（1：初级，2：中级，3：高级） */
+    @Excel(name = "病例难度", readConverterExp = "1=初级,2=中级,3=高级")
+    private Integer caseDifficulty;
+
     /** 病例状态（0：停用，1：可用） */
     @Excel(name = "病例状态", readConverterExp = "0=：停用，1：可用")
     private Long caseStatus;
@@ -102,7 +106,7 @@ public class BizCase extends BaseEntity
     @Excel(name = "问诊最大时间")
     private Long caseMax;
 
-    public void setCaseId(Long caseId) 
+    public void setCaseId(Long caseId)
     {
         this.caseId = caseId;
     }
@@ -132,7 +136,15 @@ public class BizCase extends BaseEntity
         return caseCode;
     }
 
-    public void setCaseStatus(Long caseStatus) 
+    public void setCaseDifficulty(Integer caseDifficulty) {
+        this.caseDifficulty = caseDifficulty;
+    }
+
+    public Integer getCaseDifficulty() {
+        return caseDifficulty;
+    }
+
+    public void setCaseStatus(Long caseStatus)
     {
         this.caseStatus = caseStatus;
     }
@@ -328,6 +340,7 @@ public class BizCase extends BaseEntity
             .append("caseId", getCaseId())
             .append("caseName", getCaseName())
             .append("caseCode", getCaseCode())
+            .append("caseDifficulty", getCaseDifficulty())
             .append("caseStatus", getCaseStatus())
             .append("patientName", getPatientName())
             .append("patientAge", getPatientAge())

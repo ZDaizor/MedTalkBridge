@@ -10,19 +10,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="promptType"    column="prompt_type"    />
         <result property="caseId"    column="case_id"    />
         <result property="stepId"    column="step_id"    />
+        <result property="promptKey"   column="prompt_key"    />
     </resultMap>
 
     <sql id="selectBizCasePromptVo">
-        select prompt_id, prompt_content, prompt_type, case_id, step_id from biz_case_prompt
+        select prompt_id, prompt_content, prompt_type, case_id, step_id,prompt_key from biz_case_prompt
     </sql>
 
     <select id="selectBizCasePromptList" parameterType="BizCasePrompt" resultMap="BizCasePromptResult">
         <include refid="selectBizCasePromptVo"/>
-        <where>  
-            <if test="promptContent != null  and promptContent != ''"> and prompt_content = #{promptContent}</if>
-            <if test="promptType != null "> and prompt_type = #{promptType}</if>
-            <if test="caseId != null "> and case_id = #{caseId}</if>
-            <if test="stepId != null "> and step_id = #{stepId}</if>
+        <where>
+            <if test="promptContent != null  and promptContent != ''">and prompt_content = #{promptContent}</if>
+            <if test="promptType != null ">and prompt_type = #{promptType}</if>
+            <if test="caseId != null ">and case_id = #{caseId}</if>
+            <if test="stepId != null ">and step_id = #{stepId}</if>
+            <if test="promptKey != null  and promptKey != ''">and prompt_key = #{promptKey}</if>
         </where>
     </select>
     
@@ -38,13 +40,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="promptType != null">prompt_type,</if>
             <if test="caseId != null">case_id,</if>
             <if test="stepId != null">step_id,</if>
-         </trim>
+            <if test="promptKey != null">prompt_key,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="promptContent != null">#{promptContent},</if>
             <if test="promptType != null">#{promptType},</if>
             <if test="caseId != null">#{caseId},</if>
             <if test="stepId != null">#{stepId},</if>
-         </trim>
+            <if test="promptKey != null">#{promptKey},</if>
+        </trim>
     </insert>
 
     <update id="updateBizCasePrompt" parameterType="BizCasePrompt">
@@ -54,6 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="promptType != null">prompt_type = #{promptType},</if>
             <if test="caseId != null">case_id = #{caseId},</if>
             <if test="stepId != null">step_id = #{stepId},</if>
+            <if test="promptKey != null">prompt_key = #{promptKey},</if>
         </trim>
         where prompt_id = #{promptId}
     </update>

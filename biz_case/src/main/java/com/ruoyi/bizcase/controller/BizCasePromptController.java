@@ -20,9 +20,10 @@ import com.ruoyi.bizcase.domain.BizCasePrompt;
 import com.ruoyi.bizcase.service.IBizCasePromptService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import io.swagger.annotations.ApiOperation;
 
 /**
- * 【请填写功能名称】Controller
+ * Controller
  * 
  * @author daizor
  * @date 2025-09-04
@@ -35,8 +36,9 @@ public class BizCasePromptController extends BaseController
     private IBizCasePromptService bizCasePromptService;
 
     /**
-     * 查询【请填写功能名称】列表
+     * 查询列表
      */
+    @ApiOperation("查询列表")
     @PreAuthorize("@ss.hasPermi('system:prompt:list')")
     @GetMapping("/list")
     public TableDataInfo list(BizCasePrompt bizCasePrompt)
@@ -47,21 +49,23 @@ public class BizCasePromptController extends BaseController
     }
 
     /**
-     * 导出【请填写功能名称】列表
+     * 导出列表
      */
+    @ApiOperation("导出列表")
     @PreAuthorize("@ss.hasPermi('system:prompt:export')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.EXPORT)
+    @Log(title = "", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizCasePrompt bizCasePrompt)
     {
         List<BizCasePrompt> list = bizCasePromptService.selectBizCasePromptList(bizCasePrompt);
         ExcelUtil<BizCasePrompt> util = new ExcelUtil<BizCasePrompt>(BizCasePrompt.class);
-        util.exportExcel(response, list, "【请填写功能名称】数据");
+        util.exportExcel(response, list, "数据");
     }
 
     /**
-     * 获取【请填写功能名称】详细信息
+     * 获取详细信息
      */
+    @ApiOperation("获取详细信息")
     @PreAuthorize("@ss.hasPermi('system:prompt:query')")
     @GetMapping(value = "/{promptId}")
     public AjaxResult getInfo(@PathVariable("promptId") Long promptId)
@@ -70,10 +74,11 @@ public class BizCasePromptController extends BaseController
     }
 
     /**
-     * 新增【请填写功能名称】
+     * 新增
      */
+    @ApiOperation("新增")
     @PreAuthorize("@ss.hasPermi('system:prompt:add')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.INSERT)
+    @Log(title = "", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody BizCasePrompt bizCasePrompt)
     {
@@ -81,10 +86,11 @@ public class BizCasePromptController extends BaseController
     }
 
     /**
-     * 修改【请填写功能名称】
+     * 修改
      */
+    @ApiOperation("修改")
     @PreAuthorize("@ss.hasPermi('system:prompt:edit')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.UPDATE)
+    @Log(title = "", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody BizCasePrompt bizCasePrompt)
     {
@@ -92,10 +98,11 @@ public class BizCasePromptController extends BaseController
     }
 
     /**
-     * 删除【请填写功能名称】
+     * 删除
      */
+    @ApiOperation("删除")
     @PreAuthorize("@ss.hasPermi('system:prompt:remove')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.DELETE)
+    @Log(title = "", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{promptIds}")
     public AjaxResult remove(@PathVariable Long[] promptIds)
     {

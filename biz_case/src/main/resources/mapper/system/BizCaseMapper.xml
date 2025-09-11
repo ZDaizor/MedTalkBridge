@@ -27,36 +27,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="totleWords"    column="totle_words"    />
         <result property="writeWords"    column="write_words"    />
         <result property="caseMax"    column="case_max"    />
+        <result property="caseDifficulty"    column="case_difficulty"    />
     </resultMap>
 
     <sql id="selectBizCaseVo">
-        select case_id, case_name, case_code, case_status, patient_name, patient_age, patient_gender, case_sections_type, case_abstract, case_hpi, case_ha, case_ph, case_aic, case_he, case_ae, case_fh, case_hid, case_dr, content_words, totle_words, write_words, case_max from biz_case
+        select case_id, case_name, case_code, case_status, patient_name, patient_age, patient_gender, case_sections_type, case_abstract, case_hpi, case_ha, case_ph, case_aic, case_he, case_ae, case_fh, case_hid, case_dr, content_words, totle_words, write_words, case_max, case_difficulty from biz_case
     </sql>
 
     <select id="selectBizCaseList" parameterType="BizCase" resultMap="BizCaseResult">
         <include refid="selectBizCaseVo"/>
-        <where>  
-            <if test="caseName != null  and caseName != ''"> and case_name like concat('%', #{caseName}, '%')</if>
-            <if test="caseCode != null  and caseCode != ''"> and case_code = #{caseCode}</if>
-            <if test="caseStatus != null "> and case_status = #{caseStatus}</if>
-            <if test="patientName != null  and patientName != ''"> and patient_name like concat('%', #{patientName}, '%')</if>
-            <if test="patientAge != null "> and patient_age = #{patientAge}</if>
-            <if test="patientGender != null "> and patient_gender = #{patientGender}</if>
-            <if test="caseSectionsType != null "> and case_sections_type = #{caseSectionsType}</if>
-            <if test="caseAbstract != null  and caseAbstract != ''"> and case_abstract = #{caseAbstract}</if>
-            <if test="caseHpi != null  and caseHpi != ''"> and case_hpi = #{caseHpi}</if>
-            <if test="caseHa != null  and caseHa != ''"> and case_ha = #{caseHa}</if>
-            <if test="casePh != null  and casePh != ''"> and case_ph = #{casePh}</if>
-            <if test="caseAic != null  and caseAic != ''"> and case_aic = #{caseAic}</if>
-            <if test="caseHe != null  and caseHe != ''"> and case_he = #{caseHe}</if>
-            <if test="caseAe != null  and caseAe != ''"> and case_ae = #{caseAe}</if>
-            <if test="caseFh != null  and caseFh != ''"> and case_fh = #{caseFh}</if>
-            <if test="caseHid != null  and caseHid != ''"> and case_hid = #{caseHid}</if>
-            <if test="caseDr != null  and caseDr != ''"> and case_dr = #{caseDr}</if>
-            <if test="contentWords != null  and contentWords != ''"> and content_words = #{contentWords}</if>
-            <if test="totleWords != null  and totleWords != ''"> and totle_words = #{totleWords}</if>
-            <if test="writeWords != null  and writeWords != ''"> and write_words = #{writeWords}</if>
-            <if test="caseMax != null "> and case_max = #{caseMax}</if>
+        <where>
+            <if test="caseName != null  and caseName != ''">and case_name like concat('%', #{caseName}, '%')</if>
+            <if test="caseCode != null  and caseCode != ''">and case_code = #{caseCode}</if>
+            <if test="caseStatus != null ">and case_status = #{caseStatus}</if>
+            <if test="patientName != null  and patientName != ''">and patient_name like concat('%', #{patientName},
+                '%')
+            </if>
+            <if test="patientAge != null ">and patient_age = #{patientAge}</if>
+            <if test="patientGender != null ">and patient_gender = #{patientGender}</if>
+            <if test="caseSectionsType != null ">and case_sections_type = #{caseSectionsType}</if>
+            <if test="caseAbstract != null  and caseAbstract != ''">and case_abstract = #{caseAbstract}</if>
+            <if test="caseHpi != null  and caseHpi != ''">and case_hpi = #{caseHpi}</if>
+            <if test="caseHa != null  and caseHa != ''">and case_ha = #{caseHa}</if>
+            <if test="casePh != null  and casePh != ''">and case_ph = #{casePh}</if>
+            <if test="caseAic != null  and caseAic != ''">and case_aic = #{caseAic}</if>
+            <if test="caseHe != null  and caseHe != ''">and case_he = #{caseHe}</if>
+            <if test="caseAe != null  and caseAe != ''">and case_ae = #{caseAe}</if>
+            <if test="caseFh != null  and caseFh != ''">and case_fh = #{caseFh}</if>
+            <if test="caseHid != null  and caseHid != ''">and case_hid = #{caseHid}</if>
+            <if test="caseDr != null  and caseDr != ''">and case_dr = #{caseDr}</if>
+            <if test="contentWords != null  and contentWords != ''">and content_words = #{contentWords}</if>
+            <if test="totleWords != null  and totleWords != ''">and totle_words = #{totleWords}</if>
+            <if test="writeWords != null  and writeWords != ''">and write_words = #{writeWords}</if>
+            <if test="caseMax != null ">and case_max = #{caseMax}</if>
+            <if test="caseDifficulty != null ">and case_difficulty = #{caseDifficulty}</if>
         </where>
     </select>
     
@@ -89,7 +93,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totleWords != null">totle_words,</if>
             <if test="writeWords != null">write_words,</if>
             <if test="caseMax != null">case_max,</if>
+            <if test="caseDifficulty != null">case_difficulty,</if>
          </trim>
+
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="caseName != null and caseName != ''">#{caseName},</if>
             <if test="caseCode != null and caseCode != ''">#{caseCode},</if>
@@ -112,7 +118,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totleWords != null">#{totleWords},</if>
             <if test="writeWords != null">#{writeWords},</if>
             <if test="caseMax != null">#{caseMax},</if>
+            <if test="caseDifficulty != null">#{caseDifficulty},</if>
          </trim>
+
     </insert>
 
     <update id="updateBizCase" parameterType="BizCase">
@@ -139,7 +147,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totleWords != null">totle_words = #{totleWords},</if>
             <if test="writeWords != null">write_words = #{writeWords},</if>
             <if test="caseMax != null">case_max = #{caseMax},</if>
+            <if test="caseDifficulty != null">case_difficulty = #{caseDifficulty},</if>
         </trim>
+
         where case_id = #{caseId}
     </update>
 
