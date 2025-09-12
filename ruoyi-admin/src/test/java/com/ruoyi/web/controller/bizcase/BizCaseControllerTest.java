@@ -133,7 +133,7 @@ public class BizCaseControllerTest {
 
     @Test
     void testRemove() throws Exception {
-        mockMvc.perform(delete("/system/case/1,2")
+        mockMvc.perform(delete("/system/case/3")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));

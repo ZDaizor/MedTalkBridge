@@ -81,7 +81,7 @@ public class BizCaseController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:case:add')")
     @Log(title = "病例", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody BizCase bizCase)
+    public AjaxResult add(@io.swagger.annotations.ApiParam(name = "病例对象", value = "病例对象") @RequestBody BizCase bizCase)
     {
         return toAjax(bizCaseService.insertBizCase(bizCase));
     }
@@ -93,7 +93,7 @@ public class BizCaseController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:case:edit')")
     @Log(title = "病例", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody BizCase bizCase)
+    public AjaxResult edit(@io.swagger.annotations.ApiParam(name = "病例对象", value = "病例对象") @RequestBody BizCase bizCase)
     {
         return toAjax(bizCaseService.updateBizCase(bizCase));
     }

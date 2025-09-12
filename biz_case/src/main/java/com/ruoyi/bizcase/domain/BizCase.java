@@ -4,6 +4,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 病例对象 biz_case
@@ -11,98 +13,122 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author daizor
  * @date 2025-09-04
  */
+@ApiModel(value = "BizCase", description = "病例对象")
 public class BizCase extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** id */
+    @ApiModelProperty(value = "病例编号")
     private Long caseId;
 
     /** 病例名称 */
+    @ApiModelProperty(value = "病例名称")
     @Excel(name = "病例名称")
     private String caseName;
 
     /** 病例编码 */
+    @ApiModelProperty(value = "病例编码")
     @Excel(name = "病例编码")
     private String caseCode;
 
     /** 病例难度（1：初级，2：中级，3：高级） */
+    @ApiModelProperty(value = "病例难度（1：初级，2：中级，3：高级）")
     @Excel(name = "病例难度", readConverterExp = "1=初级,2=中级,3=高级")
     private Integer caseDifficulty;
 
     /** 病例状态（0：停用，1：可用） */
+    @ApiModelProperty(value = "病例状态（0：停用，1：可用）")
     @Excel(name = "病例状态", readConverterExp = "0=：停用，1：可用")
     private Long caseStatus;
 
     /** 患者姓名 */
+    @ApiModelProperty(value = "患者姓名")
     @Excel(name = "患者姓名")
     private String patientName;
 
     /** 患者年龄 */
+    @ApiModelProperty(value = "患者年龄")
     @Excel(name = "患者年龄")
     private Long patientAge;
 
     /** 患者性别（1：男，2 女） */
+    @ApiModelProperty(value = "患者性别（1：男，2 女）")
     @Excel(name = "患者性别", readConverterExp = "1=：男，2,女=")
     private Long patientGender;
 
     /** 症状分类 */
+    @ApiModelProperty(value = "症状分类")
     @Excel(name = "症状分类")
     private Long caseSectionsType;
 
     /** 摘要 */
+    @ApiModelProperty(value = "摘要")
     @Excel(name = "摘要")
     private String caseAbstract;
 
     /** 现病史 */
+    @ApiModelProperty(value = "现病史")
     @Excel(name = "现病史")
     private String caseHpi;
 
     /** 过敏史 */
+    @ApiModelProperty(value = "过敏史")
     @Excel(name = "过敏史")
     private String caseHa;
 
     /** 既往史 */
+    @ApiModelProperty(value = "既往史")
     @Excel(name = "既往史")
     private String casePh;
 
     /** 主诉 */
+    @ApiModelProperty(value = "主诉")
     @Excel(name = "主诉")
     private String caseAic;
 
     /** 查体 */
+    @ApiModelProperty(value = "查体")
     @Excel(name = "查体")
     private String caseHe;
 
     /** 辅助检查 */
+    @ApiModelProperty(value = "辅助检查")
     @Excel(name = "辅助检查")
     private String caseAe;
 
     /** 家族史 */
+    @ApiModelProperty(value = "家族史")
     @Excel(name = "家族史")
     private String caseFh;
 
     /** 传染病学史 */
+    @ApiModelProperty(value = "传染病学���")
     @Excel(name = "传染病学史")
     private String caseHid;
 
     /** 诊断参考 */
+    @ApiModelProperty(value = "诊断参考")
     @Excel(name = "诊断参考")
     private String caseDr;
 
     /** 内容提示词 */
+    @ApiModelProperty(value = "内容提示词")
     @Excel(name = "内容提示词")
     private String contentWords;
 
     /** 整体提示词 */
+    @ApiModelProperty(value = "整体提示词")
     @Excel(name = "整体提示词")
     private String totleWords;
 
     /** 病志书写评分提示词 */
+    @ApiModelProperty(value = "病志书写评分提示词")
     @Excel(name = "病志书写评分提示词")
     private String writeWords;
 
     /** 问诊最大时间 */
+    @ApiModelProperty(value = "问诊最大时间")
     @Excel(name = "问诊最大时间")
     private Long caseMax;
 
