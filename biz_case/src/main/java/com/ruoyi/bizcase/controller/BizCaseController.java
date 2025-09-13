@@ -3,7 +3,10 @@ package com.ruoyi.bizcase.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,14 +28,13 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 病例Controller
- * 
+ *
  * @author daizor
  * @date 2025-09-04
  */
 @RestController
 @RequestMapping("/system/case")
-public class BizCaseController extends BaseController
-{
+public class BizCaseController extends BaseController {
     @Autowired
     private IBizCaseService bizCaseService;
 
@@ -42,8 +44,7 @@ public class BizCaseController extends BaseController
     @ApiOperation("查询病例列表")
     @PreAuthorize("@ss.hasPermi('system:case:list')")
     @GetMapping("/list")
-    public TableDataInfo list(BizCase bizCase)
-    {
+    public TableDataInfo list(BizCase bizCase) {
         startPage();
         List<BizCase> list = bizCaseService.selectBizCaseList(bizCase);
         return getDataTable(list);
@@ -56,8 +57,7 @@ public class BizCaseController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:case:export')")
     @Log(title = "病例", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, BizCase bizCase)
-    {
+    public void export(HttpServletResponse response, BizCase bizCase) {
         List<BizCase> list = bizCaseService.selectBizCaseList(bizCase);
         ExcelUtil<BizCase> util = new ExcelUtil<BizCase>(BizCase.class);
         util.exportExcel(response, list, "病例数据");
@@ -69,8 +69,9 @@ public class BizCaseController extends BaseController
     @ApiOperation("获取病例详细信息")
     @PreAuthorize("@ss.hasPermi('system:case:query')")
     @GetMapping(value = "/{caseId}")
-    public AjaxResult getInfo(@PathVariable("caseId") Long caseId)
-    {
+    @ApiImplicitParam(name = "caseId", value = "病例ID", required = true, dataType = "long", paramType = "path")
+    public AjaxResult getInfo(
+            @PathVariable("caseId") Long caseId) {
         return success(bizCaseService.selectBizCaseByCaseId(caseId));
     }
 
@@ -81,8 +82,7 @@ public class BizCaseController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:case:add')")
     @Log(title = "病例", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@io.swagger.annotations.ApiParam(name = "病例对象", value = "病例对象") @RequestBody BizCase bizCase)
-    {
+    public AjaxResult add(@RequestBody BizCase bizCase) {
         return toAjax(bizCaseService.insertBizCase(bizCase));
     }
 
@@ -90,11 +90,9 @@ public class BizCaseController extends BaseController
      * 修改病例
      */
     @ApiOperation("修改病例")
-    @PreAuthorize("@ss.hasPermi('system:case:edit')")
     @Log(title = "病例", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@io.swagger.annotations.ApiParam(name = "病例对象", value = "病例对象") @RequestBody BizCase bizCase)
-    {
+    public AjaxResult edit(@RequestBody BizCase bizCase) {
         return toAjax(bizCaseService.updateBizCase(bizCase));
     }
 
@@ -102,11 +100,11 @@ public class BizCaseController extends BaseController
      * 删除病例
      */
     @ApiOperation("删除病例")
+    @ApiImplicitParam(name = "caseIds", value = "病例ID（多个以逗号分隔）", required = true, dataType = "long", paramType = "path")
     @PreAuthorize("@ss.hasPermi('system:case:remove')")
     @Log(title = "病例", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{caseIds}")
-    public AjaxResult remove(@PathVariable Long[] caseIds)
-    {
+    @DeleteMapping("/{caseIds}")
+    public AjaxResult remove(@PathVariable Long[] caseIds) {
         return toAjax(bizCaseService.deleteBizCaseByCaseIds(caseIds));
     }
 }
