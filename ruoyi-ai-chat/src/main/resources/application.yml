@@ -27,3 +27,7 @@ ai:
     
     # 重试次数
     retry-count: 3
+dify:
+  api:
+    url: http://192.168.19.198/v1
+    key: app-iUofOIJ5ECQVdoUbChaTshVh
