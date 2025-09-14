@@ -52,6 +52,12 @@ public class BizCaseServiceImpl implements IBizCaseService
     @Override
     public int insertBizCase(BizCase bizCase)
     {
+        if (bizCase.getCaseCode() == null || bizCase.getCaseCode().trim().isEmpty()) {
+            String dateStr = new java.text.SimpleDateFormat("yyyyMMdd").format(new java.util.Date());
+            String uuid = java.util.UUID.randomUUID().toString().replace("-", "");
+            String caseCode = "CASE-" + dateStr + "-" + uuid.substring(0, 8);
+            bizCase.setCaseCode(caseCode);
+        }
         return bizCaseMapper.insertBizCase(bizCase);
     }
 

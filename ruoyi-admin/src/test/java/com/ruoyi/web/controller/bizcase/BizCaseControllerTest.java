@@ -38,7 +38,6 @@ public class BizCaseControllerTest {
     void setUp() throws Exception {
         testCase = new BizCase();
         testCase.setCaseName("高血压随访病例");
-        testCase.setCaseCode("CASE_HTN_20250911");
         testCase.setCaseStatus(1L);
         testCase.setPatientName("张三");
         testCase.setPatientAge(58L);
@@ -160,5 +159,41 @@ public class BizCaseControllerTest {
         String response = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         log.info("条件查询返回: {}", response);
         // 可进一步断言每条结果都符合条件
+    }
+
+    @Test
+    void testAutoGenerateCaseCode() throws Exception {
+        BizCase noCodeCase = new BizCase();
+        noCodeCase.setCaseName("自动编码测试病例");
+        noCodeCase.setCaseStatus(1L);
+        noCodeCase.setPatientName("李四");
+        noCodeCase.setPatientAge(45L);
+        noCodeCase.setPatientGender(1L);
+        noCodeCase.setCaseDifficulty(1);
+        noCodeCase.setCaseSectionsType(102L);
+        noCodeCase.setCaseAbstract("患者因头痛来诊，既往高血压病史5年。");
+        noCodeCase.setCaseHpi("头痛1天，无其他不适。");
+        noCodeCase.setCaseHa("无药物过敏史。");
+        noCodeCase.setCasePh("高血压5年，偶尔服药。");
+        noCodeCase.setCaseAic("头痛");
+        noCodeCase.setCaseHe("血压150/95mmHg，心率75次/分。");
+        noCodeCase.setCaseAe("心电图正常。");
+        noCodeCase.setCaseFh("母亲有高血压史。");
+        noCodeCase.setCaseHid("无传染病史。");
+        noCodeCase.setCaseDr("建议规律服药，复查血压。");
+        noCodeCase.setContentWords("高血压,头痛,随访");
+        noCodeCase.setTotleWords("注意血压监测。");
+        noCodeCase.setWriteWords("病志完整。");
+        noCodeCase.setCaseMax(20L);
+
+        MvcResult result = mockMvc.perform(post("/system/case")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(noCodeCase)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andReturn();
+        String addResponse = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        log.info("自动编码新增返回: {}", addResponse);
     }
 }
