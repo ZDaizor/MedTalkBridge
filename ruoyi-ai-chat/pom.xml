@@ -24,6 +24,10 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>biz_case</artifactId>
+        </dependency>
 
         <!-- Spring Boot Web -->
         <dependency>

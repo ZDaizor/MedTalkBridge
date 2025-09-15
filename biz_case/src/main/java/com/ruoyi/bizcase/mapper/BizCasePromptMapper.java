@@ -2,6 +2,8 @@ package com.ruoyi.bizcase.mapper;
 
 import java.util.List;
 import com.ruoyi.bizcase.domain.BizCasePrompt;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 【请填写功能名称】Mapper接口
@@ -9,7 +11,8 @@ import com.ruoyi.bizcase.domain.BizCasePrompt;
  * @author daizor
  * @date 2025-09-04
  */
-public interface BizCasePromptMapper 
+@Mapper
+public interface BizCasePromptMapper
 {
     /**
      * 查询【请填写功能名称】
@@ -54,8 +57,13 @@ public interface BizCasePromptMapper
     /**
      * 批量删除【请填写功能名称】
      * 
-     * @param promptIds 需要删除的数据主键集合
+     * @param promptIds 需要删除的数据主键集���
      * @return 结果
      */
     public int deleteBizCasePromptByPromptIds(Long[] promptIds);
+
+    /**
+     * 根据caseId和stepId查询promptKey
+     */
+    public String selectPromptKeyByCaseIdAndStepId(@Param("caseId") Long caseId, @Param("stepId") Long stepId);
 }

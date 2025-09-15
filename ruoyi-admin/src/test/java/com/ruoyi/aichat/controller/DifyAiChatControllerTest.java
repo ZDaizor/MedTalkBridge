@@ -14,9 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -46,10 +47,14 @@ public class DifyAiChatControllerTest {
     public void testChat_firstConversation() throws Exception {
         String query = "你怎么了";
         String user = "test-user";
+        String caseId = "1";
+        String stepId = "1";
 
         MvcResult mvcResult = mockMvc.perform(post("/dify/chat")
                         .param("query", query)
                         .param("user", user)
+                        .param("caseId", caseId)
+                        .param("stepId", stepId)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .header("Authorization", "Bearer " + token))
                 .andReturn();
@@ -59,18 +64,46 @@ public class DifyAiChatControllerTest {
 
     @Test
     public void testChat_continuousConversation() throws Exception {
-        String query = "How are you?";
-        String conversationId = "conv-123";
+        String query = "你刚才在说什么，我没听清";
+        String conversationId = "b7534084-d7a6-4cf1-9557-e7fb362fd091";
         String user = "test-user";
+        String caseId = "1";
+        String stepId = "1";
         String expectedResponse = "{\"answer\": \"I am fine, thank you!\"}";
 
         mockMvc.perform(post("/dify/chat")
                         .param("query", query)
                         .param("conversationId", conversationId)
                         .param("user", user)
+                        .param("caseId", caseId)
+                        .param("stepId", stepId)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedResponse));
+    }
+
+
+    @Test
+    public void testParameters_keyNotFound() throws Exception {
+        mockMvc.perform(get("/dify/parameters")
+                        .param("caseId", "99999")
+                        .param("stepId", "88888")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("API key not found"));
+    }
+
+    @Test
+    public void testParameters_success() throws Exception {
+        // 这里假设数据库有对应的 case_id 和 step_id，且能查到 key，Dify 返回 {"result":"ok"}
+        MvcResult mvcResult = mockMvc.perform(get("/dify/parameters")
+                        .param("caseId", "1")
+                        .param("stepId", "1")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andReturn();
+        String responseContent = mvcResult.getResponse().getContentAsString();
+        System.out.println("Response: " + responseContent);
     }
 }

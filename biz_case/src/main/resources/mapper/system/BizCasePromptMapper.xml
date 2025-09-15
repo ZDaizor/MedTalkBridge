@@ -73,4 +73,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{promptId}
         </foreach>
     </delete>
+
+    <select id="selectPromptKeyByCaseIdAndStepId" resultType="String">
+        select prompt_key from biz_case_prompt where case_id = #{caseId} and step_id = #{stepId} limit 1
+    </select>
 </mapper>
