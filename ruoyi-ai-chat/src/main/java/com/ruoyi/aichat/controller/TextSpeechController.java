@@ -68,22 +68,22 @@ public class TextSpeechController {
         }
     }
 
-    @ApiOperation("极速识别(JSON 方式，audio.url 或 audio.data 二选一)")
-    @PostMapping(value = "/flash", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<QueryResponse> flashRecognizeJson(@RequestBody AsrRequest request) {
-        try {
-            if (request.getUser() == null) {
-                AsrRequest.User u = new AsrRequest.User();
-                u.setUid(asrConfig.getAppKey());
-                request.setUser(u);
-            }
-            QueryResponse result = asrService.flashRecognize(request);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            logger.error("极速识别(JSON)失败", e);
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
+//    @ApiOperation("极速识别(JSON 方式，audio.url 或 audio.data 二选一)")
+//    @PostMapping(value = "/flash", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<QueryResponse> flashRecognizeJson(@RequestBody AsrRequest request) {
+//        try {
+//            if (request.getUser() == null) {
+//                AsrRequest.User u = new AsrRequest.User();
+//                u.setUid(asrConfig.getAppKey());
+//                request.setUser(u);
+//            }
+//            QueryResponse result = asrService.flashRecognize(request);
+//            return ResponseEntity.ok(result);
+//        } catch (Exception e) {
+//            logger.error("极速识别(JSON)失败", e);
+//            return ResponseEntity.badRequest().body(null);
+//        }
+//    }
 
     @ApiOperation("极速识别-文件上传(wav)，直接返回结果")
     @PostMapping(value = "/flash", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
