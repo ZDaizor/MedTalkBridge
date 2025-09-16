@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -79,5 +81,44 @@ public class DifyAiChatController {
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         log.info("Dify parameters response: {}", response.getBody());
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+    }
+
+    /**
+     * 文字转语音接口
+     */
+    @ApiOperation(value = "文字转语音", notes = "将文本转换为语音，返回音频流")
+    @PostMapping("/text-to-audio")
+    public ResponseEntity<byte[]> textToAudio(
+            @ApiParam(value = "要转换的文本", required = true) @RequestParam String text,
+            @ApiParam(value = "用户标识", required = true) @RequestParam String user,
+            @ApiParam(value = "消息ID", required = true) @RequestParam("messageId") String messageId,
+            @ApiParam(value = "业务case主键", required = true) @RequestParam("caseId") Long caseId,
+            @ApiParam(value = "步骤主键", required = true) @RequestParam("stepId") Long stepId) {
+        String apiKey = bizCasePromptService.getPromptKeyByCaseIdAndStepId(caseId, stepId);
+        if (apiKey == null || apiKey.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        String url = difyApiUrl + "/text-to-audio";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setBearerAuth(apiKey);
+
+        MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
+        formData.add("text", text);
+        formData.add("user", user);
+        formData.add("message_id", messageId);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(formData, headers);
+        ResponseEntity<byte[]> response = restTemplate.postForEntity(url, requestEntity, byte[].class);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        MediaType contentType = response.getHeaders().getContentType();
+        if (contentType != null) {
+            responseHeaders.setContentType(contentType);
+        } else {
+            responseHeaders.setContentType(MediaType.valueOf("audio/wav"));
+        }
+        responseHeaders.setContentLength(response.getBody() != null ? response.getBody().length : 0);
+        return new ResponseEntity<>(response.getBody(), responseHeaders, response.getStatusCode());
     }
 }

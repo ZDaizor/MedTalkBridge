@@ -106,4 +106,31 @@ public class DifyAiChatControllerTest {
         String responseContent = mvcResult.getResponse().getContentAsString();
         System.out.println("Response: " + responseContent);
     }
+
+    @Test
+    public void testTextToAudio_success() throws Exception {
+        String text = "你好，欢迎使用医患沟通系统。";
+        String user = "test-user";
+        String messageId = "msg-001";
+        String caseId = "1";
+        String stepId = "1";
+
+        MvcResult mvcResult = mockMvc.perform(post("/dify/text-to-audio")
+                        .param("text", text)
+                        .param("user", user)
+                        .param("messageId", messageId)
+                        .param("caseId", caseId)
+                        .param("stepId", stepId)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andReturn();
+        byte[] audioBytes = mvcResult.getResponse().getContentAsByteArray();
+        String contentType = mvcResult.getResponse().getContentType();
+        System.out.println("Content-Type: " + contentType);
+        System.out.println("Audio bytes length: " + audioBytes.length);
+        // 校验音频流返回
+        assert audioBytes.length > 0;
+        assert contentType != null && (contentType.contains("audio") || contentType.contains("octet-stream"));
+    }
 }
