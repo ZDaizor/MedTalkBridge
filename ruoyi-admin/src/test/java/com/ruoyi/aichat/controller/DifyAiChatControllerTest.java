@@ -109,9 +109,9 @@ public class DifyAiChatControllerTest {
 
     @Test
     public void testTextToAudio_success() throws Exception {
-        String text = "你好，欢迎使用医患沟通系统。";
+        String text = "你是哆啦A梦";
         String user = "test-user";
-        String messageId = "msg-001";
+        String messageId = "3980d690-658c-442f-811c-c450568e9467";
         String caseId = "1";
         String stepId = "1";
 

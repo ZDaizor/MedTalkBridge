@@ -13,8 +13,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.Base64;
 
 @Api(tags = "Dify AI 对话接口")
 @RestController
@@ -24,7 +26,14 @@ public class DifyAiChatController {
     @Value("${dify.api.url}")
     private String difyApiUrl;
 
-    private String difyApiKey;
+
+    // 豆包语音识别配置（若未配置 key 将返回 501）
+    @Value("${doubao.api.url:https://ark.cn-beijing.volces.com/api/v3}")
+    private String doubaoApiUrl;
+    @Value("${doubao.api.key:}")
+    private String doubaoApiKey;
+    @Value("${doubao.api.model:speech-01}")
+    private String doubaoApiModel;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -121,4 +130,59 @@ public class DifyAiChatController {
         responseHeaders.setContentLength(response.getBody() != null ? response.getBody().length : 0);
         return new ResponseEntity<>(response.getBody(), responseHeaders, response.getStatusCode());
     }
+
+    /**
+     * 语音转文字接口（豆包语音识别）
+     * 若未配置 doubao.api.key 则返回 501
+     */
+    @ApiOperation(value = "语音转文字", notes = "上传音频文件并识别成文本 (火山引擎豆包语音模型)")
+    @PostMapping(value = "/audio-to-text", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> audioToText(
+            @ApiParam(value = "音频文件", required = true) @RequestPart("file") MultipartFile file,
+            @ApiParam(value = "用户标识", required = true) @RequestParam String user,
+            @ApiParam(value = "业务case主键", required = true) @RequestParam("caseId") Long caseId,
+            @ApiParam(value = "步骤主键", required = true) @RequestParam("stepId") Long stepId) {
+        if (doubaoApiKey == null || doubaoApiKey.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Doubao API key not configured");
+        }
+        if (file == null || file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Audio file is empty");
+        }
+        try {
+            String originalName = file.getOriginalFilename();
+            String ext = "wav";
+            if (originalName != null && originalName.contains(".")) {
+                ext = originalName.substring(originalName.lastIndexOf('.') + 1).toLowerCase();
+            }
+            byte[] data = file.getBytes();
+            String base64 = Base64.getEncoder().encodeToString(data);
+
+            String url = doubaoApiUrl + "/audio/transcriptions"; // 若基础URL已含 /api/v3
+
+            Map<String, Object> audio = new HashMap<>();
+            audio.put("format", ext);
+            audio.put("content", base64);
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("model", doubaoApiModel);
+            body.put("audio", audio);
+            body.put("user", user);
+            Map<String, Object> metadata = new HashMap<>();
+            metadata.put("caseId", caseId);
+            metadata.put("stepId", stepId);
+            body.put("metadata", metadata);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(doubaoApiKey);
+
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            log.error("调用豆包语音识别失败", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Speech to text failed: " + e.getMessage());
+        }
+    }
 }
+
