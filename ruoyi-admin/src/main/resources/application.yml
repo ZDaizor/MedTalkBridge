@@ -129,5 +129,10 @@ xss:
   urlPatterns: /system/*,/monitor/*,/tool/*
 dify:
   api:
-    url:  http://c448ecb8.natappfree.cc/v1
+    url: http://c448ecb8 .natappfree.cc/v1
     key: app-iUofOIJ5ECQVdoUbChaTshVh
+asr:
+  appKey: 1623843109
+  accessKey: k8vN7nrXczTUQmy84Gc-930ZwdAMnq-M
+  flashUrl: https://openspeech.bytedance.com/api/v3/auc/bigmodel/recognize/flash
+  turboResourceId: volc.bigasr.auc_turbo
