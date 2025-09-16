@@ -1,16 +1,22 @@
 package com.ruoyi.aichat.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class QueryResponse {
     private Result result;
+
+    @JsonProperty("audio_info")
     private AudioInfo audioInfo;
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Result {
         private String text;
         private List<Utterance> utterances;
+        private Additions additions; // 新增字段
 
         public String getText() {
             return text;
@@ -27,8 +33,30 @@ public class QueryResponse {
         public void setUtterances(List<Utterance> utterances) {
             this.utterances = utterances;
         }
+
+        public Additions getAdditions() {
+            return additions;
+        }
+
+        public void setAdditions(Additions additions) {
+            this.additions = additions;
+        }
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Additions {
+        private String duration;
+
+        public String getDuration() {
+            return duration;
+        }
+
+        public void setDuration(String duration) {
+            this.duration = duration;
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Utterance {
         private Boolean definite;
 
@@ -82,6 +110,7 @@ public class QueryResponse {
         }
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Word {
         @JsonProperty("blank_duration")
         private Integer blankDuration;
@@ -93,6 +122,9 @@ public class QueryResponse {
         private Integer startTime;
 
         private String text;
+
+        // 新增识别返回中的置信度字段
+        private Integer confidence;
 
         public Integer getBlankDuration() {
             return blankDuration;
@@ -125,8 +157,17 @@ public class QueryResponse {
         public void setText(String text) {
             this.text = text;
         }
+
+        public Integer getConfidence() {
+            return confidence;
+        }
+
+        public void setConfidence(Integer confidence) {
+            this.confidence = confidence;
+        }
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class AudioInfo {
         private Integer duration;
 
@@ -138,6 +179,8 @@ public class QueryResponse {
             this.duration = duration;
         }
     }
+
+    // ========== Getters & Setters ==========
 
     public Result getResult() {
         return result;
