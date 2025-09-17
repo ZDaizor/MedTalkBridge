@@ -152,7 +152,7 @@ public class TextSpeechController extends BaseController {
             org.springframework.http.ResponseEntity<String> response = restTemplate.postForEntity(url, entity,
                     String.class);
             logger.info("文字转语音返回: {}", response.getBody());
-            return AjaxResult.success(response.getBody());
+            return AjaxResult.success("success", response.getBody());
         } catch (Exception e) {
             logger.error("文字转语音失败", e);
             return AjaxResult.error();
