@@ -4,6 +4,7 @@ import com.ruoyi.aichat.config.AsrConfig;
 import com.ruoyi.aichat.dto.AsrRequest;
 import com.ruoyi.aichat.dto.QueryResponse;
 import com.ruoyi.aichat.service.AsrService;
+import com.ruoyi.common.core.domain.AjaxResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -45,19 +46,22 @@ public class TextSpeechController {
      */
     @ApiOperation("极速识别-文件上传(wav)，直接返回结果")
     @PostMapping(value = "/flash", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<QueryResponse> flashRecognizeFile(@ApiParam("wav音频文件") @RequestPart("file") MultipartFile file, @ApiParam("是否开启标点") @RequestParam(value = "enablePunc", required = false, defaultValue = "true") boolean enablePunc, @ApiParam("是否展示分句") @RequestParam(value = "showUtterances", required = false, defaultValue = "true") boolean showUtterances) {
+    public AjaxResult flashRecognizeFile(@ApiParam("wav音频文件") @RequestPart("file") MultipartFile file, @ApiParam(
+                                                 "是否开启标点") @RequestParam(value = "enablePunc", required = false,
+                                                 defaultValue = "true") boolean enablePunc
+            , @ApiParam("是否展示分句") @RequestParam(value = "showUtterances", required = false, defaultValue = "true") boolean showUtterances) {
         try {
             if (file == null || file.isEmpty()) {
-                return ResponseEntity.badRequest().body(null);
+                return AjaxResult.error();
             }
             String originalName = file.getOriginalFilename();
             if (originalName == null || !originalName.toLowerCase().endsWith(".wav")) {
-                return ResponseEntity.badRequest().body(null);
+                return AjaxResult.error();
             }
             long size = file.getSize();
             // 100MB 限制
             if (size > 100L * 1024 * 1024) {
-                return ResponseEntity.badRequest().body(null);
+                return AjaxResult.error();
             }
             byte[] bytes = file.getBytes();
             String base64 = Base64.getEncoder().encodeToString(bytes);
@@ -79,10 +83,10 @@ public class TextSpeechController {
             req.setRequest(r);
 
             QueryResponse result = asrService.flashRecognize(req);
-            return ResponseEntity.ok(result);
+            return AjaxResult.success(result);
         } catch (Exception e) {
             logger.error("极速识别(文件)失败", e);
-            return ResponseEntity.badRequest().body(null);
+            return AjaxResult.error();
         }
     }
 
@@ -91,7 +95,7 @@ public class TextSpeechController {
      */
     @PostMapping("/tts")
     @ApiOperation("文字转语音")
-    public ResponseEntity<?> textToSpeech(
+    public AjaxResult textToSpeech(
             @ApiParam(value = "待合成文本", required = true) @RequestParam String text,
             @ApiParam("音色类型") @RequestParam(defaultValue = "BV700_streaming") String voiceType,
             @ApiParam("编码格式") @RequestParam(defaultValue = "wav") String encoding,
@@ -135,19 +139,22 @@ public class TextSpeechController {
             requestBody.put("request", req);
 
             // 发送请求
-            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            org.springframework.web.client.RestTemplate restTemplate =
+                    new org.springframework.web.client.RestTemplate();
             org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer;" + asrConfig.getAccessKey());
-            org.springframework.http.HttpEntity<Map<String, Object>> entity = new org.springframework.http.HttpEntity<>(requestBody, headers);
+            org.springframework.http.HttpEntity<Map<String, Object>> entity =
+                    new org.springframework.http.HttpEntity<>(requestBody, headers);
 
             String url = asrConfig.getTtsUrl();
-            org.springframework.http.ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+            org.springframework.http.ResponseEntity<String> response = restTemplate.postForEntity(url, entity,
+                    String.class);
             logger.info("文字转语音返回: {}", response.getBody());
-            return ResponseEntity.ok(response.getBody());
+            return AjaxResult.success(response.getBody());
         } catch (Exception e) {
             logger.error("文字转语音失败", e);
-            return ResponseEntity.badRequest().body("文字转语音失败");
+            return AjaxResult.error();
         }
     }
 
