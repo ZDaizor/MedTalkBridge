@@ -15,9 +15,14 @@ public class AsrConfig {
     private String submitUrl;    // 标准版提交地址
     private String queryUrl;     // 标准版查询地址
 
+
     // 极速版配置
     private String flashUrl;         // 极速版一次返回接口地址 https://openspeech.bytedance.com/api/v3/auc/bigmodel/recognize/flash
     private String turboResourceId;  // 极速版资源ID 例如 volc.bigasr.auc_turbo
+
+
+    //   tts配置
+    private String ttsUrl;
 
     public String getAppKey() {
         return appKey;
@@ -73,5 +78,13 @@ public class AsrConfig {
 
     public void setTurboResourceId(String turboResourceId) {
         this.turboResourceId = turboResourceId;
+    }
+
+    public String getTtsUrl() {
+        return ttsUrl;
+    }
+
+    public void setTtsUrl(String ttsUrl) {
+        this.ttsUrl = ttsUrl;
     }
 }

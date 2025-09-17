@@ -135,4 +135,5 @@ asr:
   appKey: 1623843109
   accessKey: k8vN7nrXczTUQmy84Gc-930ZwdAMnq-M
   flashUrl: https://openspeech.bytedance.com/api/v3/auc/bigmodel/recognize/flash
+  ttsUrl: https://openspeech.bytedance.com/api/v1/tts
   turboResourceId: volc.bigasr.auc_turbo

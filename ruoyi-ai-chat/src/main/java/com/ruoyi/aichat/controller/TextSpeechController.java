@@ -15,7 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.rmi.server.UID;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 @Api(tags = "文字语音互转接口")
 @RestController
@@ -32,66 +35,17 @@ public class TextSpeechController {
         this.asrConfig = asrConfig;
     }
 
-    @ApiOperation("提交语音识别任务(标准版异步)")
-    @PostMapping("/submit")
-    public ResponseEntity<String> submitTask(@RequestBody AsrRequest request) {
-        try {
-            String taskId = asrService.submitTask(request);
-            return ResponseEntity.ok(taskId);
-        } catch (Exception e) {
-            logger.error("提交语音识别任务失败", e);
-            return ResponseEntity.badRequest().body("提交失败: " + e.getMessage());
-        }
-    }
-
-    @ApiOperation("查询识别结果")
-    @GetMapping("/query/{taskId}")
-    public ResponseEntity<QueryResponse> queryResult(@PathVariable String taskId) {
-        try {
-            QueryResponse result = asrService.queryResult(taskId);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            logger.error("查询识别结果失败", e);
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
-
-    @ApiOperation("同步提交并等待结果(标准版轮询)")
-    @PostMapping("/sync")
-    public ResponseEntity<QueryResponse> submitAndWait(@RequestBody AsrRequest request) {
-        try {
-            QueryResponse result = asrService.submitAndWait(request, 30, 2000);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            logger.error("同步提交并等待结果失败", e);
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
-
-//    @ApiOperation("极速识别(JSON 方式，audio.url 或 audio.data 二选一)")
-//    @PostMapping(value = "/flash", consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<QueryResponse> flashRecognizeJson(@RequestBody AsrRequest request) {
-//        try {
-//            if (request.getUser() == null) {
-//                AsrRequest.User u = new AsrRequest.User();
-//                u.setUid(asrConfig.getAppKey());
-//                request.setUser(u);
-//            }
-//            QueryResponse result = asrService.flashRecognize(request);
-//            return ResponseEntity.ok(result);
-//        } catch (Exception e) {
-//            logger.error("极速识别(JSON)失败", e);
-//            return ResponseEntity.badRequest().body(null);
-//        }
-//    }
-
+    /**
+     * 语音转文字
+     *
+     * @param file
+     * @param enablePunc
+     * @param showUtterances
+     * @return
+     */
     @ApiOperation("极速识别-文件上传(wav)，直接返回结果")
     @PostMapping(value = "/flash", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<QueryResponse> flashRecognizeFile(
-            @ApiParam("wav音频文件") @RequestPart("file") MultipartFile file,
-            @ApiParam("是否开启标点") @RequestParam(value = "enablePunc", required = false, defaultValue = "true") boolean enablePunc,
-            @ApiParam("是否展示分句") @RequestParam(value = "showUtterances", required = false, defaultValue = "true") boolean showUtterances
-    ) {
+    public ResponseEntity<QueryResponse> flashRecognizeFile(@ApiParam("wav音频文件") @RequestPart("file") MultipartFile file, @ApiParam("是否开启标点") @RequestParam(value = "enablePunc", required = false, defaultValue = "true") boolean enablePunc, @ApiParam("是否展示分句") @RequestParam(value = "showUtterances", required = false, defaultValue = "true") boolean showUtterances) {
         try {
             if (file == null || file.isEmpty()) {
                 return ResponseEntity.badRequest().body(null);
@@ -131,4 +85,70 @@ public class TextSpeechController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+    /**
+     * 文字转语音()
+     */
+    @PostMapping("/tts")
+    @ApiOperation("文字转语音")
+    public ResponseEntity<?> textToSpeech(
+            @ApiParam(value = "待合成文本", required = true) @RequestParam String text,
+            @ApiParam("音色类型") @RequestParam(defaultValue = "BV700_streaming") String voiceType,
+            @ApiParam("编码格式") @RequestParam(defaultValue = "wav") String encoding,
+            @ApiParam("采样率") @RequestParam(defaultValue = "24000") int rate,
+            @ApiParam(value = "用户标识", required = true) @RequestParam String uid
+    ) {
+        try {
+            // 构造请求体
+            Map<String, Object> requestBody = new HashMap<>();
+            Map<String, Object> app = new HashMap<>();
+            app.put("appid", asrConfig.getAppKey());
+            app.put("cluster", "volcano_tts");
+            requestBody.put("app", app);
+
+            Map<String, Object> user = new HashMap<>();
+            user.put("uid", uid);
+            requestBody.put("user", user);
+
+            Map<String, Object> audio = new HashMap<>();
+            audio.put("voice_type", voiceType);
+            audio.put("encoding", encoding);
+            audio.put("compression_rate", 1);
+            audio.put("rate", rate);
+            audio.put("speed_ratio", 1.0);
+            audio.put("volume_ratio", 1.0);
+            audio.put("pitch_ratio", 1.0);
+            audio.put("emotion", "happy");
+            audio.put("language", "cn");
+            requestBody.put("audio", audio);
+
+            Map<String, Object> req = new HashMap<>();
+            req.put("reqid", java.util.UUID.randomUUID().toString());
+            req.put("text", text);
+            req.put("text_type", "plain");
+            req.put("operation", "query");
+            req.put("silence_duration", "125");
+            req.put("with_frontend", "1");
+            req.put("frontend_type", "unitTson");
+            req.put("pure_english_opt", "1");
+            req.put("extra_param", "{\"disable_emoji_filter\":true}");
+            requestBody.put("request", req);
+
+            // 发送请求
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer;" + asrConfig.getAccessKey());
+            org.springframework.http.HttpEntity<Map<String, Object>> entity = new org.springframework.http.HttpEntity<>(requestBody, headers);
+
+            String url = asrConfig.getTtsUrl();
+            org.springframework.http.ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+            logger.info("文字转语音返回: {}", response.getBody());
+            return ResponseEntity.ok(response.getBody());
+        } catch (Exception e) {
+            logger.error("文字转语音失败", e);
+            return ResponseEntity.badRequest().body("文字转语音失败");
+        }
+    }
+
 }
