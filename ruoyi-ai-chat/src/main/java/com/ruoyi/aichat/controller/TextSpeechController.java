@@ -4,6 +4,7 @@ import com.ruoyi.aichat.config.AsrConfig;
 import com.ruoyi.aichat.dto.AsrRequest;
 import com.ruoyi.aichat.dto.QueryResponse;
 import com.ruoyi.aichat.service.AsrService;
+import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +25,7 @@ import java.util.Map;
 @Api(tags = "文字语音互转接口")
 @RestController
 @RequestMapping("/text-speech")
-public class TextSpeechController {
+public class TextSpeechController extends BaseController {
     private static final Logger logger = LoggerFactory.getLogger(TextSpeechController.class);
 
     private final AsrService asrService;

@@ -1,6 +1,7 @@
 package com.ruoyi.aichat.controller;
 
 import com.ruoyi.bizcase.service.IBizCasePromptService;
+import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,7 +23,7 @@ import java.util.Base64;
 @Api(tags = "Dify AI 对话接口")
 @RestController
 @RequestMapping("/dify")
-public class DifyAiChatController {
+public class DifyAiChatController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(DifyAiChatController.class);
     @Value("${dify.api.url}")
     private String difyApiUrl;

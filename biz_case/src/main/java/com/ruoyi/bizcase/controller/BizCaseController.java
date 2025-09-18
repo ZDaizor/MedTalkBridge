@@ -107,4 +107,7 @@ public class BizCaseController extends BaseController {
     public AjaxResult remove(@PathVariable Long[] caseIds) {
         return toAjax(bizCaseService.deleteBizCaseByCaseIds(caseIds));
     }
+
+
+
 }
