@@ -3,6 +3,8 @@ package com.ruoyi.bizcase.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.utils.SecurityUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +56,8 @@ public class BizConsultationSessionsController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(BizConsultationSessions bizConsultationSessions) {
         startPage();
-        List<BizConsultationSessions> list = bizConsultationSessionsService.selectBizConsultationSessionsList(bizConsultationSessions);
+        List<BizConsultationSessions> list =
+                bizConsultationSessionsService.selectBizConsultationSessionsList(bizConsultationSessions);
         return getDataTable(list);
     }
 
@@ -66,7 +69,8 @@ public class BizConsultationSessionsController extends BaseController {
     @Log(title = "学生问诊会话", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizConsultationSessions bizConsultationSessions) {
-        List<BizConsultationSessions> list = bizConsultationSessionsService.selectBizConsultationSessionsList(bizConsultationSessions);
+        List<BizConsultationSessions> list =
+                bizConsultationSessionsService.selectBizConsultationSessionsList(bizConsultationSessions);
         ExcelUtil<BizConsultationSessions> util = new ExcelUtil<BizConsultationSessions>(BizConsultationSessions.class);
         util.exportExcel(response, list, "学生问诊会话数据");
     }
@@ -108,7 +112,8 @@ public class BizConsultationSessionsController extends BaseController {
      * 删除学生问诊会话
      */
     @ApiOperation(value = "删除学生问诊会话", notes = "根据主键批量删除学生问诊会话")
-    @ApiImplicitParam(name = "sessionIds", value = "会话ID数组", required = true, dataType = "String", allowMultiple = true, paramType = "path")
+    @ApiImplicitParam(name = "sessionIds", value = "会话ID数组", required = true, dataType = "String", allowMultiple =
+            true, paramType = "path")
     @PreAuthorize("@ss.hasPermi('system:sessions:remove')")
     @Log(title = "学生问诊会话", businessType = BusinessType.DELETE)
     @DeleteMapping("/{sessionIds}")
@@ -124,17 +129,19 @@ public class BizConsultationSessionsController extends BaseController {
     @PostMapping("/start")
     public AjaxResult startTraining(@RequestBody StartTrainingDTO dto) {
         // 查询病例信息
+        Long userId = SecurityUtils.getUserId();
         BizCase bizCase = bizCaseService.selectBizCaseByCaseId(Long.valueOf(dto.getCaseId()));
         if (bizCase == null) {
             return error("未找到对应的病例信息");
         }
         BizConsultationSessions session = new BizConsultationSessions();
-        session.setUserId(dto.getUserId());
+        session.setUserId(userId);
         session.setCaseId(dto.getCaseId());
         session.setStepId(dto.getStepId());
         session.setCaseTitle(bizCase.getCaseName());
         session.setPatientName(bizCase.getPatientName());
-
+        session.setCreateTime(new java.util.Date());
+        session.setCreateBy(SecurityUtils.getUsername());
         int result = bizConsultationSessionsService.insertBizConsultationSessions(session);
         return toAjax(result);
     }
