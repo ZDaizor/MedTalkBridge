@@ -2,6 +2,7 @@ package com.ruoyi.bizcase.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,85 +21,92 @@ import com.ruoyi.bizcase.domain.BizConsultationSessions;
 import com.ruoyi.bizcase.service.IBizConsultationSessionsService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 
 /**
- * 学生问诊列Controller
- * 
+ * 学生问诊会话Controller
+ *
  * @author daizor
  * @date 2025-09-04
  */
+@Api(value = "学生问诊会话管理", tags = "学生问诊会话相关接口")
 @RestController
 @RequestMapping("/system/sessions")
-public class BizConsultationSessionsController extends BaseController
-{
+public class BizConsultationSessionsController extends BaseController {
     @Autowired
     private IBizConsultationSessionsService bizConsultationSessionsService;
 
     /**
-     * 查询学生问诊列列表
+     * 查询学生问诊会话列表
      */
+    @ApiOperation(value = "查询学生问诊会话列表", notes = "分页查询学生问诊会话信息")
     @PreAuthorize("@ss.hasPermi('system:sessions:list')")
     @GetMapping("/list")
-    public TableDataInfo list(BizConsultationSessions bizConsultationSessions)
-    {
+    public TableDataInfo list(BizConsultationSessions bizConsultationSessions) {
         startPage();
         List<BizConsultationSessions> list = bizConsultationSessionsService.selectBizConsultationSessionsList(bizConsultationSessions);
         return getDataTable(list);
     }
 
     /**
-     * 导出学生问诊列列表
+     * 导出学生问诊会话列表
      */
+    @ApiOperation(value = "导出学生问诊会话列表", notes = "导出所有学生问诊会话信息为Excel")
     @PreAuthorize("@ss.hasPermi('system:sessions:export')")
-    @Log(title = "学生问诊列", businessType = BusinessType.EXPORT)
+    @Log(title = "学生问诊会话", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, BizConsultationSessions bizConsultationSessions)
-    {
+    public void export(HttpServletResponse response, BizConsultationSessions bizConsultationSessions) {
         List<BizConsultationSessions> list = bizConsultationSessionsService.selectBizConsultationSessionsList(bizConsultationSessions);
         ExcelUtil<BizConsultationSessions> util = new ExcelUtil<BizConsultationSessions>(BizConsultationSessions.class);
-        util.exportExcel(response, list, "学生问诊列数据");
+        util.exportExcel(response, list, "学生问诊会话数据");
     }
 
     /**
-     * 获取学生问诊列详细信息
+     * 获取学生问诊会话详细信息
      */
+    @ApiOperation(value = "获取学生问诊会话详细信息", notes = "根据sessionId获取学生问诊会话详情")
+    @ApiImplicitParam(name = "sessionId", value = "会话ID", required = true, dataType = "String", paramType = "path")
     @PreAuthorize("@ss.hasPermi('system:sessions:query')")
     @GetMapping(value = "/{sessionId}")
-    public AjaxResult getInfo(@PathVariable("sessionId") String sessionId)
-    {
+    public AjaxResult getInfo(@PathVariable("sessionId") String sessionId) {
         return success(bizConsultationSessionsService.selectBizConsultationSessionsBySessionId(sessionId));
     }
 
     /**
-     * 新增学生问诊列
+     * 新增学生问诊会话
      */
+    @ApiOperation(value = "新增学生问诊会话", notes = "添加新的学生问诊会话记录")
     @PreAuthorize("@ss.hasPermi('system:sessions:add')")
-    @Log(title = "学生问诊列", businessType = BusinessType.INSERT)
+    @Log(title = "学生问诊会话", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody BizConsultationSessions bizConsultationSessions)
-    {
+    public AjaxResult add(@ApiParam(name = "bizConsultationSessions", value = "学生问诊会话实体", required = true) @RequestBody BizConsultationSessions bizConsultationSessions) {
         return toAjax(bizConsultationSessionsService.insertBizConsultationSessions(bizConsultationSessions));
     }
 
     /**
-     * 修改学生问诊列
+     * 修改学生问诊会话
      */
+    @ApiOperation(value = "修改学生问诊会话", notes = "根据主键修改学生问诊会话信息")
     @PreAuthorize("@ss.hasPermi('system:sessions:edit')")
-    @Log(title = "学生问诊列", businessType = BusinessType.UPDATE)
+    @Log(title = "学生问诊会话", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody BizConsultationSessions bizConsultationSessions)
-    {
+    public AjaxResult edit(@ApiParam(name = "bizConsultationSessions", value = "学生问诊会话实体", required = true) @RequestBody BizConsultationSessions bizConsultationSessions) {
         return toAjax(bizConsultationSessionsService.updateBizConsultationSessions(bizConsultationSessions));
     }
 
     /**
-     * 删除学生问诊列
+     * 删除学生问诊会话
      */
+    @ApiOperation(value = "删除学生问诊会话", notes = "根据主键批量删除学生问诊会话")
+    @ApiImplicitParam(name = "sessionIds", value = "会话ID数组", required = true, dataType = "String", allowMultiple = true, paramType = "path")
     @PreAuthorize("@ss.hasPermi('system:sessions:remove')")
-    @Log(title = "学生问诊列", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{sessionIds}")
-    public AjaxResult remove(@PathVariable String[] sessionIds)
-    {
+    @Log(title = "学生问诊会话", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{sessionIds}")
+    public AjaxResult remove(@PathVariable String[] sessionIds) {
         return toAjax(bizConsultationSessionsService.deleteBizConsultationSessionsBySessionIds(sessionIds));
     }
 }
