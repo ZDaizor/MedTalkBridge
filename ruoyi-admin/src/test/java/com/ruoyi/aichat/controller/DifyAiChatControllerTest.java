@@ -65,7 +65,7 @@ public class DifyAiChatControllerTest {
     @Test
     public void testChat_continuousConversation() throws Exception {
         String query = "你刚才在说什么，我没听清";
-        String conversationId = "b7534084-d7a6-4cf1-9557-e7fb362fd091";
+        String conversationId = "94a72d54-aa0c-4163-a080-c09a6e15a7a4";
         String user = "test-user";
         String caseId = "1";
         String stepId = "1";

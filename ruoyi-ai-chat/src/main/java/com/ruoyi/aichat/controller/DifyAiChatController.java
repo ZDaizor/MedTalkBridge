@@ -63,7 +63,7 @@ public class DifyAiChatController {
         Map<String, Object> body = new HashMap<>();
         body.put("inputs", new HashMap<>());
         body.put("query", query);
-        body.put("response_mode", "streaming");
+        body.put("response_mode", "blocking");
         body.put("conversation_id", conversationId == null ? "" : conversationId);
         body.put("user", user);
 
