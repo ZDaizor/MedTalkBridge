@@ -9,7 +9,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 学生问诊列对象 biz_consultation_sessions
- * 
+ *
  * @author daizor
  * @date 2025-09-04
  */
@@ -27,6 +27,10 @@ public class BizConsultationSessions extends BaseEntity
     /** 关联病例表 */
     @Excel(name = "关联病例表")
     private String caseId;
+
+    /** 步骤 id */
+    @Excel(name = "步骤 id")
+    private Long stepId;
 
     /** 病例标题 */
     @Excel(name = "病例标题")
@@ -68,122 +72,132 @@ public class BizConsultationSessions extends BaseEntity
     @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date updatedTime;
 
-    public void setSessionId(String sessionId) 
+    public void setSessionId(String sessionId)
     {
         this.sessionId = sessionId;
     }
 
-    public String getSessionId() 
+    public String getSessionId()
     {
         return sessionId;
     }
 
-    public void setUserId(String userId) 
+    public void setUserId(String userId)
     {
         this.userId = userId;
     }
 
-    public String getUserId() 
+    public String getUserId()
     {
         return userId;
     }
 
-    public void setCaseId(String caseId) 
+    public void setCaseId(String caseId)
     {
         this.caseId = caseId;
     }
 
-    public String getCaseId() 
+    public String getCaseId()
     {
         return caseId;
     }
 
-    public void setCaseTitle(String caseTitle) 
+    public void setStepId(Long stepId)
+    {
+        this.stepId = stepId;
+    }
+
+    public Long getStepId()
+    {
+        return stepId;
+    }
+
+    public void setCaseTitle(String caseTitle)
     {
         this.caseTitle = caseTitle;
     }
 
-    public String getCaseTitle() 
+    public String getCaseTitle()
     {
         return caseTitle;
     }
 
-    public void setPatientName(String patientName) 
+    public void setPatientName(String patientName)
     {
         this.patientName = patientName;
     }
 
-    public String getPatientName() 
+    public String getPatientName()
     {
         return patientName;
     }
 
-    public void setTotalDuration(String totalDuration) 
+    public void setTotalDuration(String totalDuration)
     {
         this.totalDuration = totalDuration;
     }
 
-    public String getTotalDuration() 
+    public String getTotalDuration()
     {
         return totalDuration;
     }
 
-    public void setMessageCount(String messageCount) 
+    public void setMessageCount(String messageCount)
     {
         this.messageCount = messageCount;
     }
 
-    public String getMessageCount() 
+    public String getMessageCount()
     {
         return messageCount;
     }
 
-    public void setStatus(Long status) 
+    public void setStatus(Long status)
     {
         this.status = status;
     }
 
-    public Long getStatus() 
+    public Long getStatus()
     {
         return status;
     }
 
-    public void setStartTime(Date startTime) 
+    public void setStartTime(Date startTime)
     {
         this.startTime = startTime;
     }
 
-    public Date getStartTime() 
+    public Date getStartTime()
     {
         return startTime;
     }
 
-    public void setEndTime(Date endTime) 
+    public void setEndTime(Date endTime)
     {
         this.endTime = endTime;
     }
 
-    public Date getEndTime() 
+    public Date getEndTime()
     {
         return endTime;
     }
 
-    public void setCreatedTime(Date createdTime) 
+    public void setCreatedTime(Date createdTime)
     {
         this.createdTime = createdTime;
     }
 
-    public Date getCreatedTime() 
+    public Date getCreatedTime()
     {
         return createdTime;
     }
 
-    public void setUpdatedTime(Date updatedTime) 
+    public void setUpdatedTime(Date updatedTime)
     {
         this.updatedTime = updatedTime;
     }
 
-    public Date getUpdatedTime() 
+    public Date getUpdatedTime()
     {
         return updatedTime;
     }
@@ -194,6 +208,7 @@ public class BizConsultationSessions extends BaseEntity
             .append("sessionId", getSessionId())
             .append("userId", getUserId())
             .append("caseId", getCaseId())
+            .append("stepId", getStepId())
             .append("caseTitle", getCaseTitle())
             .append("patientName", getPatientName())
             .append("totalDuration", getTotalDuration())

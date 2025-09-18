@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sessionId"    column="session_id"    />
         <result property="userId"    column="user_id"    />
         <result property="caseId"    column="case_id"    />
+        <result property="stepId"    column="step_id"    />
         <result property="caseTitle"    column="case_title"    />
         <result property="patientName"    column="patient_name"    />
         <result property="totalDuration"    column="total_duration"    />
@@ -20,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectBizConsultationSessionsVo">
-        select session_id, user_id, case_id, case_title, patient_name, total_duration, message_count, status, start_time, end_time, created_time, updated_time from biz_consultation_sessions
+        select session_id, user_id, case_id, step_id, case_title, patient_name, total_duration, message_count, status, start_time, end_time, created_time, updated_time from biz_consultation_sessions
     </sql>
 
     <select id="selectBizConsultationSessionsList" parameterType="BizConsultationSessions" resultMap="BizConsultationSessionsResult">
@@ -28,6 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
             <if test="caseId != null  and caseId != ''"> and case_id = #{caseId}</if>
+            <if test="stepId != null "> and step_id = #{stepId}</if>
             <if test="caseTitle != null  and caseTitle != ''"> and case_title = #{caseTitle}</if>
             <if test="patientName != null  and patientName != ''"> and patient_name like concat('%', #{patientName}, '%')</if>
             <if test="totalDuration != null  and totalDuration != ''"> and total_duration = #{totalDuration}</if>
@@ -50,6 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null and userId != ''">user_id,</if>
             <if test="caseId != null and caseId != ''">case_id,</if>
+            <if test="stepId != null">step_id,</if>
             <if test="caseTitle != null and caseTitle != ''">case_title,</if>
             <if test="patientName != null and patientName != ''">patient_name,</if>
             <if test="totalDuration != null">total_duration,</if>
@@ -63,6 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null and userId != ''">#{userId},</if>
             <if test="caseId != null and caseId != ''">#{caseId},</if>
+            <if test="stepId != null">#{stepId},</if>
             <if test="caseTitle != null and caseTitle != ''">#{caseTitle},</if>
             <if test="patientName != null and patientName != ''">#{patientName},</if>
             <if test="totalDuration != null">#{totalDuration},</if>
@@ -80,6 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="userId != null and userId != ''">user_id = #{userId},</if>
             <if test="caseId != null and caseId != ''">case_id = #{caseId},</if>
+            <if test="stepId != null">step_id = #{stepId},</if>
             <if test="caseTitle != null and caseTitle != ''">case_title = #{caseTitle},</if>
             <if test="patientName != null and patientName != ''">patient_name = #{patientName},</if>
             <if test="totalDuration != null">total_duration = #{totalDuration},</if>
