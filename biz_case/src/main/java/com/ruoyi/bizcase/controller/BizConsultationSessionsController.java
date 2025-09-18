@@ -26,6 +26,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import com.ruoyi.bizcase.domain.dto.StartTrainingDTO;
+import com.ruoyi.bizcase.domain.BizCase;
+import com.ruoyi.bizcase.service.IBizCaseService;
 
 /**
  * 学生问诊会话Controller
@@ -39,6 +42,9 @@ import io.swagger.annotations.ApiImplicitParams;
 public class BizConsultationSessionsController extends BaseController {
     @Autowired
     private IBizConsultationSessionsService bizConsultationSessionsService;
+
+    @Autowired
+    private IBizCaseService bizCaseService;
 
     /**
      * 查询学生问诊会话列表
@@ -109,4 +115,29 @@ public class BizConsultationSessionsController extends BaseController {
     public AjaxResult remove(@PathVariable String[] sessionIds) {
         return toAjax(bizConsultationSessionsService.deleteBizConsultationSessionsBySessionIds(sessionIds));
     }
+
+    /**
+     * 开始训练，新增学生问诊记录
+     */
+    @ApiOperation(value = "开始训练", notes = "新增学生问诊记录，自动补全病例标题和模拟患者姓名")
+    @PreAuthorize("@ss.hasPermi('system:sessions:add')")
+    @PostMapping("/start")
+    public AjaxResult startTraining(@RequestBody StartTrainingDTO dto) {
+        // 查询病例信息
+        BizCase bizCase = bizCaseService.selectBizCaseByCaseId(Long.valueOf(dto.getCaseId()));
+        if (bizCase == null) {
+            return error("未找到对应的病例信息");
+        }
+        BizConsultationSessions session = new BizConsultationSessions();
+        session.setUserId(dto.getUserId());
+        session.setCaseId(dto.getCaseId());
+        session.setStepId(dto.getStepId());
+        session.setCaseTitle(bizCase.getCaseName());
+        session.setPatientName(bizCase.getPatientName());
+
+        int result = bizConsultationSessionsService.insertBizConsultationSessions(session);
+        return toAjax(result);
+    }
+
+
 }
