@@ -1,12 +1,11 @@
 package com.ruoyi.bizcase.domain;
 
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Date;
 
 /**
  * 学生问诊列对象 biz_consultation_sessions
@@ -75,6 +74,12 @@ public class BizConsultationSessions extends BaseEntity {
      */
     @Excel(name = "模式", readConverterExp = "1=训练,2=考试")
     private Integer evalMode;
+
+    /**
+     * 结束时间
+     */
+    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date endTime;
 
 
     public void setSessionId(Long sessionId) {
@@ -157,6 +162,14 @@ public class BizConsultationSessions extends BaseEntity {
         return evalMode;
     }
 
+    public void setEndTime(java.util.Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public java.util.Date getEndTime() {
+        return endTime;
+    }
+
 
     @Override
     public String toString() {
@@ -171,6 +184,7 @@ public class BizConsultationSessions extends BaseEntity {
                 .append("messageCount", getMessageCount())
                 .append("status", getStatus())
                 .append("evalMode", getEvalMode())
+                .append("endTime", getEndTime())
                 .toString();
     }
 }

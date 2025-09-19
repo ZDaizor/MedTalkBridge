@@ -15,10 +15,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="messageCount"    column="message_count"    />
         <result property="status"    column="status"    />
         <result property="evalMode"    column="eval_mode"    />
+        <result property="endTime"    column="end_time"    />
     </resultMap>
 
     <sql id="selectBizConsultationSessionsVo">
-        select session_id, user_id, case_id, step_id, case_title, patient_name, total_duration, message_count, status, eval_mode, start_time, end_time, created_time, updated_time from biz_consultation_sessions
+        select session_id, user_id, case_id, step_id, case_title, patient_name, total_duration, message_count, status, eval_mode, end_time, start_time, created_time, updated_time from biz_consultation_sessions
     </sql>
 
     <select id="selectBizConsultationSessionsList" parameterType="BizConsultationSessions" resultMap="BizConsultationSessionsResult">
@@ -34,6 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null "> and status = #{status}</if>
             <if test="evalMode != null "> and eval_mode = #{evalMode}</if>
             <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
         </where>
     </select>
     
@@ -55,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null">status,</if>
             <if test="evalMode != null">eval_mode,</if>
             <if test="updatedTime != null">updated_time,</if>
+            <if test="endTime != null">end_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null and userId != ''">#{userId},</if>
@@ -67,6 +70,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null">#{status},</if>
             <if test="evalMode != null">#{evalMode},</if>
             <if test="updatedTime != null">#{updatedTime},</if>
+            <if test="endTime != null">#{endTime},</if>
         </trim>
     </insert>
 
@@ -83,6 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null">status = #{status},</if>
             <if test="evalMode != null">eval_mode = #{evalMode},</if>
             <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
         </trim>
         where session_id = #{sessionId}
     </update>
