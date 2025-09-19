@@ -14,10 +14,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="totalDuration"    column="total_duration"    />
         <result property="messageCount"    column="message_count"    />
         <result property="status"    column="status"    />
-        <result property="startTime"    column="start_time"    />
-        <result property="endTime"    column="end_time"    />
-        <result property="createdTime"    column="created_time"    />
-        <result property="updatedTime"    column="updated_time"    />
     </resultMap>
 
     <sql id="selectBizConsultationSessionsVo">
@@ -35,9 +31,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalDuration != null  and totalDuration != ''"> and total_duration = #{totalDuration}</if>
             <if test="messageCount != null  and messageCount != ''"> and message_count = #{messageCount}</if>
             <if test="status != null "> and status = #{status}</if>
-            <if test="startTime != null "> and start_time = #{startTime}</if>
-            <if test="endTime != null "> and end_time = #{endTime}</if>
-            <if test="createdTime != null "> and created_time = #{createdTime}</if>
             <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
         </where>
     </select>
@@ -58,11 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalDuration != null">total_duration,</if>
             <if test="messageCount != null">message_count,</if>
             <if test="status != null">status,</if>
-            <if test="startTime != null">start_time,</if>
-            <if test="endTime != null">end_time,</if>
-            <if test="createdTime != null">created_time,</if>
             <if test="updatedTime != null">updated_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null and userId != ''">#{userId},</if>
             <if test="caseId != null and caseId != ''">#{caseId},</if>
@@ -72,11 +62,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalDuration != null">#{totalDuration},</if>
             <if test="messageCount != null">#{messageCount},</if>
             <if test="status != null">#{status},</if>
-            <if test="startTime != null">#{startTime},</if>
-            <if test="endTime != null">#{endTime},</if>
-            <if test="createdTime != null">#{createdTime},</if>
             <if test="updatedTime != null">#{updatedTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateBizConsultationSessions" parameterType="BizConsultationSessions">
@@ -90,9 +77,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalDuration != null">total_duration = #{totalDuration},</if>
             <if test="messageCount != null">message_count = #{messageCount},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="startTime != null">start_time = #{startTime},</if>
-            <if test="endTime != null">end_time = #{endTime},</if>
-            <if test="createdTime != null">created_time = #{createdTime},</if>
             <if test="updatedTime != null">updated_time = #{updatedTime},</if>
         </trim>
         where session_id = #{sessionId}
