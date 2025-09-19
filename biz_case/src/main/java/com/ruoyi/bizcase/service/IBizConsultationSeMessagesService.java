@@ -5,57 +5,49 @@ import com.ruoyi.bizcase.domain.BizConsultationSeMessages;
 
 /**
  * 问诊对话记录详情Service接口
- * 
- * @author daizor
- * @date 2025-09-04
+ *
+ * 按照若依代码生成规范提供常规 CRUD 方法。
  */
-public interface IBizConsultationSeMessagesService 
-{
+public interface IBizConsultationSeMessagesService {
     /**
-     * 查询问诊对话记录详情
-     * 
-     * @param messagesId 问诊对话记录详情主键
-     * @return 问诊对话记录详情
+     * 查询单条记录
+     * @param messagesId 主键
+     * @return 记录
      */
-    public BizConsultationSeMessages selectBizConsultationSeMessagesByMessagesId(String messagesId);
+    BizConsultationSeMessages selectBizConsultationSeMessagesByMessagesId(String messagesId);
 
     /**
-     * 查询问诊对话记录详情列表
-     * 
-     * @param bizConsultationSeMessages 问诊对话记录详情
-     * @return 问诊对话记录详情集合
+     * 查询列表
+     * @param bizConsultationSeMessages 过滤条件
+     * @return 列表
      */
-    public List<BizConsultationSeMessages> selectBizConsultationSeMessagesList(BizConsultationSeMessages bizConsultationSeMessages);
+    List<BizConsultationSeMessages> selectBizConsultationSeMessagesList(BizConsultationSeMessages bizConsultationSeMessages);
 
     /**
-     * 新增问诊对话记录详情
-     * 
-     * @param bizConsultationSeMessages 问诊对话记录详情
-     * @return 结果
+     * 新增
+     * @param bizConsultationSeMessages 实体
+     * @return 影响行数
      */
-    public int insertBizConsultationSeMessages(BizConsultationSeMessages bizConsultationSeMessages);
+    int insertBizConsultationSeMessages(BizConsultationSeMessages bizConsultationSeMessages);
 
     /**
-     * 修改问诊对话记录详情
-     * 
-     * @param bizConsultationSeMessages 问诊对话记录详情
-     * @return 结果
+     * 修改
+     * @param bizConsultationSeMessages 实体
+     * @return 影响行数
      */
-    public int updateBizConsultationSeMessages(BizConsultationSeMessages bizConsultationSeMessages);
+    int updateBizConsultationSeMessages(BizConsultationSeMessages bizConsultationSeMessages);
 
     /**
-     * 批量删除问诊对话记录详情
-     * 
-     * @param messagesIds 需要删除的问诊对话记录详情主键集合
-     * @return 结果
+     * 批量删除
+     * @param messagesIds 主键数组
+     * @return 影响行数
      */
-    public int deleteBizConsultationSeMessagesByMessagesIds(String[] messagesIds);
+    int deleteBizConsultationSeMessagesByMessagesIds(String[] messagesIds);
 
     /**
-     * 删除问诊对话记录详情信息
-     * 
-     * @param messagesId 问诊对话记录详情主键
-     * @return 结果
+     * 删除单条
+     * @param messagesId 主键
+     * @return 影响行数
      */
-    public int deleteBizConsultationSeMessagesByMessagesId(String messagesId);
+    int deleteBizConsultationSeMessagesByMessagesId(String messagesId);
 }
