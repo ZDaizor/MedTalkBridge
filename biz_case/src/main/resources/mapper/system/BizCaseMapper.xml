@@ -46,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="patientAge != null ">and patient_age = #{patientAge}</if>
             <if test="patientGender != null ">and patient_gender = #{patientGender}</if>
             <if test="caseSectionsType != null ">and case_sections_type = #{caseSectionsType}</if>
-            <if test="caseAbstract != null  and caseAbstract != ''">and case_abstract = #{caseAbstract}</if>
+            <if test="caseAbstract != null  and caseAbstract != ''">and case_abstract like concat('%', #{caseAbstract}, '%')</if>
             <if test="caseHpi != null  and caseHpi != ''">and case_hpi = #{caseHpi}</if>
             <if test="caseHa != null  and caseHa != ''">and case_ha = #{caseHa}</if>
             <if test="casePh != null  and casePh != ''">and case_ph = #{casePh}</if>
