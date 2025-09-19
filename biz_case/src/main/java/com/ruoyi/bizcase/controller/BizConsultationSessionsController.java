@@ -59,7 +59,7 @@ public class BizConsultationSessionsController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:sessions:export')")
     @Log(title = "学生问诊会话", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, BizConsultationSessions bizConsultationSessions) {
+    public void export(HttpServletResponse response, @ApiParam(name = "bizConsultationSessions", value = "学生问诊会话实体") BizConsultationSessions bizConsultationSessions) {
         List<BizConsultationSessions> list =
                 bizConsultationSessionsService.selectBizConsultationSessionsList(bizConsultationSessions);
         ExcelUtil<BizConsultationSessions> util = new ExcelUtil<BizConsultationSessions>(BizConsultationSessions.class);
@@ -73,7 +73,7 @@ public class BizConsultationSessionsController extends BaseController {
     @ApiImplicitParam(name = "sessionId", value = "会话ID", required = true, dataType = "String", paramType = "path")
     @PreAuthorize("@ss.hasPermi('system:sessions:query')")
     @GetMapping(value = "/{sessionId}")
-    public AjaxResult getInfo(@PathVariable("sessionId") String sessionId) {
+    public AjaxResult getInfo(@ApiParam(name = "sessionId", value = "会话ID", required = true) @PathVariable("sessionId") String sessionId) {
         return success(bizConsultationSessionsService.selectBizConsultationSessionsBySessionId(sessionId));
     }
 
@@ -104,12 +104,11 @@ public class BizConsultationSessionsController extends BaseController {
      * 删除学生问诊会话
      */
     @ApiOperation(value = "删除学生问诊会话", notes = "根据主键批量删除学生问诊会话")
-    @ApiImplicitParam(name = "sessionIds", value = "会话ID数组", required = true, dataType = "String", allowMultiple =
-            true, paramType = "path")
+    @ApiImplicitParam(name = "sessionIds", value = "会话ID数组", required = true, dataType = "String", allowMultiple = true, paramType = "path")
     @PreAuthorize("@ss.hasPermi('system:sessions:remove')")
     @Log(title = "学生问诊会话", businessType = BusinessType.DELETE)
     @DeleteMapping("/{sessionIds}")
-    public AjaxResult remove(@PathVariable String[] sessionIds) {
+    public AjaxResult remove(@ApiParam(name = "sessionIds", value = "会话ID数组", required = true) @PathVariable String[] sessionIds) {
         return toAjax(bizConsultationSessionsService.deleteBizConsultationSessionsBySessionIds(sessionIds));
     }
 
@@ -117,9 +116,10 @@ public class BizConsultationSessionsController extends BaseController {
      * 开始训练，新增学生问诊记录
      */
     @ApiOperation(value = "开始训练", notes = "新增学生问诊记录，自动补全病例标题和模拟患者姓名")
+    @ApiImplicitParam(name = "dto", value = "训练参数DTO", required = true, dataType = "StartTrainingDTO", paramType = "body")
     @PreAuthorize("@ss.hasPermi('system:sessions:add')")
     @PostMapping("/start")
-    public AjaxResult startTraining(@RequestBody StartTrainingDTO dto) {
+    public AjaxResult startTraining(@ApiParam(name = "dto", value = "训练参数DTO", required = true) @RequestBody StartTrainingDTO dto) {
         // 查询病例信息
         Long userId = SecurityUtils.getUserId();
         BizCase bizCase = bizCaseService.selectBizCaseByCaseId(Long.valueOf(dto.getCaseId()));
