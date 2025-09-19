@@ -13,11 +13,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="messageType"    column="message_type"    />
         <result property="timestamp"    column="timestamp"    />
         <result property="responseTime"    column="response_time"    />
-        <result property="createdAt"    column="created_at"    />
     </resultMap>
 
     <sql id="selectBizConsultationSeMessagesVo">
-        select messages_id, session_id, message_order, sender_type, message_content, message_type, timestamp, response_time, created_at from biz_consultation_se_messages
+        select messages_id, session_id, message_order, sender_type, message_content, message_type, timestamp, response_time from biz_consultation_se_messages
     </sql>
 
     <select id="selectBizConsultationSeMessagesList" parameterType="BizConsultationSeMessages" resultMap="BizConsultationSeMessagesResult">
@@ -30,7 +29,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="messageType != null  and messageType != ''"> and message_type = #{messageType}</if>
             <if test="timestamp != null "> and timestamp = #{timestamp}</if>
             <if test="responseTime != null  and responseTime != ''"> and response_time = #{responseTime}</if>
-            <if test="createdAt != null "> and created_at = #{createdAt}</if>
         </where>
     </select>
     
@@ -49,7 +47,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="messageType != null and messageType != ''">message_type,</if>
             <if test="timestamp != null">timestamp,</if>
             <if test="responseTime != null">response_time,</if>
-            <if test="createdAt != null">created_at,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="sessionId != null and sessionId != ''">#{sessionId},</if>
@@ -59,7 +56,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="messageType != null and messageType != ''">#{messageType},</if>
             <if test="timestamp != null">#{timestamp},</if>
             <if test="responseTime != null">#{responseTime},</if>
-            <if test="createdAt != null">#{createdAt},</if>
          </trim>
     </insert>
 
@@ -73,7 +69,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="messageType != null and messageType != ''">message_type = #{messageType},</if>
             <if test="timestamp != null">timestamp = #{timestamp},</if>
             <if test="responseTime != null">response_time = #{responseTime},</if>
-            <if test="createdAt != null">created_at = #{createdAt},</if>
         </trim>
         where messages_id = #{messagesId}
     </update>

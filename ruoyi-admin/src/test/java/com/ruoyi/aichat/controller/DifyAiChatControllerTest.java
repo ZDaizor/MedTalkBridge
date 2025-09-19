@@ -100,6 +100,7 @@ public class DifyAiChatControllerTest {
         MvcResult mvcResult = mockMvc.perform(get("/dify/parameters")
                         .param("caseId", "1")
                         .param("stepId", "1")
+                        .param("sessionId", "1")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andReturn();

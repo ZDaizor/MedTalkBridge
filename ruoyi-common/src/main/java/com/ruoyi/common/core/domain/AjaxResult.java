@@ -2,6 +2,8 @@ package com.ruoyi.common.core.domain;
 
 import java.util.HashMap;
 import java.util.Objects;
+
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.utils.StringUtils;
 
@@ -26,7 +28,7 @@ public class AjaxResult extends HashMap<String, Object>
     /**
      * 初始化一个新创建的 AjaxResult 对象，使其表示一个空消息。
      */
-    public AjaxResult()
+    public AjaxResult(int statusCodeValue, JSONObject result)
     {
     }
 

@@ -49,10 +49,6 @@ public class BizConsultationSeMessages extends BaseEntity
     @Excel(name = "响应时间(秒)")
     private String responseTime;
 
-    /** 创建时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date createdAt;
 
     public void setMessagesId(String messagesId) 
     {
@@ -134,16 +130,6 @@ public class BizConsultationSeMessages extends BaseEntity
         return responseTime;
     }
 
-    public void setCreatedAt(Date createdAt) 
-    {
-        this.createdAt = createdAt;
-    }
-
-    public Date getCreatedAt() 
-    {
-        return createdAt;
-    }
-
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -155,7 +141,6 @@ public class BizConsultationSeMessages extends BaseEntity
             .append("messageType", getMessageType())
             .append("timestamp", getTimestamp())
             .append("responseTime", getResponseTime())
-            .append("createdAt", getCreatedAt())
             .toString();
     }
 }
