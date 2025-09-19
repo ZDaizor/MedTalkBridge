@@ -70,6 +70,12 @@ public class BizConsultationSessions extends BaseEntity {
     @Excel(name = "问诊状态(0:作为，1：完成，2：未完成)")
     private Long status;
 
+    /**
+     * 模式（1：训练，2：考试）
+     */
+    @Excel(name = "模式", readConverterExp = "1=训练,2=考试")
+    private Integer evalMode;
+
 
     public void setSessionId(Long sessionId) {
         this.sessionId = sessionId;
@@ -143,6 +149,14 @@ public class BizConsultationSessions extends BaseEntity {
         return status;
     }
 
+    public void setEvalMode(Integer evalMode) {
+        this.evalMode = evalMode;
+    }
+
+    public Integer getEvalMode() {
+        return evalMode;
+    }
+
 
     @Override
     public String toString() {
@@ -156,6 +170,7 @@ public class BizConsultationSessions extends BaseEntity {
                 .append("totalDuration", getTotalDuration())
                 .append("messageCount", getMessageCount())
                 .append("status", getStatus())
+                .append("evalMode", getEvalMode())
                 .toString();
     }
 }
