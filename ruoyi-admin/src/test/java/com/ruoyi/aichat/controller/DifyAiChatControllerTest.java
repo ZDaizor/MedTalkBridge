@@ -55,6 +55,7 @@ public class DifyAiChatControllerTest {
                         .param("user", user)
                         .param("caseId", caseId)
                         .param("stepId", stepId)
+                        .param("sessionId", "1")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .header("Authorization", "Bearer " + token))
                 .andReturn();
@@ -65,7 +66,7 @@ public class DifyAiChatControllerTest {
     @Test
     public void testChat_continuousConversation() throws Exception {
         String query = "你刚才在说什么，我没听清";
-        String conversationId = "94a72d54-aa0c-4163-a080-c09a6e15a7a4";
+        String conversationId = "ab3cac08-e3c9-4d8f-80fe-a566a2c1e746";
         String user = "test-user";
         String caseId = "1";
         String stepId = "1";
@@ -77,6 +78,7 @@ public class DifyAiChatControllerTest {
                         .param("user", user)
                         .param("caseId", caseId)
                         .param("stepId", stepId)
+                        .param("sessionId", "1")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())

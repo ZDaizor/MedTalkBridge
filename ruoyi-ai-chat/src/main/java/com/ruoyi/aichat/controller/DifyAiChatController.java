@@ -68,12 +68,7 @@ public class DifyAiChatController extends BaseController {
      */
     @ApiOperation(value = "AI对话接口", notes = "与 Dify AI 进行对话，返回 AI 回复内容；若携带 sessionId，将把问和答写入对话明细表")
     @PostMapping("/chat")
-    public AjaxResult chat(@ApiParam(value = "用户输入问题", required = true) @RequestParam String query,
-                           @ApiParam(value = "Dify 会话ID，可选") @RequestParam(required = false) String conversationId,
-                           @ApiParam(value = "用户标识", required = true) @RequestParam String user,
-                           @ApiParam(value = "业务case主键", required = true) @RequestParam("caseId") Long caseId,
-                           @ApiParam(value = "步骤主键", required = true) @RequestParam("stepId") Long stepId,
-                           @ApiParam(value = "系统会话ID，可选", required = true) @RequestParam(value = "sessionId") Long sessionId) {
+    public AjaxResult chat(@ApiParam(value = "用户输入问题", required = true) @RequestParam String query, @ApiParam(value = "Dify 会话ID，可选") @RequestParam(required = false) String conversationId, @ApiParam(value = "用户标识", required = true) @RequestParam String user, @ApiParam(value = "业务case主键", required = true) @RequestParam("caseId") Long caseId, @ApiParam(value = "步骤主键", required = true) @RequestParam("stepId") Long stepId, @ApiParam(value = "系统会话ID，可选", required = true) @RequestParam(value = "sessionId") Long sessionId) {
         String apiKey = bizCasePromptService.getPromptKeyByCaseIdAndStepId(caseId, stepId);
         if (apiKey == null || apiKey.isEmpty()) {
             return AjaxResult.error(HttpStatus.NOT_FOUND.value(), "API key not found");
@@ -108,6 +103,7 @@ public class DifyAiChatController extends BaseController {
             }
         } catch (Exception e) {
             log.warn("解析AI回复失败: {}", e.getMessage());
+            return AjaxResult.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "AI回复解析失败: " + e.getMessage());
         }
 
         // 将问（学生）与答（患者）写入对话明细表
@@ -142,8 +138,8 @@ public class DifyAiChatController extends BaseController {
             }
         } catch (Exception e) {
             log.warn("保存问答对话失败，sessionId={}, error= {}", sessionId, e.getMessage());
+            return AjaxResult.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "问答保存失败: " + e.getMessage());
         }
-
         return new AjaxResult(response.getStatusCodeValue(), response.getBody());
     }
 
@@ -153,10 +149,7 @@ public class DifyAiChatController extends BaseController {
      */
     @ApiOperation(value = "获取 Dify 参数列表", notes = "根据 caseId 和 stepId 获取 Dify 参数；若携带 sessionId，将自动解析开场白并入库")
     @GetMapping("/parameters")
-    public AjaxResult getParameters(
-            @ApiParam(value = "业务case主键", required = true) @RequestParam("caseId") Long case_id,
-            @ApiParam(value = "步骤主键", required = true) @RequestParam("stepId") Long step_id,
-            @ApiParam(value = "会话ID", required = true) @RequestParam(value = "sessionId") Long sessionId) {
+    public AjaxResult getParameters(@ApiParam(value = "业务case主键", required = true) @RequestParam("caseId") Long case_id, @ApiParam(value = "步骤主键", required = true) @RequestParam("stepId") Long step_id, @ApiParam(value = "会话ID", required = true) @RequestParam(value = "sessionId") Long sessionId) {
         String apiKey = bizCasePromptService.getPromptKeyByCaseIdAndStepId(case_id, step_id);
         if (apiKey == null || apiKey.isEmpty()) {
             return AjaxResult.error(HttpStatus.NOT_FOUND.value(), "API key not found");
