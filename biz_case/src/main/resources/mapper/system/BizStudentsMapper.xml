@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bizcase.mapper.BizStudentsMapper">
+
+    <select id="countCompletedCasesByUserId" parameterType="long" resultType="int">
+        WITH completed_cases AS (
+            SELECT case_id
+            FROM biz_case_evaluations
+            WHERE user_id = #{userId}
+              AND step_id IN (1, 2, 3)
+            GROUP BY case_id
+            HAVING COUNT(DISTINCT step_id) = 3
+        )
+        SELECT COUNT(*) AS finishTotle FROM completed_cases
+    </select>
+
+    <select id="sumTrainingMinutesByUserId" parameterType="long" resultType="int">
+        SELECT IFNULL(SUM(TIMESTAMPDIFF(MINUTE, create_time, end_time)), 0) AS totalMinutes
+        FROM biz_consultation_sessions
+        WHERE user_id = #{userId}
+          AND eval_mode = #{evalMode}
+    </select>
+
+    <select id="getAverageScoreByUserId" parameterType="long" resultType="double">
+        SELECT AVG(case_total_score) AS average_score
+        FROM (
+            SELECT e.case_id,
+                   SUM(e.totle_score * (p.prompt_percentage / 100)) AS case_total_score
+            FROM biz_case_evaluations e
+            JOIN biz_case_prompt p ON e.case_id = p.case_id AND e.step_id = p.step_id
+            WHERE e.user_id = #{userId}
+              AND e.eval_mode = #{evalMode}
+              AND e.step_id IN (1, 2, 3)
+            GROUP BY e.case_id
+            HAVING COUNT(DISTINCT e.step_id) = 3
+        ) AS completed_case_scores
+    </select>
+
+    <!-- 获取用户的训练 or  开始 列表 -->
+    <select id="getTrainingList" parameterType="long" resultType="java.util.HashMap">
+        SELECT
+            bcr.session_id AS session_id,
+            su.nick_name AS nick_name,
+            bc.case_name AS case_name,
+            bcs.step_name AS step_name,
+            IFNULL(bce.totle_score, '未评分') AS score,
+            CASE
+                WHEN bce.totle_score >= 90 THEN '优'
+                WHEN bce.totle_score >= 80 AND bce.totle_score < 90 THEN '良'
+                WHEN bce.totle_score < 80 AND bce.totle_score >= 0 THEN '中'
+                ELSE '无评级'
+            END AS level,
+            bcr.create_time AS start_time,
+            bcr.end_time AS end_time,
+            TIMESTAMPDIFF(MINUTE, bcr.create_time, bcr.end_time) AS totle
+        FROM
+            biz_consultation_sessions AS bcr
+        LEFT JOIN
+            sys_user AS su ON bcr.user_id = su.user_id
+        LEFT JOIN
+            biz_case AS bc ON bcr.case_id = bc.case_id
+        LEFT JOIN
+            biz_case_step AS bcs ON bcr.step_id = bcs.step_id
+        LEFT JOIN
+            biz_case_evaluations AS bce ON bcr.session_id = bce.session_id
+        WHERE
+            bcr.user_id = #{userId}
+            AND bcr.eval_mode = #{evalMode}
+        ORDER BY
+            bcr.create_time DESC
+    </select>
+
+    <select id="countExamSessionsByUserId" parameterType="long" resultType="int">
+        SELECT COUNT(*) AS exam_count
+        FROM biz_consultation_sessions
+        WHERE user_id = #{userId}
+          AND eval_mode = #{evalMode}
+    </select>
+
+    <select id="countHighScoreExamSessionsByUserId" parameterType="long" resultType="int">
+        SELECT COUNT(*) AS high_score_exam_count
+        FROM (
+            SELECT e.case_id
+            FROM biz_case_evaluations e
+            JOIN biz_case_prompt p ON e.case_id = p.case_id AND e.step_id = p.step_id
+            WHERE e.user_id = #{userId}
+              AND e.eval_mode = #{evalMode}
+            GROUP BY e.case_id
+            HAVING COUNT(DISTINCT e.step_id) = 3
+               AND SUM(e.totle_score * (p.prompt_percentage / 100.0)) > 90
+        ) AS high_scoring_exams
+    </select>
+
+    <select id="getActivityList" parameterType="long" resultType="java.util.HashMap">
+        WITH SessionScores AS (
+            SELECT
+                e.session_id,
+                SUM(e.totle_score * (p.prompt_percentage / 100.0)) AS final_score
+            FROM
+                biz_case_evaluations e
+            JOIN
+                biz_case_prompt p ON e.case_id = p.case_id AND e.step_id = p.step_id
+            WHERE
+                e.session_id IN (
+                    SELECT session_id FROM biz_case_evaluations WHERE user_id = #{userId} GROUP BY session_id HAVING COUNT(DISTINCT step_id) = 3
+                )
+            GROUP BY
+                e.session_id
+        )
+        SELECT
+            s.end_time AS activity_time,
+            CASE s.eval_mode
+                WHEN 1 THEN '训练'
+                WHEN 2 THEN '考试'
+                ELSE '未知'
+            END AS activity_type,
+            s.case_title AS case_name,
+            CASE
+                WHEN ss.final_score IS NULL THEN '未评分'
+                WHEN ss.final_score >= 90 THEN '已评分 (优秀)'
+                WHEN ss.final_score >= 80 THEN '已评分 (良好)'
+                WHEN ss.final_score >= 70 THEN '已评分 (中等)'
+                WHEN ss.final_score >= 60 THEN '已评分 (及格)'
+                ELSE '已评分 (不及格)'
+            END AS rating_status
+        FROM
+            biz_consultation_sessions s
+        LEFT JOIN
+            SessionScores ss ON s.session_id = ss.session_id
+        WHERE
+            s.user_id = #{userId}
+            AND s.status = 1
+        ORDER BY
+            s.end_time DESC
+    </select>
+
+</mapper>
