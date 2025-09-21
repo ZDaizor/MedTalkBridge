@@ -67,4 +67,13 @@ public interface IBizCasePromptService {
      * @return promptKey（Dify的API Key）
      */
     String getPromptKeyByCaseIdAndStepId(Long caseId, Long stepId);
+
+    /**
+     * 根据caseId和stepId查询评分promptKeyScore
+     *
+     * @param caseId 病例ID
+     * @param stepId 步骤ID
+     * @return promptKeyScore（评分用的API Key）
+     */
+    String getPromptKeyScoreByCaseIdAndStepId(Long caseId, Long stepId);
 }

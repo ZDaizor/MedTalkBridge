@@ -2,9 +2,11 @@ package com.ruoyi.bizcase.controller;
 
 import com.ruoyi.bizcase.domain.BizCase;
 import com.ruoyi.bizcase.domain.BizConsultationSessions;
+import com.ruoyi.bizcase.domain.BizConsultationSeMessages;
 import com.ruoyi.bizcase.domain.dto.StartTrainingDTO;
 import com.ruoyi.bizcase.service.IBizCaseService;
 import com.ruoyi.bizcase.service.IBizConsultationSessionsService;
+import com.ruoyi.bizcase.service.IBizConsultationSeMessagesService;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -16,6 +18,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -33,15 +37,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/system/sessions")
 public class BizConsultationSessionsController extends BaseController {
+    private static final Logger logger = LoggerFactory.getLogger(BizConsultationSessionsController.class);
+
     @Autowired
     private IBizConsultationSessionsService bizConsultationSessionsService;
 
     @Autowired
     private IBizCaseService bizCaseService;
 
-    /**
-     * 查询学生问诊会话列表
-     */
+    @Autowired
+    private IBizConsultationSeMessagesService bizConsultationSeMessagesService;
+
     @ApiOperation(value = "查询学生问诊会话列表", notes = "分页查询学生问诊会话信息")
     @PreAuthorize("@ss.hasPermi('system:sessions:list')")
     @GetMapping("/list")
@@ -140,5 +146,57 @@ public class BizConsultationSessionsController extends BaseController {
         return AjaxResult.success(sessionId);
     }
 
+    /**
+     * 结束训练，更新学生问诊会话状态为已完成
+     */
+    @ApiOperation(value = "结束训练", notes = "将学生问诊会话状态设为已完成，并记录结束时间")
+    @PreAuthorize("@ss.hasPermi('system:sessions:edit')")
+    @PostMapping("/finish/{sessionId}")
+    public AjaxResult finishTraining(@ApiParam(name = "sessionId", value = "会话ID", required = true) @PathVariable(
+            "sessionId") String sessionId) {
+        BizConsultationSessions session =
+                bizConsultationSessionsService.selectBizConsultationSessionsBySessionId(sessionId);
+        if (session == null) {
+            return error("未找到对应的会话信息");
+        }
+        session.setStatus(1); // 1代表已完成
+        session.setEndTime(new java.util.Date());
+        int result = bizConsultationSessionsService.updateBizConsultationSessions(session);
 
+        // 查询当前会话的所有对话记录
+        BizConsultationSeMessages queryCondition = new BizConsultationSeMessages();
+        queryCondition.setSessionId(sessionId);
+        List<BizConsultationSeMessages> conversationRecords =
+                bizConsultationSeMessagesService.selectBizConsultationSeMessagesList(queryCondition);
+
+        // 打印对话记录日志
+        logger.info("查询到会话ID[{}]的对话记录数量: {}", sessionId, conversationRecords.size());
+        for (BizConsultationSeMessages message : conversationRecords) {
+            logger.info("对话记录 - 消息ID: {}, 发送者类型: {}, 消息顺序: {}, 消息内容: {}, 发送时间: {}",
+                    message.getMessagesId(),
+                    message.getSenderType() == 1 ? "患者" : "学生",
+                    message.getMessageOrder(),
+                    message.getMessageContent(),
+                    message.getTimestamp());
+        }
+
+        try {
+            String evaluationResult = bizConsultationSessionsService.evaluateSessionWithDify(
+                    sessionId, session.getCaseId(), session.getStepId().longValue());
+            logger.info("会话ID[{}]的Dify评分结果: {}", sessionId, evaluationResult);
+
+            // 解析并保存评分详情（暂时使用sessionId作为evaluationId，实际项目中需要传入真实的evaluationId）
+            try {
+                Long evaluationId = Long.valueOf(sessionId); // todo daizor 这里需要传入真实的evaluationId
+                int savedCount = bizConsultationSessionsService.saveDifyScoreDetails(evaluationResult, evaluationId);
+                logger.info("会话ID[{}]的评分详情保存完成，共保存{}*条记录", sessionId, savedCount);
+            } catch (Exception saveEx) {
+                logger.error("保存评分详情失败，sessionId={}, error={}", sessionId, saveEx.getMessage(), saveEx);
+            }
+
+        } catch (Exception e) {
+            logger.error("调用Dify评分失败，sessionId={}, error={}", sessionId, e.getMessage(), e);
+        }
+        return toAjax(result);
+    }
 }

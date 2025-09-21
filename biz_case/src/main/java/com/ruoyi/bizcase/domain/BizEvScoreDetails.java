@@ -25,7 +25,7 @@ public class BizEvScoreDetails extends BaseEntity
 
     /** 分项 id，在分项表中 */
     @Excel(name = "分项 id，在分项表中")
-    private Long itemId;
+    private Integer itemId;
 
     /** 实际得分 */
     @Excel(name = "实际得分")
@@ -35,9 +35,13 @@ public class BizEvScoreDetails extends BaseEntity
     @Excel(name = "该项总分")
     private BigDecimal scoreMax;
 
-    /** 分数类型（1：内容，2：整体） */
-    @Excel(name = "分数类型", readConverterExp = "1=：内容，2：整体")
-    private Long scoreType;
+    /** 分数类型（1：ai，2：教师） */
+    @Excel(name = "分数类型", readConverterExp = "1=ai,2=教师")
+    private Integer scoreType;
+    
+    /** 原因 */
+    @Excel(name = "原因")
+    private String scoreBasis;
 
     public void setScoreId(Long scoreId) 
     {
@@ -59,12 +63,12 @@ public class BizEvScoreDetails extends BaseEntity
         return evaluationId;
     }
 
-    public void setItemId(Long itemId) 
+    public void setItemId(Integer itemId) 
     {
         this.itemId = itemId;
     }
 
-    public Long getItemId() 
+    public Integer getItemId() 
     {
         return itemId;
     }
@@ -89,14 +93,24 @@ public class BizEvScoreDetails extends BaseEntity
         return scoreMax;
     }
 
-    public void setScoreType(Long scoreType) 
+    public void setScoreType(Integer scoreType) 
     {
         this.scoreType = scoreType;
     }
 
-    public Long getScoreType() 
+    public Integer getScoreType() 
     {
         return scoreType;
+    }
+
+    public void setScoreBasis(String scoreBasis) 
+    {
+        this.scoreBasis = scoreBasis;
+    }
+
+    public String getScoreBasis() 
+    {
+        return scoreBasis;
     }
 
     @Override
@@ -108,6 +122,7 @@ public class BizEvScoreDetails extends BaseEntity
             .append("scoreAchieved", getScoreAchieved())
             .append("scoreMax", getScoreMax())
             .append("scoreType", getScoreType())
+            .append("scoreBasis", getScoreBasis())
             .toString();
     }
 }

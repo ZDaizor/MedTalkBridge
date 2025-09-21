@@ -55,19 +55,19 @@ public class BizConsultationSessions extends BaseEntity {
      * 总问诊时长(秒)
      */
     @Excel(name = "总问诊时长(秒)")
-    private String totalDuration;
+    private Integer totalDuration;
 
     /**
      * 总消息数量
      */
     @Excel(name = "总消息数量")
-    private String messageCount;
+    private Integer messageCount;
 
     /**
-     * 问诊状态(0:作为，1：完成，2：未完成)
+     * 问诊状态(0:进行中，1：完成，2：未完成)
      */
-    @Excel(name = "问诊状态(0:作为，1：完成，2：未完成)")
-    private Long status;
+    @Excel(name = "问诊状态", readConverterExp = "0=进行中,1=完成,2=未完成")
+    private Integer status;
 
     /**
      * 模式（1：训练，2：考试）
@@ -130,27 +130,27 @@ public class BizConsultationSessions extends BaseEntity {
         return patientName;
     }
 
-    public void setTotalDuration(String totalDuration) {
+    public void setTotalDuration(Integer totalDuration) {
         this.totalDuration = totalDuration;
     }
 
-    public String getTotalDuration() {
+    public Integer getTotalDuration() {
         return totalDuration;
     }
 
-    public void setMessageCount(String messageCount) {
+    public void setMessageCount(Integer messageCount) {
         this.messageCount = messageCount;
     }
 
-    public String getMessageCount() {
+    public Integer getMessageCount() {
         return messageCount;
     }
 
-    public void setStatus(Long status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    public Long getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
