@@ -67,5 +67,40 @@ public class BizCasePromptControllerTest {
             log.info("增加Prompt返回: {}", response);
         }
     }
+
+    /**
+     * 测试新增 prompt_percentage 字段的功能
+     */
+    @Test
+    @Transactional
+    void testAddPromptWithPercentage() throws Exception {
+        BizCasePrompt prompt = new BizCasePrompt();
+        prompt.setCaseId(100L);
+        prompt.setPromptContent("测试步骤分数百分比");
+        prompt.setPromptType(1L); // 1：内容
+        prompt.setStepId(1L);
+        prompt.setPromptKey("TEST_PERCENTAGE");
+        prompt.setPromptKeyScore("sk-test-score-key");
+        // 设置新增的百分比字段
+        prompt.setPromptPercentage(new java.math.BigDecimal("30.50"));
+        
+        MvcResult result = mockMvc.perform(post("/system/prompt")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(prompt)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andReturn();
+        
+        String response = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        log.info("新增带百分比字段的Prompt返回: {}", response);
+        
+        // 验证是否创建成功
+        if (response.contains("\"code\":200")) {
+            log.info("✅ 新增带prompt_percentage字段的记录成功");
+        } else {
+            log.error("❌ 新增带prompt_percentage字段的记录失败");
+        }
+    }
 }
 

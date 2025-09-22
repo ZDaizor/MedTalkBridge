@@ -12,10 +12,11 @@
         <result property="stepId" column="step_id"/>
         <result property="promptKey" column="prompt_key"/>
         <result property="promptKeyScore" column="prompt_key_score"/>
+        <result property="promptPercentage" column="prompt_percentage"/>
     </resultMap>
 
     <sql id="selectBizCasePromptVo">
-        select prompt_id, prompt_content, prompt_type, case_id, step_id, prompt_key, prompt_key_score
+        select prompt_id, prompt_content, prompt_type, case_id, step_id, prompt_key, prompt_key_score, prompt_percentage
         from biz_case_prompt
     </sql>
 
@@ -28,6 +29,7 @@
             <if test="stepId != null">and step_id = #{stepId}</if>
             <if test="promptKey != null and promptKey != ''">and prompt_key = #{promptKey}</if>
             <if test="promptKeyScore != null and promptKeyScore != ''">and prompt_key_score = #{promptKeyScore}</if>
+            <if test="promptPercentage != null">and prompt_percentage = #{promptPercentage}</if>
         </where>
     </select>
 
@@ -45,6 +47,7 @@
             <if test="stepId != null">step_id,</if>
             <if test="promptKey != null">prompt_key,</if>
             <if test="promptKeyScore != null">prompt_key_score,</if>
+            <if test="promptPercentage != null">prompt_percentage,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="promptContent != null">#{promptContent},</if>
@@ -53,6 +56,7 @@
             <if test="stepId != null">#{stepId},</if>
             <if test="promptKey != null">#{promptKey},</if>
             <if test="promptKeyScore != null">#{promptKeyScore},</if>
+            <if test="promptPercentage != null">#{promptPercentage},</if>
         </trim>
     </insert>
 
@@ -64,7 +68,8 @@
             <if test="caseId != null">case_id = #{caseId},</if>
             <if test="stepId != null">step_id = #{stepId},</if>
             <if test="promptKey != null">prompt_key = #{promptKey},</if>
-            <if test="promptKeyScore != null">#{promptKeyScore},</if>
+            <if test="promptKeyScore != null">prompt_key_score = #{promptKeyScore},</if>
+            <if test="promptPercentage != null">prompt_percentage = #{promptPercentage},</if>
         </trim>
         where prompt_id = #{promptId}
     </update>

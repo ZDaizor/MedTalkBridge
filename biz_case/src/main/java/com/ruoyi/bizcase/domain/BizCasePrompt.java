@@ -48,6 +48,10 @@ public class BizCasePrompt extends BaseEntity {
 
     private String promptKeyScore;
 
+    /** 步骤分数占总体的百分比 */
+    @Excel(name = "步骤分数占总体的百分比")
+    private java.math.BigDecimal promptPercentage;
+
     public void setPromptId(Long promptId) {
         this.promptId = promptId;
     }
@@ -104,6 +108,14 @@ public class BizCasePrompt extends BaseEntity {
         this.promptKeyScore = promptKeyScore;
     }
 
+    public java.math.BigDecimal getPromptPercentage() {
+        return promptPercentage;
+    }
+
+    public void setPromptPercentage(java.math.BigDecimal promptPercentage) {
+        this.promptPercentage = promptPercentage;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -114,6 +126,7 @@ public class BizCasePrompt extends BaseEntity {
                 .append("stepId", getStepId())
                 .append("promptKey", getPromptKey())
                 .append("promptKeyScore", getPromptKeyScore())
+                .append("promptPercentage", getPromptPercentage())
                 .toString();
     }
 }
