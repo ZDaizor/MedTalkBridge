@@ -46,6 +46,8 @@ public class BizCasePrompt extends BaseEntity {
     @Excel(name = "提示词标识")
     private String promptKey;
 
+    private String promptKeyScore;
+
     public void setPromptId(Long promptId) {
         this.promptId = promptId;
     }
@@ -94,6 +96,14 @@ public class BizCasePrompt extends BaseEntity {
         this.promptKey = promptKey;
     }
 
+    public String getPromptKeyScore() {
+        return promptKeyScore;
+    }
+
+    public void setPromptKeyScore(String promptKeyScore) {
+        this.promptKeyScore = promptKeyScore;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -103,6 +113,7 @@ public class BizCasePrompt extends BaseEntity {
                 .append("caseId", getCaseId())
                 .append("stepId", getStepId())
                 .append("promptKey", getPromptKey())
+                .append("promptKeyScore", getPromptKeyScore())
                 .toString();
     }
 }

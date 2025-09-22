@@ -90,4 +90,9 @@ public class BizCasePromptServiceImpl implements IBizCasePromptService {
     public String getPromptKeyByCaseIdAndStepId(Long caseId, Long stepId) {
         return bizCasePromptMapper.selectPromptKeyByCaseIdAndStepId(caseId, stepId);
     }
+
+    @Override
+    public String getPromptKeyScoreByCaseIdAndStepId(Long caseId, Long stepId) {
+        return bizCasePromptMapper.selectPromptKeyScoreByCaseIdAndStepId(caseId, stepId);
+    }
 }

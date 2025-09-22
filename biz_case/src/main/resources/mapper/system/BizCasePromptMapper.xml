@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.bizcase.mapper.BizCasePromptMapper">
-    
-    <resultMap type="BizCasePrompt" id="BizCasePromptResult">
-        <result property="promptId"    column="prompt_id"    />
-        <result property="promptContent"    column="prompt_content"    />
-        <result property="promptType"    column="prompt_type"    />
-        <result property="caseId"    column="case_id"    />
-        <result property="stepId"    column="step_id"    />
-        <result property="promptKey"   column="prompt_key"    />
+
+    <resultMap id="BizCasePromptResult" type="BizCasePrompt">
+        <result property="promptId" column="prompt_id"/>
+        <result property="promptContent" column="prompt_content"/>
+        <result property="promptType" column="prompt_type"/>
+        <result property="caseId" column="case_id"/>
+        <result property="stepId" column="step_id"/>
+        <result property="promptKey" column="prompt_key"/>
+        <result property="promptKeyScore" column="prompt_key_score"/>
     </resultMap>
 
     <sql id="selectBizCasePromptVo">
-        select prompt_id, prompt_content, prompt_type, case_id, step_id,prompt_key from biz_case_prompt
+        select prompt_id, prompt_content, prompt_type, case_id, step_id, prompt_key, prompt_key_score
+        from biz_case_prompt
     </sql>
 
     <select id="selectBizCasePromptList" parameterType="BizCasePrompt" resultMap="BizCasePromptResult">
         <include refid="selectBizCasePromptVo"/>
         <where>
-            <if test="promptContent != null  and promptContent != ''">and prompt_content = #{promptContent}</if>
-            <if test="promptType != null ">and prompt_type = #{promptType}</if>
-            <if test="caseId != null ">and case_id = #{caseId}</if>
-            <if test="stepId != null ">and step_id = #{stepId}</if>
-            <if test="promptKey != null  and promptKey != ''">and prompt_key = #{promptKey}</if>
+            <if test="promptContent != null and promptContent != ''">and prompt_content = #{promptContent}</if>
+            <if test="promptType != null">and prompt_type = #{promptType}</if>
+            <if test="caseId != null">and case_id = #{caseId}</if>
+            <if test="stepId != null">and step_id = #{stepId}</if>
+            <if test="promptKey != null and promptKey != ''">and prompt_key = #{promptKey}</if>
+            <if test="promptKeyScore != null and promptKeyScore != ''">and prompt_key_score = #{promptKeyScore}</if>
         </where>
     </select>
-    
+
     <select id="selectBizCasePromptByPromptId" parameterType="Long" resultMap="BizCasePromptResult">
         <include refid="selectBizCasePromptVo"/>
         where prompt_id = #{promptId}
@@ -41,6 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="caseId != null">case_id,</if>
             <if test="stepId != null">step_id,</if>
             <if test="promptKey != null">prompt_key,</if>
+            <if test="promptKeyScore != null">prompt_key_score,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="promptContent != null">#{promptContent},</if>
@@ -48,6 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="caseId != null">#{caseId},</if>
             <if test="stepId != null">#{stepId},</if>
             <if test="promptKey != null">#{promptKey},</if>
+            <if test="promptKeyScore != null">#{promptKeyScore},</if>
         </trim>
     </insert>
 
@@ -59,22 +64,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="caseId != null">case_id = #{caseId},</if>
             <if test="stepId != null">step_id = #{stepId},</if>
             <if test="promptKey != null">prompt_key = #{promptKey},</if>
+            <if test="promptKeyScore != null">#{promptKeyScore},</if>
         </trim>
         where prompt_id = #{promptId}
     </update>
 
     <delete id="deleteBizCasePromptByPromptId" parameterType="Long">
-        delete from biz_case_prompt where prompt_id = #{promptId}
+        delete
+        from biz_case_prompt
+        where prompt_id = #{promptId}
     </delete>
 
     <delete id="deleteBizCasePromptByPromptIds" parameterType="String">
-        delete from biz_case_prompt where prompt_id in 
+        delete from biz_case_prompt where prompt_id in
         <foreach item="promptId" collection="array" open="(" separator="," close=")">
             #{promptId}
         </foreach>
     </delete>
 
     <select id="selectPromptKeyByCaseIdAndStepId" resultType="String">
-        select prompt_key from biz_case_prompt where case_id = #{caseId} and step_id = #{stepId} limit 1
+        select prompt_key
+        from biz_case_prompt
+        where case_id = #{caseId}
+          and step_id = #{stepId} limit 1
+    </select>
+
+    <select id="selectPromptKeyScoreByCaseIdAndStepId" resultType="String">
+        select prompt_key_score
+        from biz_case_prompt
+        where case_id = #{caseId}
+          and step_id = #{stepId} limit 1
     </select>
 </mapper>
+

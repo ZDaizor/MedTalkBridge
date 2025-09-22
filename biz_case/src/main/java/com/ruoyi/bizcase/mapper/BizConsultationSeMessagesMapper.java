@@ -50,7 +50,6 @@ public interface BizConsultationSeMessagesMapper
      * @return 结果
      */
     public int deleteBizConsultationSeMessagesByMessagesId(String messagesId);
-
     /**
      * 批量删除问诊对话记录详情
      * 

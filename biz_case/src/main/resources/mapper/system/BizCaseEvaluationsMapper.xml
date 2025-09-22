@@ -12,10 +12,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="totleScore"    column="totle_score"    />
         <result property="totleMaxScore"    column="totle_max_score"    />
         <result property="evalMode"    column="eval_mode"    />
+        <result property="sessionId"    column="session_id"    />
     </resultMap>
 
     <sql id="selectBizCaseEvaluationsVo">
-        select evaluation_id, user_id, case_id, step_id, totle_score, totle_max_score, eval_mode from biz_case_evaluations
+        select evaluation_id, user_id, case_id, step_id, totle_score, totle_max_score, eval_mode, session_id from biz_case_evaluations
     </sql>
 
     <select id="selectBizCaseEvaluationsList" parameterType="BizCaseEvaluations" resultMap="BizCaseEvaluationsResult">
@@ -27,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totleScore != null "> and totle_score = #{totleScore}</if>
             <if test="totleMaxScore != null "> and totle_max_score = #{totleMaxScore}</if>
             <if test="evalMode != null "> and eval_mode = #{evalMode}</if>
+            <if test="sessionId != null "> and session_id = #{sessionId}</if>
         </where>
     </select>
     
@@ -44,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totleScore != null">totle_score,</if>
             <if test="totleMaxScore != null">totle_max_score,</if>
             <if test="evalMode != null">eval_mode,</if>
+            <if test="sessionId != null">session_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">#{userId},</if>
@@ -52,6 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totleScore != null">#{totleScore},</if>
             <if test="totleMaxScore != null">#{totleMaxScore},</if>
             <if test="evalMode != null">#{evalMode},</if>
+            <if test="sessionId != null">#{sessionId},</if>
          </trim>
     </insert>
 
@@ -64,6 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totleScore != null">totle_score = #{totleScore},</if>
             <if test="totleMaxScore != null">totle_max_score = #{totleMaxScore},</if>
             <if test="evalMode != null">eval_mode = #{evalMode},</if>
+            <if test="sessionId != null">session_id = #{sessionId},</if>
         </trim>
         where evaluation_id = #{evaluationId}
     </update>

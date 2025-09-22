@@ -1,5 +1,6 @@
 package com.ruoyi.bizcase.domain;
 
+import java.math.BigDecimal;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -32,15 +33,19 @@ public class BizCaseEvaluations extends BaseEntity
 
     /** 整体得分 */
     @Excel(name = "整体得分")
-    private Long totleScore;
+    private BigDecimal totleScore;
 
     /** 整体满分 */
     @Excel(name = "整体满分")
-    private Long totleMaxScore;
+    private BigDecimal totleMaxScore;
 
     /** 模式（1：训练，2：考试） */
     @Excel(name = "模式", readConverterExp = "1=：训练，2：考试")
     private Long evalMode;
+
+    /** 记录 id */
+    @Excel(name = "记录 id")
+    private Long sessionId;
 
     public void setEvaluationId(Long evaluationId) 
     {
@@ -82,22 +87,22 @@ public class BizCaseEvaluations extends BaseEntity
         return stepId;
     }
 
-    public void setTotleScore(Long totleScore) 
+    public void setTotleScore(BigDecimal totleScore) 
     {
         this.totleScore = totleScore;
     }
 
-    public Long getTotleScore() 
+    public BigDecimal getTotleScore() 
     {
         return totleScore;
     }
 
-    public void setTotleMaxScore(Long totleMaxScore) 
+    public void setTotleMaxScore(BigDecimal totleMaxScore) 
     {
         this.totleMaxScore = totleMaxScore;
     }
 
-    public Long getTotleMaxScore() 
+    public BigDecimal getTotleMaxScore() 
     {
         return totleMaxScore;
     }
@@ -112,6 +117,16 @@ public class BizCaseEvaluations extends BaseEntity
         return evalMode;
     }
 
+    public void setSessionId(Long sessionId) 
+    {
+        this.sessionId = sessionId;
+    }
+
+    public Long getSessionId() 
+    {
+        return sessionId;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -122,6 +137,7 @@ public class BizCaseEvaluations extends BaseEntity
             .append("totleScore", getTotleScore())
             .append("totleMaxScore", getTotleMaxScore())
             .append("evalMode", getEvalMode())
+            .append("sessionId", getSessionId())
             .toString();
     }
 }

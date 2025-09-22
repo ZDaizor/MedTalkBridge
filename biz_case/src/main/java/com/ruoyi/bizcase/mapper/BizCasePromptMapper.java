@@ -66,4 +66,9 @@ public interface BizCasePromptMapper
      * 根据caseId和stepId查询promptKey
      */
     public String selectPromptKeyByCaseIdAndStepId(@Param("caseId") Long caseId, @Param("stepId") Long stepId);
+
+    /**
+     * 根据caseId和stepId查询评分promptKeyScore
+     */
+    String selectPromptKeyScoreByCaseIdAndStepId(@Param("caseId") Long caseId, @Param("stepId") Long stepId);
 }
