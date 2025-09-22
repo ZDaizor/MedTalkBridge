@@ -48,13 +48,13 @@ public class BizStudentsServiceImpl implements IBizStudentsService {
     }
 
     @Override
-    public List<Map<String, Object>> getTrainingList(Long userId) {
-        return bizStudentsMapper.getTrainingList(userId,1);
+    public List<Map<String, Object>> getTrainingList(Long userId,String caseName) {
+        return bizStudentsMapper.getTrainingList(userId,caseName,1);
     }
 
     @Override
-    public List<Map<String, Object>> getExamList(Long userId) {
-        return bizStudentsMapper.getTrainingList(userId,2);
+    public List<Map<String, Object>> getExamList(Long userId,String caseName) {
+        return bizStudentsMapper.getTrainingList(userId,caseName,2);
     }
 
     /**

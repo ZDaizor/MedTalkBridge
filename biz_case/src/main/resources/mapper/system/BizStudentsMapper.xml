@@ -70,6 +70,11 @@
             AND bcr.eval_mode = #{evalMode}
         ORDER BY
             bcr.create_time DESC
+
+        <where>
+            <if test="caseName != null  and caseName != ''">and case_name like concat('%', #{caseName}, '%')</if>
+        </where>
+
     </select>
 
     <select id="countExamSessionsByUserId" parameterType="long" resultType="int">
@@ -94,46 +99,85 @@
     </select>
 
     <select id="getActivityList" parameterType="long" resultType="java.util.HashMap">
-        WITH SessionScores AS (
-            SELECT
-                e.session_id,
-                SUM(e.totle_score * (p.prompt_percentage / 100.0)) AS final_score
-            FROM
-                biz_case_evaluations e
-            JOIN
-                biz_case_prompt p ON e.case_id = p.case_id AND e.step_id = p.step_id
-            WHERE
-                e.session_id IN (
-                    SELECT session_id FROM biz_case_evaluations WHERE user_id = #{userId} GROUP BY session_id HAVING COUNT(DISTINCT step_id) = 3
-                )
-            GROUP BY
-                e.session_id
-        )
         SELECT
             s.end_time AS activity_time,
-            CASE s.eval_mode
-                WHEN 1 THEN '训练'
-                WHEN 2 THEN '考试'
-                ELSE '未知'
-            END AS activity_type,
-            s.case_title AS case_name,
+            CONCAT(
+                    '完成了 ',
+                    s.case_title,
+                    ' 的 ',
+                    cs.step_name,
+                    ' ',
+                    CASE s.eval_mode
+                        WHEN 1 THEN '训练'
+                        WHEN 2 THEN '考试'
+                        ELSE '活动'
+                        END
+            ) AS activity_type,s.case_title,
             CASE
-                WHEN ss.final_score IS NULL THEN '未评分'
-                WHEN ss.final_score >= 90 THEN '已评分 (优秀)'
-                WHEN ss.final_score >= 80 THEN '已评分 (良好)'
-                WHEN ss.final_score >= 70 THEN '已评分 (中等)'
-                WHEN ss.final_score >= 60 THEN '已评分 (及格)'
+                WHEN e.totle_score IS NULL THEN '未评分'
+                WHEN e.totle_score >= 90 THEN '已评分 (优秀)'
+                WHEN e.totle_score >= 80 THEN '已评分 (良好)'
+                WHEN e.totle_score >= 70 THEN '已评分 (中等)'
+                WHEN e.totle_score >= 60 THEN '已评分 (及格)'
                 ELSE '已评分 (不及格)'
-            END AS rating_status
+                END AS rating_status,
+            -- 您也可以选择性地显示原始分数
+            e.totle_score AS score
         FROM
             biz_consultation_sessions s
-        LEFT JOIN
-            SessionScores ss ON s.session_id = ss.session_id
+                LEFT JOIN
+            biz_case_step cs ON s.case_id = cs.case_id AND s.step_id = cs.step_id
+                LEFT JOIN
+            biz_case_evaluations e ON s.session_id = e.session_id and s.case_id = e.case_id
         WHERE
             s.user_id = #{userId}
-            AND s.status = 1
+          AND s.status = 1 -- 1: 代表已完成
         ORDER BY
-            s.end_time DESC
+            s.end_time DESC; -- 按活动完成时间降序排列
+        LIMIT 5; -- 新增：限制只返回前5条记录
+
+
+
+--         WITH SessionScores AS (
+--             SELECT
+--                 e.session_id,
+--                 SUM(e.totle_score * (p.prompt_percentage / 100.0)) AS final_score
+--             FROM
+--                 biz_case_evaluations e
+--             JOIN
+--                 biz_case_prompt p ON e.case_id = p.case_id AND e.step_id = p.step_id
+--             WHERE
+--                 e.session_id IN (
+--                     SELECT session_id FROM biz_case_evaluations WHERE user_id = #{userId} GROUP BY session_id HAVING COUNT(DISTINCT step_id) = 3
+--                 )
+--             GROUP BY
+--                 e.session_id
+--         )
+--         SELECT
+--             s.end_time AS activity_time,
+--             CASE s.eval_mode
+--                 WHEN 1 THEN '训练'
+--                 WHEN 2 THEN '考试'
+--                 ELSE '未知'
+--             END AS activity_type,
+--             s.case_title AS case_name,
+--             CASE
+--                 WHEN ss.final_score IS NULL THEN '未评分'
+--                 WHEN ss.final_score >= 90 THEN '已评分 (优秀)'
+--                 WHEN ss.final_score >= 80 THEN '已评分 (良好)'
+--                 WHEN ss.final_score >= 70 THEN '已评分 (中等)'
+--                 WHEN ss.final_score >= 60 THEN '已评分 (及格)'
+--                 ELSE '已评分 (不及格)'
+--             END AS rating_status
+--         FROM
+--             biz_consultation_sessions s
+--         LEFT JOIN
+--             SessionScores ss ON s.session_id = ss.session_id
+--         WHERE
+--             s.user_id = #{userId}
+--             AND s.status = 1
+--         ORDER BY
+--             s.end_time DESC
     </select>
 
 </mapper>

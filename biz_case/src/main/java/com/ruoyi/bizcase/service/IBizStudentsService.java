@@ -30,9 +30,9 @@ public interface IBizStudentsService {
      * @param userId 学生ID
      * @return 训练明细列表
      */
-    List<Map<String, Object>> getTrainingList(Long userId);
+    List<Map<String, Object>> getTrainingList(Long userId,String caseName);
 
-    List<Map<String, Object>> getExamList(Long userId);
+    List<Map<String, Object>> getExamList(Long userId,String caseName);
 
     /**
      * 查询学生考试次数

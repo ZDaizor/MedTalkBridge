@@ -95,9 +95,10 @@ public class BizStudentsController extends BaseController {
     @ApiOperation("查询学生训练明细列表")
     @PreAuthorize("@ss.hasPermi('system:case:query')")
     @GetMapping("/training/list/{userId}")
-    public AjaxResult getTrainingList(@PathVariable Long userId) {
-        List<Map<String, Object>> list = bizStudentsService.getTrainingList(userId);
-        return AjaxResult.success(list);
+    public TableDataInfo getTrainingList(@PathVariable Long userId,@PathVariable String caseName) {
+        startPage();
+        List<Map<String, Object>> list = bizStudentsService.getTrainingList(userId,caseName);
+        return getDataTable(list);
     }
 
     /**
@@ -136,8 +137,8 @@ public class BizStudentsController extends BaseController {
     @ApiOperation("查询学生考试明细列表")
     @PreAuthorize("@ss.hasPermi('system:case:query')")
     @GetMapping("/exam/list/{userId}")
-    public AjaxResult getExamList(@PathVariable Long userId) {
-        List<Map<String, Object>> list = bizStudentsService.getExamList(userId);
+    public AjaxResult getExamList(@PathVariable Long userId,@PathVariable String caseName) {
+        List<Map<String, Object>> list = bizStudentsService.getExamList(userId,caseName);
         return AjaxResult.success(list);
     }
 

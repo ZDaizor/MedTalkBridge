@@ -32,7 +32,7 @@ public interface BizStudentsMapper {
 
 
 
-    List<Map<String, Object>> getTrainingList(Long userId,int evalMode);
+    List<Map<String, Object>> getTrainingList(Long userId,String caseName,int evalMode);
 
     int countExamSessionsByUserId(Long userId,int evalMode);
 
