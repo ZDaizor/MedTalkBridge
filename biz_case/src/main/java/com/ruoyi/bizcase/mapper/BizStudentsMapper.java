@@ -1,6 +1,7 @@
 package com.ruoyi.bizcase.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -33,16 +34,16 @@ public interface BizStudentsMapper {
 
 
 
-    List<Map<String, Object>> getTrainingList(Long userId,String caseName,int evalMode);
+    List<Map<String, Object>> getTrainingList(@Param("userId") Long userId, @Param("caseName") String caseName, @Param("evalMode")  int evalMode);
 
-    int countExamSessionsByUserId(Long userId,int evalMode);
+    int countExamSessionsByUserId(@Param("userId") Long userId,@Param("evalMode")  int evalMode);
 
     /**
      * 查询学生考试A（高分，>85分）次数
      * @param userId 学生ID
      * @return A级考试次数
      */
-    int countHighScoreExamSessionsByUserId(Long userId,int evalMode);
+    int countHighScoreExamSessionsByUserId(@Param("userId") Long userId,@Param("evalMode")  int evalMode);
 
     /**
      * 查询学生活跃列表

@@ -24,7 +24,7 @@
     </select>
 
     <select id="getAverageScoreByUserId" parameterType="map" resultType="double">
-        SELECT AVG(case_total_score) AS average_score
+        SELECT IFNULL(AVG(case_total_score),0) AS average_score
         FROM (
             SELECT e.case_id,
                    SUM(e.totle_score * (p.prompt_percentage )) AS case_total_score
@@ -68,23 +68,24 @@
         WHERE
             bcr.user_id = #{userId}
             AND bcr.eval_mode = #{evalMode}
-        ORDER BY
-            bcr.create_time DESC
-
         <where>
             <if test="caseName != null  and caseName != ''">and case_name like concat('%', #{caseName}, '%')</if>
         </where>
+        ORDER BY
+            bcr.create_time DESC
+
+
 
     </select>
 
-    <select id="countExamSessionsByUserId" parameterType="long" resultType="int">
+    <select id="countExamSessionsByUserId" parameterType="map" resultType="int">
         SELECT COUNT(*) AS exam_count
         FROM biz_consultation_sessions
         WHERE user_id = #{userId}
           AND eval_mode = #{evalMode}
     </select>
 
-    <select id="countHighScoreExamSessionsByUserId" parameterType="long" resultType="int">
+    <select id="countHighScoreExamSessionsByUserId" parameterType="map" resultType="int">
         SELECT COUNT(*) AS high_score_exam_count
         FROM (
             SELECT e.case_id
