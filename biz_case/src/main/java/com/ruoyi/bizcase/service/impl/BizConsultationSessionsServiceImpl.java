@@ -305,6 +305,11 @@ public class BizConsultationSessionsServiceImpl implements IBizConsultationSessi
                         scoreDetails.setItemId(scoreItem.getInteger("order"));
                     }
 
+                    // itemContent 对应 itemContent (评分项内容描述)
+                    if (scoreItem.containsKey("itemContent")) {
+                        scoreDetails.setItemContent(scoreItem.getString("type"));
+                    }
+
                     // scored 对应 scoreAchieved (实际得分)
                     if (scoreItem.containsKey("scored")) {
                         String scoredStr = scoreItem.getString("scored");

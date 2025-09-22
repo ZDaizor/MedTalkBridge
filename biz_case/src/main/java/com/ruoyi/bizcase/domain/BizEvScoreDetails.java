@@ -27,6 +27,10 @@ public class BizEvScoreDetails extends BaseEntity
     @Excel(name = "分项 id，在分项表中")
     private Integer itemId;
 
+    /** 评分项的具体内容描述 */
+    @Excel(name = "评分项的具体内容描述")
+    private String itemContent;
+
     /** 实际得分 */
     @Excel(name = "实际得分")
     private BigDecimal scoreAchieved;
@@ -71,6 +75,16 @@ public class BizEvScoreDetails extends BaseEntity
     public Integer getItemId() 
     {
         return itemId;
+    }
+
+    public void setItemContent(String itemContent) 
+    {
+        this.itemContent = itemContent;
+    }
+
+    public String getItemContent() 
+    {
+        return itemContent;
     }
 
     public void setScoreAchieved(BigDecimal scoreAchieved) 
@@ -119,6 +133,7 @@ public class BizEvScoreDetails extends BaseEntity
             .append("scoreId", getScoreId())
             .append("evaluationId", getEvaluationId())
             .append("itemId", getItemId())
+            .append("itemContent", getItemContent())
             .append("scoreAchieved", getScoreAchieved())
             .append("scoreMax", getScoreMax())
             .append("scoreType", getScoreType())
