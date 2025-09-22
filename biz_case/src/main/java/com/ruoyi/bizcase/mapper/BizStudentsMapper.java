@@ -1,8 +1,10 @@
 package com.ruoyi.bizcase.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import java.util.List;
 import java.util.Map;
-
+@Mapper
 public interface BizStudentsMapper {
 
 
@@ -16,19 +18,18 @@ public interface BizStudentsMapper {
 
     /**
      * 查询指定用户训练模式下的总学习时长（分钟）
-     * @param userId 用户ID
+     * @param params
      * @return 总时长（分钟）
      */
-    int sumTrainingMinutesByUserId(Long userId,int evalMode);
+    int sumTrainingMinutesByUserId(Map<String,Object> params);
 
 
     /**
      * 获取平均成绩
-     * @param userId
-     * @param evalMode
+     * @param params
      * @return
      */
-    double getAverageScoreByUserId(Long userId,int evalMode);
+    double getAverageScoreByUserId(Map<String,Object> params);
 
 
 

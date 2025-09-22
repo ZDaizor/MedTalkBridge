@@ -16,18 +16,18 @@
         SELECT COUNT(*) AS finishTotle FROM completed_cases
     </select>
 
-    <select id="sumTrainingMinutesByUserId" parameterType="long" resultType="int">
+    <select id="sumTrainingMinutesByUserId" parameterType="map" resultType="int">
         SELECT IFNULL(SUM(TIMESTAMPDIFF(MINUTE, create_time, end_time)), 0) AS totalMinutes
         FROM biz_consultation_sessions
         WHERE user_id = #{userId}
           AND eval_mode = #{evalMode}
     </select>
 
-    <select id="getAverageScoreByUserId" parameterType="long" resultType="double">
+    <select id="getAverageScoreByUserId" parameterType="map" resultType="double">
         SELECT AVG(case_total_score) AS average_score
         FROM (
             SELECT e.case_id,
-                   SUM(e.totle_score * (p.prompt_percentage / 100)) AS case_total_score
+                   SUM(e.totle_score * (p.prompt_percentage )) AS case_total_score
             FROM biz_case_evaluations e
             JOIN biz_case_prompt p ON e.case_id = p.case_id AND e.step_id = p.step_id
             WHERE e.user_id = #{userId}
@@ -121,7 +121,7 @@
                 WHEN e.totle_score >= 60 THEN '已评分 (及格)'
                 ELSE '已评分 (不及格)'
                 END AS rating_status,
-            -- 您也可以选择性地显示原始分数
+           <!-- 您也可以选择性地显示原始分数 -->
             e.totle_score AS score
         FROM
             biz_consultation_sessions s
@@ -131,53 +131,13 @@
             biz_case_evaluations e ON s.session_id = e.session_id and s.case_id = e.case_id
         WHERE
             s.user_id = #{userId}
-          AND s.status = 1 -- 1: 代表已完成
+          AND s.status = 1 <!-- 1: 代表已完成 -->
         ORDER BY
-            s.end_time DESC; -- 按活动完成时间降序排列
-        LIMIT 5; -- 新增：限制只返回前5条记录
+            s.end_time DESC <!-- 按活动完成时间降序排列-->
+        LIMIT 5; <!-- 新增：限制只返回前5条记录-->
 
 
 
---         WITH SessionScores AS (
---             SELECT
---                 e.session_id,
---                 SUM(e.totle_score * (p.prompt_percentage / 100.0)) AS final_score
---             FROM
---                 biz_case_evaluations e
---             JOIN
---                 biz_case_prompt p ON e.case_id = p.case_id AND e.step_id = p.step_id
---             WHERE
---                 e.session_id IN (
---                     SELECT session_id FROM biz_case_evaluations WHERE user_id = #{userId} GROUP BY session_id HAVING COUNT(DISTINCT step_id) = 3
---                 )
---             GROUP BY
---                 e.session_id
---         )
---         SELECT
---             s.end_time AS activity_time,
---             CASE s.eval_mode
---                 WHEN 1 THEN '训练'
---                 WHEN 2 THEN '考试'
---                 ELSE '未知'
---             END AS activity_type,
---             s.case_title AS case_name,
---             CASE
---                 WHEN ss.final_score IS NULL THEN '未评分'
---                 WHEN ss.final_score >= 90 THEN '已评分 (优秀)'
---                 WHEN ss.final_score >= 80 THEN '已评分 (良好)'
---                 WHEN ss.final_score >= 70 THEN '已评分 (中等)'
---                 WHEN ss.final_score >= 60 THEN '已评分 (及格)'
---                 ELSE '已评分 (不及格)'
---             END AS rating_status
---         FROM
---             biz_consultation_sessions s
---         LEFT JOIN
---             SessionScores ss ON s.session_id = ss.session_id
---         WHERE
---             s.user_id = #{userId}
---             AND s.status = 1
---         ORDER BY
---             s.end_time DESC
-    </select>
+            </select>
 
-</mapper>
+        </mapper>

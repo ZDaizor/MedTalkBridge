@@ -2,15 +2,17 @@ package com.ruoyi.bizcase.service.impl;
 
 import com.ruoyi.bizcase.mapper.BizStudentsMapper;
 import com.ruoyi.bizcase.service.IBizStudentsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class BizStudentsServiceImpl implements IBizStudentsService {
-
+    @Autowired
     private BizStudentsMapper bizStudentsMapper;
 
 
@@ -33,7 +35,11 @@ public class BizStudentsServiceImpl implements IBizStudentsService {
      */
     @Override
     public int sumTrainingMinutesByUserId(Long userId) {
-        return bizStudentsMapper.sumTrainingMinutesByUserId(userId,1);
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("evalMode", 1);
+
+        return bizStudentsMapper.sumTrainingMinutesByUserId(params);
     }
 
     /**
@@ -44,7 +50,12 @@ public class BizStudentsServiceImpl implements IBizStudentsService {
      */
     @Override
     public Double getAverageScoreByUserId(Long userId) {
-        return bizStudentsMapper.getAverageScoreByUserId(userId,1);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("evalMode", 1);
+
+        return bizStudentsMapper.getAverageScoreByUserId(params);
     }
 
     @Override
@@ -69,12 +80,18 @@ public class BizStudentsServiceImpl implements IBizStudentsService {
 
     @Override
     public int sumExamMinutesByUserId(Long userId) {
-        return bizStudentsMapper.sumTrainingMinutesByUserId(userId,2);
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("evalMode", 2);
+        return bizStudentsMapper.sumTrainingMinutesByUserId(params);
     }
 
     @Override
     public Double getAverageScoreExamByUserId(Long userId) {
-        return bizStudentsMapper.getAverageScoreByUserId(userId,2);
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("evalMode", 2);
+        return bizStudentsMapper.getAverageScoreByUserId(params);
     }
 
     @Override
