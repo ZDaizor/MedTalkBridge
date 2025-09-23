@@ -4,16 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.bizcase.mapper.BizStudentsMapper">
 
+    <!-- 统计用户完成训练的次数 -->
     <select id="countCompletedCasesByUserId" parameterType="long" resultType="int">
-        WITH completed_cases AS (
-            SELECT case_id
-            FROM biz_case_evaluations
-            WHERE user_id = #{userId}
-              AND step_id IN (1, 2, 3)
-            GROUP BY case_id
-            HAVING COUNT(DISTINCT step_id) = 3
-        )
-        SELECT COUNT(*) AS finishTotle FROM completed_cases
+
+        SELECT
+            COUNT(*) AS completed_training_count
+        FROM
+            biz_consultation_sessions
+        WHERE
+            user_id = 1
+          AND eval_mode = 1  -- 模式（1：训练）
+          AND status = 1;    -- 问诊状态（1：完成）
+
     </select>
 
     <select id="sumTrainingMinutesByUserId" parameterType="map" resultType="int">
@@ -23,6 +25,7 @@
           AND eval_mode = #{evalMode}
     </select>
 
+    <!-- 计算用户考试的平均得分 -->
     <select id="getAverageScoreByUserId" parameterType="map" resultType="double">
         SELECT IFNULL(AVG(case_total_score),0) AS average_score
         FROM (
@@ -36,6 +39,21 @@
             GROUP BY e.case_id
             HAVING COUNT(DISTINCT e.step_id) = 3
         ) AS completed_case_scores
+    </select>
+
+
+    <!-- 计算用户训练的平均成绩 -->
+    <select id="getTrainingAverageScoreByUserId" parameterType="long" resultType="double">
+
+        SELECT
+            IFNULL(AVG(totle_score),0) AS average_training_score
+        FROM
+            biz_case_evaluations
+        WHERE
+            user_id = #{userId}
+          AND eval_mode = 1; -- 模式（1：训练）
+
+
     </select>
 
     <!-- 获取用户的训练 or  开始 列表 -->
@@ -65,17 +83,13 @@
             biz_case_step AS bcs ON bcr.step_id = bcs.step_id
         LEFT JOIN
             biz_case_evaluations AS bce ON bcr.session_id = bce.session_id
-        WHERE
+        <where>
             bcr.user_id = #{userId}
             AND bcr.eval_mode = #{evalMode}
-        <where>
             <if test="caseName != null  and caseName != ''">and case_name like concat('%', #{caseName}, '%')</if>
         </where>
         ORDER BY
             bcr.create_time DESC
-
-
-
     </select>
 
     <select id="countExamSessionsByUserId" parameterType="map" resultType="int">
@@ -136,9 +150,5 @@
         ORDER BY
             s.end_time DESC <!-- 按活动完成时间降序排列-->
         LIMIT 5; <!-- 新增：限制只返回前5条记录-->
-
-
-
-            </select>
-
-        </mapper>
+    </select>
+</mapper>

@@ -31,6 +31,7 @@ public interface BizStudentsMapper {
      * @return
      */
     double getAverageScoreByUserId(Map<String,Object> params);
+    double getTrainingAverageScoreByUserId(Long userId);
 
 
 

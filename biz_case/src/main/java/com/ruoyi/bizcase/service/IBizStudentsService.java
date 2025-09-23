@@ -64,4 +64,6 @@ public interface IBizStudentsService {
      * @return 活跃列表
      */
     List<Map<String, Object>> getActivityList(Long userId);
+
+    Double getTrainingAverageScoreByUserId(Long userId);
 }

@@ -81,7 +81,7 @@ public class BizStudentsController extends BaseController {
     public AjaxResult getTrainingUp(@PathVariable Long userId) {
         int trainingCount = bizStudentsService.countCompletedCasesByUserId(userId);
         int totalMinutes = bizStudentsService.sumTrainingMinutesByUserId(userId);
-        Double averageScore = bizStudentsService.getAverageScoreByUserId(userId);
+        Double averageScore = bizStudentsService.getTrainingAverageScoreByUserId(userId);
         Map<String, Object> result = new java.util.HashMap<>();
         result.put("trainingCount", trainingCount);
         result.put("totalMinutes", totalMinutes);

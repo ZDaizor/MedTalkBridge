@@ -103,4 +103,9 @@ public class BizStudentsServiceImpl implements IBizStudentsService {
     public java.util.List<java.util.Map<String, Object>> getActivityList(Long userId) {
         return bizStudentsMapper.getActivityList(userId);
     }
+
+    @Override
+    public Double getTrainingAverageScoreByUserId(Long userId) {
+        return bizStudentsMapper.getTrainingAverageScoreByUserId(userId);
+    }
 }
