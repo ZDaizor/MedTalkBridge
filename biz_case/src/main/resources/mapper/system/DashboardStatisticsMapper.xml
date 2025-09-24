@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bizcase.mapper.DashboardStatisticsMapper">
+
+    <!-- 查询仪表板统计信息 -->
+    <select id="selectDashboardStatistics" resultType="java.util.HashMap">
+        SELECT 
+            -- 总学生数：从已完成训练或考试的唯一用户数计算
+            (SELECT COUNT(DISTINCT user_id) 
+             FROM biz_consultation_sessions 
+             WHERE status = 1) AS totalStudents,
+            
+            -- 平均成绩：所有评估的平均分
+            (SELECT IFNULL(AVG(totle_score), 0) 
+             FROM biz_case_evaluations) AS averageScore,
+            
+            -- 总学习时长：所有会话的时长总和（分钟）
+            (SELECT IFNULL(SUM(TIMESTAMPDIFF(MINUTE, create_time, end_time)), 0) 
+             FROM biz_consultation_sessions 
+             WHERE end_time IS NOT NULL) AS totalLearningDuration,
+            
+            -- 总考试次数：评估模式为2（考试）的会话数
+            (SELECT COUNT(*) 
+             FROM biz_consultation_sessions 
+             WHERE eval_mode = 2) AS totalExamCount
+    </select>
+
+</mapper>
