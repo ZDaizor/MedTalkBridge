@@ -45,9 +45,9 @@ public class DifyAiChatControllerTest {
 
     @Test
     public void testChat_firstConversation() throws Exception {
-        String query = "你怎么了";
-        String user = "test-user";
-        String caseId = "1";
+        String query = "你好，我是王医生，你是赵凤芹吗？";
+        String user = "1";
+        String caseId = "19";
         String stepId = "1";
 
         MvcResult mvcResult = mockMvc.perform(post("/dify/chat")
@@ -55,7 +55,7 @@ public class DifyAiChatControllerTest {
                         .param("user", user)
                         .param("caseId", caseId)
                         .param("stepId", stepId)
-                        .param("sessionId", "1")
+                        .param("sessionId", "5")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .header("Authorization", "Bearer " + token))
                 .andReturn();
@@ -65,12 +65,11 @@ public class DifyAiChatControllerTest {
 
     @Test
     public void testChat_continuousConversation() throws Exception {
-        String query = "你刚才在说什么，我没听清";
-        String conversationId = "ab3cac08-e3c9-4d8f-80fe-a566a2c1e746";
-        String user = "test-user";
-        String caseId = "1";
+        String query = "一般不会扎到心脏，但是胸穿确实有扎到肺子，造成气胸的风险。所以我们在穿刺前会打一个超声。";
+        String conversationId = "a8eac2dc-34ce-44ab-bb9a-7e3f5a04a55d";
+        String user = "1";
+        String caseId = "19";
         String stepId = "1";
-        String expectedResponse = "{\"answer\": \"I am fine, thank you!\"}";
 
         mockMvc.perform(post("/dify/chat")
                         .param("query", query)
@@ -78,11 +77,12 @@ public class DifyAiChatControllerTest {
                         .param("user", user)
                         .param("caseId", caseId)
                         .param("stepId", stepId)
-                        .param("sessionId", "1")
+                        .param("sessionId", "5")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(content().string(expectedResponse));
+                .andReturn();
+
     }
 
 

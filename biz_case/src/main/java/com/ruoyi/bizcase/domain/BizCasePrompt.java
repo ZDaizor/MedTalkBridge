@@ -43,12 +43,14 @@ public class BizCasePrompt extends BaseEntity {
     @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
     private Long stepId;
 
-    @Excel(name = "提示词标识")
-    private String promptKey;
+    @Excel(name = "提示词会话标识")
+    private String promptKeyMetting;
 
     private String promptKeyScore;
 
-    /** 步骤分数占总体的百分比 */
+    /**
+     * 步骤分数占总体的百分比
+     */
     @Excel(name = "步骤分数占总体的百分比")
     private java.math.BigDecimal promptPercentage;
 
@@ -93,12 +95,13 @@ public class BizCasePrompt extends BaseEntity {
     }
 
     public String getPromptKey() {
-        return promptKey;
+        return promptKeyMetting;
     }
 
-    public void setPromptKey(String promptKey) {
-        this.promptKey = promptKey;
+    public void setPromptKey(String promptKeyMetting) {
+        this.promptKeyMetting = promptKeyMetting;
     }
+
 
     public String getPromptKeyScore() {
         return promptKeyScore;
@@ -124,7 +127,7 @@ public class BizCasePrompt extends BaseEntity {
                 .append("promptType", getPromptType())
                 .append("caseId", getCaseId())
                 .append("stepId", getStepId())
-                .append("promptKey", getPromptKey())
+                .append("promptKeyMetting", getPromptKey())
                 .append("promptKeyScore", getPromptKeyScore())
                 .append("promptPercentage", getPromptPercentage())
                 .toString();

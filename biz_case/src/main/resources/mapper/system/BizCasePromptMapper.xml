@@ -10,13 +10,13 @@
         <result property="promptType" column="prompt_type"/>
         <result property="caseId" column="case_id"/>
         <result property="stepId" column="step_id"/>
-        <result property="promptKey" column="prompt_key"/>
+        <result property="promptKey" column="prompt_key_metting"/>
         <result property="promptKeyScore" column="prompt_key_score"/>
         <result property="promptPercentage" column="prompt_percentage"/>
     </resultMap>
 
     <sql id="selectBizCasePromptVo">
-        select prompt_id, prompt_content, prompt_type, case_id, step_id, prompt_key, prompt_key_score, prompt_percentage
+        select prompt_id, prompt_content, prompt_type, case_id, step_id, prompt_key_metting, prompt_key_score, prompt_percentage
         from biz_case_prompt
     </sql>
 
@@ -27,7 +27,7 @@
             <if test="promptType != null">and prompt_type = #{promptType}</if>
             <if test="caseId != null">and case_id = #{caseId}</if>
             <if test="stepId != null">and step_id = #{stepId}</if>
-            <if test="promptKey != null and promptKey != ''">and prompt_key = #{promptKey}</if>
+            <if test="promptKey != null and promptKey != ''">and prompt_key_metting = #{promptKey}</if>
             <if test="promptKeyScore != null and promptKeyScore != ''">and prompt_key_score = #{promptKeyScore}</if>
             <if test="promptPercentage != null">and prompt_percentage = #{promptPercentage}</if>
         </where>
@@ -45,7 +45,7 @@
             <if test="promptType != null">prompt_type,</if>
             <if test="caseId != null">case_id,</if>
             <if test="stepId != null">step_id,</if>
-            <if test="promptKey != null">prompt_key,</if>
+            <if test="promptKey != null">prompt_key_metting,</if>
             <if test="promptKeyScore != null">prompt_key_score,</if>
             <if test="promptPercentage != null">prompt_percentage,</if>
         </trim>
@@ -67,7 +67,7 @@
             <if test="promptType != null">prompt_type = #{promptType},</if>
             <if test="caseId != null">case_id = #{caseId},</if>
             <if test="stepId != null">step_id = #{stepId},</if>
-            <if test="promptKey != null">prompt_key = #{promptKey},</if>
+            <if test="promptKey != null">prompt_key_metting = #{promptKey},</if>
             <if test="promptKeyScore != null">prompt_key_score = #{promptKeyScore},</if>
             <if test="promptPercentage != null">prompt_percentage = #{promptPercentage},</if>
         </trim>
@@ -88,7 +88,7 @@
     </delete>
 
     <select id="selectPromptKeyByCaseIdAndStepId" resultType="String">
-        select prompt_key
+        select prompt_key_metting
         from biz_case_prompt
         where case_id = #{caseId}
           and step_id = #{stepId} limit 1
