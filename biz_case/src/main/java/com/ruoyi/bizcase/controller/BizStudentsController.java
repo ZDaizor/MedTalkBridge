@@ -63,12 +63,14 @@ public class BizStudentsController extends BaseController {
     public AjaxResult getIndexSelects(@PathVariable Long userId) {
         int completedCount = bizStudentsService.countCompletedCasesByUserId(userId);
         int totalMinutes = bizStudentsService.sumTrainingMinutesByUserId(userId);
-        Double averageScore = bizStudentsService.getAverageScoreByUserId(userId);
+        Double averageScore = bizStudentsService.getTrainingAverageScoreByUserId(userId,null);
+        int totleBadges = bizStudentsService.countUserBadges(userId);
         // 组装返回数据
         Map<String, Object> result = new java.util.HashMap<>();
         result.put("completedCount", completedCount);
         result.put("totalMinutes", totalMinutes);
         result.put("averageScore", averageScore);
+        result.put("totleBadges", totleBadges);
         return AjaxResult.success(result);
     }
 
@@ -81,7 +83,7 @@ public class BizStudentsController extends BaseController {
     public AjaxResult getTrainingUp(@PathVariable Long userId) {
         int trainingCount = bizStudentsService.countCompletedCasesByUserId(userId);
         int totalMinutes = bizStudentsService.sumTrainingMinutesByUserId(userId);
-        Double averageScore = bizStudentsService.getTrainingAverageScoreByUserId(userId);
+        Double averageScore = bizStudentsService.getTrainingAverageScoreByUserId(userId,1);
         Map<String, Object> result = new java.util.HashMap<>();
         result.put("trainingCount", trainingCount);
         result.put("totalMinutes", totalMinutes);

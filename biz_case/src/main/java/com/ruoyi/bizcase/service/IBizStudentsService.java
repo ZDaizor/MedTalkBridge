@@ -65,5 +65,12 @@ public interface IBizStudentsService {
      */
     List<Map<String, Object>> getActivityList(Long userId);
 
-    Double getTrainingAverageScoreByUserId(Long userId);
+    Double getTrainingAverageScoreByUserId(Long userId,Integer evalMode);
+
+    /**
+     * 查询用户获得的徽章数量
+     * @param userId 用户ID
+     * @return 徽章数量
+     */
+    int countUserBadges(Long userId);
 }

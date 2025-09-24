@@ -31,7 +31,7 @@ public interface BizStudentsMapper {
      * @return
      */
     double getAverageScoreByUserId(Map<String,Object> params);
-    double getTrainingAverageScoreByUserId(Long userId);
+    double getTrainingAverageScoreByUserId(@Param("userId") Long userId,@Param("evalMode") Integer evalMode);
 
 
 
@@ -52,4 +52,11 @@ public interface BizStudentsMapper {
      * @return 活跃列表
      */
     java.util.List<java.util.Map<String, Object>> getActivityList(Long userId);
+
+    /**
+     * 查询用户获得的徽章数量
+     * @param userId 用户ID
+     * @return 徽章数量
+     */
+    int countUserBadges(Long userId);
 }

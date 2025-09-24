@@ -105,7 +105,12 @@ public class BizStudentsServiceImpl implements IBizStudentsService {
     }
 
     @Override
-    public Double getTrainingAverageScoreByUserId(Long userId) {
-        return bizStudentsMapper.getTrainingAverageScoreByUserId(userId);
+    public Double getTrainingAverageScoreByUserId(Long userId,Integer evalMode) {
+        return bizStudentsMapper.getTrainingAverageScoreByUserId(userId,evalMode);
+    }
+
+    @Override
+    public int countUserBadges(Long userId) {
+        return bizStudentsMapper.countUserBadges(userId);
     }
 }
