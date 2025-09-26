@@ -129,7 +129,7 @@ xss:
   urlPatterns: /system/*,/monitor/*,/tool/*
 dify:
   api:
-    url: http://192.168.19.198/v1
+    url: http://r8f82cd5.natappfree.cc/v1
     key: app-iUofOIJ5ECQVdoUbChaTshVh
 asr:
   appKey: 1623843109
