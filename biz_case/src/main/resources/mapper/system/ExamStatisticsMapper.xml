@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bizcase.mapper.ExamStatisticsMapper">
+
+    <resultMap type="com.ruoyi.bizcase.domain.ExamStatistics" id="ExamStatisticsResult">
+        <result property="categoryId"    column="category_id" />
+        <result property="count"         column="count" />
+        <result property="percentage"    column="percentage" />
+    </resultMap>
+
+    <!-- 查询考试统计 -->
+    <select id="selectExamStatistics" resultMap="ExamStatisticsResult">
+        <![CDATA[
+        WITH exam_stats AS (
+            -- 统计学生总数
+            SELECT 
+                COUNT(DISTINCT u.user_id) AS total_students
+            FROM 
+                sys_user u
+            JOIN 
+                sys_user_role ur ON u.user_id = ur.user_id
+            JOIN 
+                sys_role r ON ur.role_id = r.role_id
+            WHERE 
+                r.role_key = 'student'
+                AND u.status = '0'
+        ),
+        exam_participants AS (
+            -- 统计已参加考试的学生
+            SELECT 
+                COUNT(DISTINCT e.user_id) AS participant_count
+            FROM 
+                biz_case_evaluations e
+            JOIN 
+                sys_user u ON e.user_id = u.user_id
+            JOIN 
+                sys_user_role ur ON u.user_id = ur.user_id
+            JOIN 
+                sys_role r ON ur.role_id = r.role_id
+            WHERE 
+                e.eval_mode = 2  -- 考试模式
+                AND e.totle_score > 0  -- 有有效分数
+                AND r.role_key = 'student'
+                AND u.status = '0'
+        ),
+        exam_passed AS (
+            -- 统计考试通过的学生（假设80分以上为通过）
+            SELECT 
+                COUNT(DISTINCT e.user_id) AS passed_count
+            FROM 
+                biz_case_evaluations e
+            JOIN 
+                sys_user u ON e.user_id = u.user_id
+            JOIN 
+                sys_user_role ur ON u.user_id = ur.user_id
+            JOIN 
+                sys_role r ON ur.role_id = r.role_id
+            WHERE 
+                e.eval_mode = 2  -- 考试模式
+                AND e.totle_score >= 80  -- 通过分数线
+                AND r.role_key = 'student'
+                AND u.status = '0'
+        ),
+        excellent_scores AS (
+            -- 统计获得优秀成绩的学生（90分以上）
+            SELECT 
+                COUNT(DISTINCT e.user_id) AS excellent_count
+            FROM 
+                biz_case_evaluations e
+            JOIN 
+                sys_user u ON e.user_id = u.user_id
+            JOIN 
+                sys_user_role ur ON u.user_id = ur.user_id
+            JOIN 
+                sys_role r ON ur.role_id = r.role_id
+            WHERE 
+                e.eval_mode = 2  -- 考试模式
+                AND e.totle_score >= 90  -- 优秀分数线
+                AND r.role_key = 'student'
+                AND u.status = '0'
+        ),
+        need_retake AS (
+            -- 统计需要重考的学生（考试未通过）
+            SELECT 
+                COUNT(DISTINCT e.user_id) AS retake_count
+            FROM 
+                biz_case_evaluations e
+            JOIN 
+                sys_user u ON e.user_id = u.user_id
+            JOIN 
+                sys_user_role ur ON u.user_id = ur.user_id
+            JOIN 
+                sys_role r ON ur.role_id = r.role_id
+            WHERE 
+                e.eval_mode = 2  -- 考试模式
+                AND e.totle_score < 80  -- 未达到通过分数线
+                AND r.role_key = 'student'
+                AND u.status = '0'
+        )
+        SELECT 
+            1 AS category_id,
+            participant_count AS count,
+            CONCAT(ROUND(participant_count * 100.0 / (SELECT total_students FROM exam_stats), 0), '%') AS percentage
+        FROM 
+            exam_participants
+
+        UNION ALL
+
+        SELECT 
+            2 AS category_id,
+            passed_count AS count,
+            CONCAT(ROUND(passed_count * 100.0 / (SELECT participant_count FROM exam_participants), 0), '%') AS percentage
+        FROM 
+            exam_passed
+
+        UNION ALL
+
+        SELECT 
+            3 AS category_id,
+            excellent_count AS count,
+            CONCAT(ROUND(excellent_count * 100.0 / (SELECT participant_count FROM exam_participants), 0), '%') AS percentage
+        FROM 
+            excellent_scores
+
+        UNION ALL
+
+        SELECT 
+            4 AS category_id,
+            retake_count AS count,
+            CONCAT(ROUND(retake_count * 100.0 / (SELECT participant_count FROM exam_participants), 0), '%') AS percentage
+        FROM 
+            need_retake
+        ]]>
+    </select>
+
+</mapper>
