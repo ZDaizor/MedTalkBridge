@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bizcase.mapper.TopStudentsRankingMapper">
+
+    <resultMap type="com.ruoyi.bizcase.domain.TopStudentsRanking" id="TopStudentsRankingResult">
+        <result property="ranking"         column="ranking" />
+        <result property="userName"        column="user_name" />
+        <result property="nickName"        column="nick_name" />
+        <result property="studentId"       column="student_id" />
+        <result property="avgScore"        column="avg_score" />
+        <result property="trainingCount"   column="training_count" />
+        <result property="badgeCount"      column="badge_count" />
+    </resultMap>
+
+    <!-- 查询优秀学生排行榜 -->
+    <select id="selectTopStudentsRanking" resultMap="TopStudentsRankingResult">
+        <![CDATA[
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY avg_score DESC, training_count DESC) AS ranking,
+            u.user_name,
+            u.nick_name,
+            u.user_id AS student_id,
+            ROUND(avg_score, 1) AS avg_score,
+            training_count,
+            badge_count
+        FROM 
+            sys_user u
+        JOIN 
+            sys_user_role ur ON u.user_id = ur.user_id
+        JOIN 
+            sys_role r ON ur.role_id = r.role_id
+        LEFT JOIN (
+            -- 计算每个学生的平均得分
+            SELECT 
+                user_id,
+                AVG(totle_score) AS avg_score
+            FROM 
+                biz_case_evaluations
+            WHERE 
+                totle_score > 0
+            GROUP BY 
+                user_id
+        ) score_stats ON u.user_id = score_stats.user_id
+        LEFT JOIN (
+            -- 计算每个学生的完成训练次数
+            SELECT 
+                user_id,
+                COUNT(*) AS training_count
+            FROM 
+                biz_consultation_sessions
+            WHERE 
+                status = 1  -- 只统计已完成的会话
+            GROUP BY 
+                user_id
+        ) training_stats ON u.user_id = training_stats.user_id
+        LEFT JOIN (
+            -- 计算每个学生的徽章数量
+            SELECT 
+                user_id,
+                COUNT(*) AS badge_count
+            FROM 
+                biz_user_achievement
+            GROUP BY 
+                user_id
+        ) badge_stats ON u.user_id = badge_stats.user_id
+        WHERE 
+            r.role_key = 'student'
+            AND u.status = '0'  
+        ORDER BY 
+            avg_score DESC, 
+            training_count DESC
+        LIMIT 5  -- 只取前5名
+        ]]>
+    </select>
+
+</mapper>

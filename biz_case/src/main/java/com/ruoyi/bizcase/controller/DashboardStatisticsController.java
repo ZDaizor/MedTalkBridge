@@ -8,12 +8,14 @@ import com.ruoyi.bizcase.domain.MonthlyTrainingTrend;
 import com.ruoyi.bizcase.domain.ScoreRangeStatistics;
 import com.ruoyi.bizcase.domain.StageAssessmentStatistics;
 import com.ruoyi.bizcase.domain.TeachingDataOverview;
+import com.ruoyi.bizcase.domain.TopStudentsRanking;
 import com.ruoyi.bizcase.domain.dto.StudentStatisticsQueryDTO;
 import com.ruoyi.bizcase.service.IActiveUsersWeeklyStatsService;
 import com.ruoyi.bizcase.service.ICaseTypeDistributionService;
 import com.ruoyi.bizcase.service.IDeptStudentStatisticsService;
 import com.ruoyi.bizcase.service.IMonthlyTrainingTrendService;
 import com.ruoyi.bizcase.service.IScoreRangeStatisticsService;
+import com.ruoyi.bizcase.service.ITopStudentsRankingService;
 import com.ruoyi.bizcase.service.IStageAssessmentStatisticsService;
 import com.ruoyi.bizcase.service.ITeachingDataOverviewService;
 import com.ruoyi.common.core.controller.BaseController;
@@ -58,6 +60,9 @@ public class DashboardStatisticsController extends BaseController {
     
     @Autowired
     private IScoreRangeStatisticsService scoreRangeStatisticsService;
+    
+    @Autowired
+    private ITopStudentsRankingService topStudentsRankingService;
 
 
     
@@ -155,6 +160,18 @@ public class DashboardStatisticsController extends BaseController {
     {
         List<ScoreRangeStatistics> statistics = scoreRangeStatisticsService.selectScoreRangeStatistics();
         return AjaxResult.success(statistics);
+    }
+
+    /***
+     * 查询优秀学生排行榜
+     */
+    @ApiOperation("查询优秀学生排行榜")
+    @PreAuthorize("@ss.hasPermi('system:dashboard:statistics')")
+    @GetMapping("/top-students-ranking")
+    public AjaxResult getTopStudentsRanking()
+    {
+        List<TopStudentsRanking> ranking = topStudentsRankingService.selectTopStudentsRanking();
+        return AjaxResult.success(ranking);
     }
 
 
