@@ -1,5 +1,7 @@
 package com.ruoyi.bizcase.controller;
+
 import com.ruoyi.bizcase.domain.BizCase;
+import com.ruoyi.bizcase.domain.dto.TrainExamInfo;
 import com.ruoyi.bizcase.service.IBizCaseService;
 import com.ruoyi.bizcase.service.IBizStudentsService;
 import com.ruoyi.common.annotation.Log;
@@ -7,13 +9,13 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +64,7 @@ public class BizStudentsController extends BaseController {
     public AjaxResult getIndexSelects(@PathVariable Long userId) {
         int completedCount = bizStudentsService.countCompletedCasesByUserId(userId);
         int totalMinutes = bizStudentsService.sumTrainingMinutesByUserId(userId);
-        Double averageScore = bizStudentsService.getTrainingAverageScoreByUserId(userId,null);
+        Double averageScore = bizStudentsService.getTrainingAverageScoreByUserId(userId, null);
         int totleBadges = bizStudentsService.countUserBadges(userId);
         // 组装返回数据
         Map<String, Object> result = new java.util.HashMap<>();
@@ -82,7 +84,7 @@ public class BizStudentsController extends BaseController {
     public AjaxResult getTrainingUp(@PathVariable Long userId) {
         int trainingCount = bizStudentsService.countCompletedCasesByUserId(userId);
         int totalMinutes = bizStudentsService.sumTrainingMinutesByUserId(userId);
-        Double averageScore = bizStudentsService.getTrainingAverageScoreByUserId(userId,1);
+        Double averageScore = bizStudentsService.getTrainingAverageScoreByUserId(userId, 1);
         Map<String, Object> result = new java.util.HashMap<>();
         result.put("trainingCount", trainingCount);
         result.put("totalMinutes", totalMinutes);
@@ -99,22 +101,11 @@ public class BizStudentsController extends BaseController {
     public TableDataInfo getTrainingList(@PathVariable Long userId,
                                          @RequestParam(required = false) String caseName) {
         startPage();
-        List<Map<String, Object>> list = bizStudentsService.getTrainingList(userId,caseName);
-        // 格式化时间字段
-        for (Map<String, Object> map : list) {
-            Object startTime = map.get("start_time");
-            if (startTime instanceof java.util.Date) {
-                map.put("start_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, (java.util.Date) startTime));
-            }
-            Object endTime = map.get("end_time");
-            if (endTime instanceof java.util.Date) {
-                map.put("end_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, (java.util.Date) endTime));
-            }
-        }
+        List<TrainExamInfo> list = bizStudentsService.getTrainingList(userId, caseName);
         return getDataTable(list);
     }
 
-    /** 
+    /**
      * 查询学生活跃列表
      */
     @ApiOperation("查询学生活跃列表")
@@ -122,13 +113,6 @@ public class BizStudentsController extends BaseController {
     @GetMapping("/active/list/{userId}")
     public AjaxResult getStudentActive(@PathVariable Long userId) {
         List<Map<String, Object>> list = bizStudentsService.getActivityList(userId);
-        // 格式化时间字段
-        for (Map<String, Object> map : list) {
-            Object activityTime = map.get("activity_time");
-            if (activityTime instanceof java.util.Date) {
-                map.put("activity_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, (java.util.Date) activityTime));
-            }
-        }
         return AjaxResult.success(list);
     }
 
@@ -159,18 +143,7 @@ public class BizStudentsController extends BaseController {
     @GetMapping("/exam/list/{userId}")
     public AjaxResult getExamList(@PathVariable Long userId,
                                   @RequestParam(required = false) String caseName) {
-        List<Map<String, Object>> list = bizStudentsService.getExamList(userId,caseName);
-        // 格式化时间字段
-        for (Map<String, Object> map : list) {
-            Object startTime = map.get("start_time");
-            if (startTime instanceof java.util.Date) {
-                map.put("start_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, (java.util.Date) startTime));
-            }
-            Object endTime = map.get("end_time");
-            if (endTime instanceof java.util.Date) {
-                map.put("end_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, (java.util.Date) endTime));
-            }
-        }
+        List<TrainExamInfo> list = bizStudentsService.getExamList(userId, caseName);
         return AjaxResult.success(list);
     }
 
@@ -203,11 +176,5 @@ public class BizStudentsController extends BaseController {
         List<Map<String, Object>> stats = bizStudentsService.getRecentMonthTrainingStats(userId);
         return AjaxResult.success(stats);
     }
-
-
-
-
-
-
 
 }

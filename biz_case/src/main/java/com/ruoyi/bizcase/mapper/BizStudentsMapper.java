@@ -1,5 +1,6 @@
 package com.ruoyi.bizcase.mapper;
 
+import com.ruoyi.bizcase.domain.dto.TrainExamInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -35,7 +36,7 @@ public interface BizStudentsMapper {
 
 
 
-    List<Map<String, Object>> getTrainingList(@Param("userId") Long userId, @Param("caseName") String caseName, @Param("evalMode")  int evalMode);
+    List<TrainExamInfo> getTrainingList(@Param("userId") Long userId, @Param("caseName") String caseName, @Param("evalMode")  int evalMode);
 
     int countExamSessionsByUserId(@Param("userId") Long userId,@Param("evalMode")  int evalMode);
 

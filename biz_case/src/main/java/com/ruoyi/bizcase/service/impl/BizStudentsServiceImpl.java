@@ -1,5 +1,6 @@
 package com.ruoyi.bizcase.service.impl;
 
+import com.ruoyi.bizcase.domain.dto.TrainExamInfo;
 import com.ruoyi.bizcase.mapper.BizStudentsMapper;
 import com.ruoyi.bizcase.service.IBizStudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,12 +60,12 @@ public class BizStudentsServiceImpl implements IBizStudentsService {
     }
 
     @Override
-    public List<Map<String, Object>> getTrainingList(Long userId,String caseName) {
+    public List<TrainExamInfo> getTrainingList(Long userId,String caseName) {
         return bizStudentsMapper.getTrainingList(userId,caseName,1);
     }
 
     @Override
-    public List<Map<String, Object>> getExamList(Long userId,String caseName) {
+    public List<TrainExamInfo> getExamList(Long userId, String caseName) {
         return bizStudentsMapper.getTrainingList(userId,caseName,2);
     }
 

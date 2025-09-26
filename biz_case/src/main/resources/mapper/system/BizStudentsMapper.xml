@@ -57,12 +57,12 @@
     </select>
 
     <!-- 获取用户的训练 or  开始 列表 -->
-    <select id="getTrainingList" parameterType="long" resultType="java.util.HashMap">
+    <select id="getTrainingList" parameterType="long" resultType="com.ruoyi.bizcase.domain.dto.TrainExamInfo">
         SELECT
-            bcr.session_id AS session_id,
-            su.nick_name AS nick_name,
-            bc.case_name AS case_name,
-            bcs.step_name AS step_name,
+            bcr.session_id AS sessionId,
+            su.nick_name AS nickName,
+            bc.case_name AS caseName,
+            bcs.step_name AS stepName,
             IFNULL(bce.totle_score, '未评分') AS score,
             CASE
                 WHEN bce.totle_score >= 90 THEN '优'
@@ -70,8 +70,8 @@
                 WHEN bce.totle_score &lt; 80 AND bce.totle_score >= 0 THEN '中'
                 ELSE '无评级'
             END AS level,
-            bcr.create_time AS start_time,
-            bcr.end_time AS end_time,
+            bcr.create_time AS startTime,
+            bcr.end_time AS endTime,
             TIMESTAMPDIFF(MINUTE, bcr.create_time, bcr.end_time) AS totle
         FROM
             biz_consultation_sessions AS bcr
