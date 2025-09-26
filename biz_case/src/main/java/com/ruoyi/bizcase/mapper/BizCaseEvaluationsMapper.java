@@ -12,7 +12,7 @@ import com.ruoyi.bizcase.domain.BizCaseEvaluations;
 public interface BizCaseEvaluationsMapper 
 {
     /**
-     * 查询学生病例得分总
+     * 查询学生病例得  分总
      * 
      * @param evaluationId 学生病例得分总主键
      * @return 学生病例得分总
@@ -29,7 +29,7 @@ public interface BizCaseEvaluationsMapper
 
     /**
      * 新增学生病例得分总
-     * 
+     *
      * @param bizCaseEvaluations 学生病例得分总
      * @return 结果
      */
