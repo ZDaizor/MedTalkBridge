@@ -66,7 +66,10 @@ public class BizCaseControllerIntegrationTest {
         // 获取用户token
         String username = "admin";
         String password = "123456";
-        String loginRequest = objectMapper.writeValueAsString(Map.of("username", username, "password", password));
+        java.util.HashMap<String, String> loginParams = new java.util.HashMap<>();
+        loginParams.put("username", username);
+        loginParams.put("password", password);
+        String loginRequest = objectMapper.writeValueAsString(loginParams);
 
         MvcResult result = mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
