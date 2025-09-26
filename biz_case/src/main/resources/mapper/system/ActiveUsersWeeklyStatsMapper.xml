@@ -10,41 +10,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="activeUsers"       column="active_users" />
     </resultMap>
 
-    <!-- 查询活跃用户周统计 -->
+    <!-- Query weekly active users statistics -->
     <select id="selectActiveUsersWeeklyStats" resultMap="ActiveUsersWeeklyStatsResult">
-        WITH RECURSIVE
-            days AS (SELECT 1 AS day_number
-                     UNION ALL
-                     SELECT day_number + 1
-                     FROM days
-                     WHERE day_number < 7),
-            active_counts AS (SELECT DAYOFWEEK(l.login_time)     AS day_number,
-                                     COUNT(DISTINCT l.user_name) AS active_users
-                              FROM sys_logininfor l
-                                       JOIN
-                                   sys_user u ON l.user_name = u.user_name
-                                       JOIN
-                                   sys_user_role ur ON u.user_id = ur.user_id
-                                       JOIN
-                                   sys_role r ON ur.role_id = r.role_id
-                              WHERE l.login_time >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 WEEK)
-                                AND l.status = 0           -- 只统计成功登录的记录
-                                AND r.role_key = 'student' -- 筛选学生角色
-                              GROUP BY DAYOFWEEK(l.login_time))
-        SELECT CASE d.day_number
-                   WHEN 1 THEN '周日'
-                   WHEN 2 THEN '周一'
-                   WHEN 3 THEN '周二'
-                   WHEN 4 THEN '周三'
-                   WHEN 5 THEN '周四'
-                   WHEN 6 THEN '周五'
-                   WHEN 7 THEN '周六'
-                   END                     AS day_of_week,
-               d.day_number,
-               COALESCE(a.active_users, 0) AS active_users
+        WITH RECURSIVE days AS (
+            SELECT 1 AS day_number
+            UNION ALL
+            SELECT day_number + 1
+            FROM days
+            WHERE day_number &lt; 7
+        ),
+        active_counts AS (
+            SELECT DAYOFWEEK(l.login_time) AS day_number,
+                   COUNT(DISTINCT l.user_name) AS active_users
+            FROM sys_logininfor l
+            JOIN sys_user u ON l.user_name = u.user_name
+            JOIN sys_user_role ur ON u.user_id = ur.user_id
+            JOIN sys_role r ON ur.role_id = r.role_id
+            WHERE l.login_time >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 WEEK)
+              AND l.status = 0           /* Count only successful login records */
+              AND r.role_key = 'student' /* Filter student role */
+            GROUP BY DAYOFWEEK(l.login_time)
+        )
+        SELECT 
+            CASE d.day_number
+                WHEN 1 THEN 'Sunday'
+                WHEN 2 THEN 'Monday'
+                WHEN 3 THEN 'Tuesday'
+                WHEN 4 THEN 'Wednesday'
+                WHEN 5 THEN 'Thursday'
+                WHEN 6 THEN 'Friday'
+                WHEN 7 THEN 'Saturday'
+            END AS day_of_week,
+            d.day_number,
+            COALESCE(a.active_users, 0) AS active_users
         FROM days d
-                 LEFT JOIN
-             active_counts a ON d.day_number = a.day_number
+        LEFT JOIN active_counts a ON d.day_number = a.day_number
         ORDER BY d.day_number
     </select>
 
