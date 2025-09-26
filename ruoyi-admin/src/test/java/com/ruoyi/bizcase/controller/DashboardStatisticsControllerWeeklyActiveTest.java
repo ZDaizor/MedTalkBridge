@@ -54,11 +54,14 @@ public class DashboardStatisticsControllerWeeklyActiveTest {
 
     @Test
     void testGetWeeklyActiveUsers() throws Exception {
-        mockMvc.perform(get("/system/dashboard/weekly-active-users")
+        MvcResult result = mockMvc.perform(get("/system/dashboard/weekly-active-users")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data").isArray())
                 .andReturn();
+        
+        String responseContent = result.getResponse().getContentAsString();
+        log.info("Weekly active users response: {}", responseContent);
     }
 }

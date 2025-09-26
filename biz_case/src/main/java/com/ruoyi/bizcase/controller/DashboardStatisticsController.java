@@ -5,6 +5,7 @@ import com.ruoyi.bizcase.domain.CaseTypeDistribution;
 import com.ruoyi.bizcase.domain.DashboardStatistics;
 import com.ruoyi.bizcase.domain.DeptStudentStatistics;
 import com.ruoyi.bizcase.domain.MonthlyTrainingTrend;
+import com.ruoyi.bizcase.domain.ScoreRangeStatistics;
 import com.ruoyi.bizcase.domain.StageAssessmentStatistics;
 import com.ruoyi.bizcase.domain.TeachingDataOverview;
 import com.ruoyi.bizcase.domain.dto.StudentStatisticsQueryDTO;
@@ -12,6 +13,7 @@ import com.ruoyi.bizcase.service.IActiveUsersWeeklyStatsService;
 import com.ruoyi.bizcase.service.ICaseTypeDistributionService;
 import com.ruoyi.bizcase.service.IDeptStudentStatisticsService;
 import com.ruoyi.bizcase.service.IMonthlyTrainingTrendService;
+import com.ruoyi.bizcase.service.IScoreRangeStatisticsService;
 import com.ruoyi.bizcase.service.IStageAssessmentStatisticsService;
 import com.ruoyi.bizcase.service.ITeachingDataOverviewService;
 import com.ruoyi.common.core.controller.BaseController;
@@ -53,6 +55,9 @@ public class DashboardStatisticsController extends BaseController {
     
     @Autowired
     private IActiveUsersWeeklyStatsService activeUsersWeeklyStatsService;
+    
+    @Autowired
+    private IScoreRangeStatisticsService scoreRangeStatisticsService;
 
 
     
@@ -128,7 +133,7 @@ public class DashboardStatisticsController extends BaseController {
         return AjaxResult.success(statistics);
     }
 
-    /**
+    /***
      * 查询周活跃用户统计
      */
     @ApiOperation("查询周活跃用户统计")
@@ -138,6 +143,18 @@ public class DashboardStatisticsController extends BaseController {
     {
         List<ActiveUsersWeeklyStats> stats = activeUsersWeeklyStatsService.selectActiveUsersWeeklyStats();
         return AjaxResult.success(stats);
+    }
+
+    /***
+     * 查询分数范围统计
+     */
+    @ApiOperation("查询分数范围统计")
+    @PreAuthorize("@ss.hasPermi('system:dashboard:statistics')")
+    @GetMapping("/score-range-statistics")
+    public AjaxResult getScoreRangeStatistics()
+    {
+        List<ScoreRangeStatistics> statistics = scoreRangeStatisticsService.selectScoreRangeStatistics();
+        return AjaxResult.success(statistics);
     }
 
 
