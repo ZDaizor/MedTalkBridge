@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bizcase.mapper.StageAssessmentStatisticsMapper">
+
+    <resultMap type="com.ruoyi.bizcase.domain.StageAssessmentStatistics" id="StageAssessmentStatisticsResult">
+        <result property="stageName"         column="stage_name" />
+        <result property="completionCount"   column="completion_count" />
+        <result property="averageScore"      column="average_score" />
+        <result property="passRate"          column="pass_rate" />
+    </resultMap>
+
+    <!-- 查询阶段评估统计 -->
+    <select id="selectStageAssessmentStatistics" resultMap="StageAssessmentStatisticsResult">
+        SELECT 
+            s.step_name AS stage_name,
+            COUNT(DISTINCT cs.session_id) AS completion_count,
+            ROUND(AVG(e.totle_score), 1) AS average_score,
+            CONCAT(ROUND(COUNT(CASE WHEN e.totle_score >= 80 THEN 1 END) * 100.0 / COUNT(*), 1), '%') AS pass_rate
+        FROM 
+            biz_case_step s
+        LEFT JOIN 
+            biz_consultation_sessions cs ON s.step_id = cs.step_id
+        LEFT JOIN 
+            biz_case_evaluations e ON cs.session_id = e.session_id AND s.step_id = e.step_id
+        WHERE 
+            cs.status = 1  -- 只统计已完成的会话
+            AND e.totle_score > 0  -- 只统计有有效评分的记录
+        GROUP BY 
+            s.step_name, s.step_id
+        ORDER BY 
+            MIN(s.step_order)
+    </select>
+
+</mapper>
