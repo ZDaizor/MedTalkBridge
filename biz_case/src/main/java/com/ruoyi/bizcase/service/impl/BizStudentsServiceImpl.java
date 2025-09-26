@@ -1,6 +1,9 @@
 package com.ruoyi.bizcase.service.impl;
 
+import com.ruoyi.bizcase.domain.dto.CommunicationScoreTrendDTO;
 import com.ruoyi.bizcase.domain.dto.TrainExamInfo;
+import com.ruoyi.bizcase.domain.dto.UserAchievementDTO;
+import com.ruoyi.bizcase.domain.dto.TrainingCaseCompletionDTO;
 import com.ruoyi.bizcase.mapper.BizStudentsMapper;
 import com.ruoyi.bizcase.service.IBizStudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,5 +131,20 @@ public class BizStudentsServiceImpl implements IBizStudentsService {
     @Override
     public java.util.List<java.util.Map<String, Object>> getRecentMonthTrainingStats(Long userId) {
         return bizStudentsMapper.getRecentMonthTrainingStats(userId);
+    }
+
+    @Override
+    public List<UserAchievementDTO> getUserAchievementList(Long userId) {
+        return bizStudentsMapper.getUserAchievementList(userId);
+    }
+
+    @Override
+    public TrainingCaseCompletionDTO getTrainingCaseCompletion(Long userId) {
+        return bizStudentsMapper.getTrainingCaseCompletion(userId);
+    }
+
+    @Override
+    public List<CommunicationScoreTrendDTO> getCommunicationScoreTrend(Long userId) {
+        return bizStudentsMapper.getCommunicationScoreTrend(userId);
     }
 }

@@ -206,4 +206,88 @@
         ORDER BY
             m.month_key ASC
     </select>
+
+    <select id="getUserAchievementList" resultType="com.ruoyi.bizcase.domain.dto.UserAchievementDTO" parameterType="long">
+        SELECT
+            a.achievement_id AS achievementId,
+            a.achievement_name AS achievementName,
+            a.achievement_content AS achievementContent,
+            CASE WHEN ua.user_id IS NOT NULL THEN '1' ELSE '0' END AS completionStatus,
+            ua.create_time AS completionTime
+        FROM biz_achievement a
+        LEFT JOIN biz_user_achievement ua ON a.achievement_id = ua.achievement_id AND ua.user_id = #{userId}
+        ORDER BY a.achievement_id ASC
+    </select>
+
+    <select id="getTrainingCaseCompletion" resultType="com.ruoyi.bizcase.domain.dto.TrainingCaseCompletionDTO" parameterType="long">
+        SELECT
+            t.finash_case,
+            t.total_case,
+            ROUND(
+                IF(t.total_case > 0, t.finash_case * 100.0 / t.total_case, 0),
+                2
+            ) AS percentage
+        FROM
+            (
+                SELECT
+                    (SELECT COUNT(*)
+                     FROM (
+                         SELECT 1
+                         FROM biz_case_evaluations
+                         WHERE user_id = #{userId} AND eval_mode = 1
+                         GROUP BY case_id
+                         HAVING COUNT(DISTINCT step_id) = 3
+                     ) AS completed_query) AS finash_case,
+
+                    (SELECT COUNT(*) FROM biz_case WHERE case_status = 1) AS total_case
+            ) AS t
+    </select>
+
+    <select id="getCommunicationScoreTrend" resultType="com.ruoyi.bizcase.domain.dto.CommunicationScoreTrendDTO" parameterType="long">
+        WITH
+        AllMonths AS (
+            SELECT DATE_FORMAT(NOW() - INTERVAL 0 MONTH, '%Y-%m') AS month_key
+            UNION ALL SELECT DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m')
+            UNION ALL SELECT DATE_FORMAT(NOW() - INTERVAL 2 MONTH, '%Y-%m')
+            UNION ALL SELECT DATE_FORMAT(NOW() - INTERVAL 3 MONTH, '%Y-%m')
+            UNION ALL SELECT DATE_FORMAT(NOW() - INTERVAL 4 MONTH, '%Y-%m')
+        ),
+        AllSteps AS (
+            SELECT 1 AS step_id, '术前交代' AS step_name
+            UNION ALL SELECT 2 AS step_id, '术中处理' AS step_name
+            UNION ALL SELECT 3 AS step_id, '术后交代' AS step_name
+        ),
+        MonthStepGrid AS (
+            SELECT m.month_key, s.step_id, s.step_name
+            FROM AllMonths m
+            CROSS JOIN AllSteps s
+        ),
+        UserMonthlyScores AS (
+            SELECT
+                DATE_FORMAT(s.end_time, '%Y-%m') AS month_key,
+                e.step_id,
+                AVG(e.totle_score) AS average_score
+            FROM
+                biz_case_evaluations e
+            JOIN
+                biz_consultation_sessions s ON e.session_id = s.session_id
+            WHERE
+                e.user_id = #{userId}
+            GROUP BY
+                DATE_FORMAT(s.end_time, '%Y-%m'),
+                e.step_id
+        )
+        SELECT
+            DATE_FORMAT(CONCAT(g.month_key, '-01'), '%c月') AS monthDisplay,
+            g.step_id AS stepId,
+            g.step_name AS stepName,
+            ROUND(IFNULL(ums.average_score, 0), 2) AS score
+        FROM
+            MonthStepGrid g
+        LEFT JOIN
+            UserMonthlyScores ums ON g.month_key = ums.month_key AND g.step_id = ums.step_id
+        ORDER BY
+            g.month_key ASC,
+            g.step_id ASC
+    </select>
 </mapper>

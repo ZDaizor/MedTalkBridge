@@ -1,5 +1,8 @@
 package com.ruoyi.bizcase.service;
 import com.ruoyi.bizcase.domain.dto.TrainExamInfo;
+import com.ruoyi.bizcase.domain.dto.UserAchievementDTO;
+import com.ruoyi.bizcase.domain.dto.TrainingCaseCompletionDTO;
+import com.ruoyi.bizcase.domain.dto.CommunicationScoreTrendDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -97,4 +100,25 @@ public interface IBizStudentsService {
      * @return 每月训练数量列表
      */
     java.util.List<java.util.Map<String, Object>> getRecentMonthTrainingStats(Long userId);
+
+    /**
+     * 查询用户成就列表
+     * @param userId 用户ID
+     * @return 用户成就列表
+     */
+    List<UserAchievementDTO> getUserAchievementList(Long userId);
+
+    /**
+     * 查询学生训练病例完成情况
+     * @param userId 学生ID
+     * @return 训练完成病例统计
+     */
+    TrainingCaseCompletionDTO getTrainingCaseCompletion(Long userId);
+
+    /**
+     * 查询学生沟通能力提升趋势
+     * @param userId 学生ID
+     * @return 沟通能力提升趋势
+     */
+    List<CommunicationScoreTrendDTO> getCommunicationScoreTrend(Long userId);
 }

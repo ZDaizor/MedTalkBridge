@@ -177,4 +177,39 @@ public class BizStudentsController extends BaseController {
         return AjaxResult.success(stats);
     }
 
+    /**
+     * 查询用户成就列表
+     */
+    @ApiOperation("查询用户成就列表")
+    @PreAuthorize("@ss.hasPermi('system:case:query')")
+    @GetMapping("/stat/achievement/list/{userId}")
+    public AjaxResult getUserAchievementList(@PathVariable Long userId) {
+        return AjaxResult.success(bizStudentsService.getUserAchievementList(userId));
+    }
+
+    /**
+     * 查询训练完成病例统计
+     */
+    @ApiOperation("查询训练完成病例统计")
+    @PreAuthorize("@ss.hasPermi('system:case:query')")
+    @GetMapping("/stat/training/completion/{userId}")
+    public AjaxResult getTrainingCaseCompletion(@PathVariable Long userId) {
+        return AjaxResult.success(bizStudentsService.getTrainingCaseCompletion(userId));
+    }
+
+    /**
+     * 查询沟通能力提升趋势
+     */
+    @ApiOperation("查询沟通能力提升趋势")
+    @PreAuthorize("@ss.hasPermi('system:case:query')")
+    @GetMapping("/stat/communication/trend/{userId}")
+    public AjaxResult getCommunicationScoreTrend(@PathVariable Long userId) {
+        return AjaxResult.success(bizStudentsService.getCommunicationScoreTrend(userId));
+    }
+
+
+
+
+
+
 }

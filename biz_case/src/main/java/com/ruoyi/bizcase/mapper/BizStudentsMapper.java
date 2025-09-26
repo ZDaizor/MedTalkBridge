@@ -1,6 +1,9 @@
 package com.ruoyi.bizcase.mapper;
 
 import com.ruoyi.bizcase.domain.dto.TrainExamInfo;
+import com.ruoyi.bizcase.domain.dto.UserAchievementDTO;
+import com.ruoyi.bizcase.domain.dto.TrainingCaseCompletionDTO;
+import com.ruoyi.bizcase.domain.dto.CommunicationScoreTrendDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -82,4 +85,25 @@ public interface BizStudentsMapper {
      * @return 每月训练数量列表
      */
     java.util.List<java.util.Map<String, Object>> getRecentMonthTrainingStats(Long userId);
+
+    /**
+     * 获取用户成就列表
+     * @param userId 用户ID
+     * @return 用户成就列表
+     */
+    List<UserAchievementDTO> getUserAchievementList(@Param("userId") Long userId);
+
+    /**
+     * 获取训练完成病例统计
+     * @param userId 用户ID
+     * @return 训练完成病例统计
+     */
+    TrainingCaseCompletionDTO getTrainingCaseCompletion(@Param("userId") Long userId);
+
+    /**
+     * 获取沟通能力提升趋势
+     * @param userId 用户ID
+     * @return 沟通能力提升趋势
+     */
+    List<CommunicationScoreTrendDTO> getCommunicationScoreTrend(@Param("userId") Long userId);
 }
