@@ -33,13 +33,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         )
         SELECT 
             CASE d.day_number
-                WHEN 1 THEN 'Sunday'
-                WHEN 2 THEN 'Monday'
-                WHEN 3 THEN 'Tuesday'
-                WHEN 4 THEN 'Wednesday'
-                WHEN 5 THEN 'Thursday'
-                WHEN 6 THEN 'Friday'
-                WHEN 7 THEN 'Saturday'
+                WHEN 1 THEN '星期日'
+                WHEN 2 THEN '星期一'
+                WHEN 3 THEN '星期二'
+                WHEN 4 THEN '星期三'
+                WHEN 5 THEN '星期四'
+                WHEN 6 THEN '星期五'
+                WHEN 7 THEN '星期六'
             END AS day_of_week,
             d.day_number,
             COALESCE(a.active_users, 0) AS active_users
