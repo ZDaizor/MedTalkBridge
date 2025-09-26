@@ -146,7 +146,7 @@
         biz_case_evaluations e ON s.session_id = e.session_id and s.case_id = e.case_id
         WHERE
         s.user_id = #{userId}
-        AND s.status = 0 <!-- 0: 代表已完成 -->
+        AND s.status = 1 <!-- 0: 代表已完成 -->
         ORDER BY
         s.end_time DESC <!-- 按活动完成时间降序排列-->
         LIMIT 5; <!-- 新增：限制只返回前5条记录-->
