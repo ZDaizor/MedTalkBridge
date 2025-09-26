@@ -146,4 +146,40 @@ public class BizStudentsController extends BaseController {
         return AjaxResult.success(list);
     }
 
+    /**
+     * 统计中心：术前、术中、后束交代准确率，完成病例数
+     */
+    @ApiOperation("统计中心：术前、术中、后束交代准确率，完成病例数")
+    @PreAuthorize("@ss.hasPermi('system:case:query')")
+    @GetMapping("/stat/center/{userId}")
+    public AjaxResult statCenter(@PathVariable Long userId) {
+        Double preAccuracy = bizStudentsService.getStepAccuracyRate(userId, 1);
+        Double intraAccuracy = bizStudentsService.getStepAccuracyRate(userId, 2);
+        Double postAccuracy = bizStudentsService.getStepAccuracyRate(userId, 3);
+        int finishedCases = bizStudentsService.countFinishedCases(userId);
+        Map<String, Object> result = new HashMap<>();
+        result.put("preAccuracy", preAccuracy);
+        result.put("intraAccuracy", intraAccuracy);
+        result.put("postAccuracy", postAccuracy);
+        result.put("finishedCases", finishedCases);
+        return AjaxResult.success(result);
+    }
+
+    /**
+     * 沟通训练量（前5个月）统计
+     */
+    @ApiOperation("沟通训练量（前5个月）统计")
+    @PreAuthorize("@ss.hasPermi('system:case:query')")
+    @GetMapping("/stat/recentMonthTrainingStats/{userId}")
+    public AjaxResult getRecentMonthTrainingStats(@PathVariable Long userId) {
+        List<Map<String, Object>> stats = bizStudentsService.getRecentMonthTrainingStats(userId);
+        return AjaxResult.success(stats);
+    }
+
+
+
+
+
+
+
 }

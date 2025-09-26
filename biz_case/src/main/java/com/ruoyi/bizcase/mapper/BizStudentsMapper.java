@@ -59,4 +59,26 @@ public interface BizStudentsMapper {
      * @return 徽章数量
      */
     int countUserBadges(Long userId);
+
+    /**
+     * 查询某个步骤的准确率
+     * @param userId 用户ID
+     * @param stepId 步骤ID
+     * @return 准确率（平均分）
+     */
+    Double getStepAccuracyRate(@Param("userId") Long userId,@Param("stepId")   Integer stepId);
+
+    /**
+     * 统计用户完成的病历数量（所有模式）
+     * @param userId 用户ID
+     * @return 完成病历数量
+     */
+    int countFinishedCases(Long userId);
+
+    /**
+     * 查询用户近5个月训练数量统计
+     * @param userId 用户ID
+     * @return 每月训练数量列表
+     */
+    java.util.List<java.util.Map<String, Object>> getRecentMonthTrainingStats(Long userId);
 }
