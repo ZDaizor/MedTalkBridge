@@ -113,4 +113,19 @@ public class BizStudentsServiceImpl implements IBizStudentsService {
     public int countUserBadges(Long userId) {
         return bizStudentsMapper.countUserBadges(userId);
     }
+
+    @Override
+    public Double getStepAccuracyRate(Long userId, Integer stepId) {
+        return bizStudentsMapper.getStepAccuracyRate(userId, stepId);
+    }
+
+    @Override
+    public int countFinishedCases(Long userId) {
+        return bizStudentsMapper.countFinishedCases(userId);
+    }
+
+    @Override
+    public java.util.List<java.util.Map<String, Object>> getRecentMonthTrainingStats(Long userId) {
+        return bizStudentsMapper.getRecentMonthTrainingStats(userId);
+    }
 }

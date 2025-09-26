@@ -157,4 +157,53 @@
         FROM biz_user_achievement
         WHERE user_id = #{userId}
     </select>
+
+    <select id="getStepAccuracyRate" parameterType="map" resultType="double">
+        SELECT ifnull(AVG(totle_score),0) AS accuracy_rate
+        FROM biz_case_evaluations
+        WHERE user_id = #{userId}
+          AND step_id = #{stepId}
+    </select>
+
+    <select id="countFinishedCases" parameterType="long" resultType="int">
+        SELECT COUNT(*) AS finash_case
+        FROM (
+            SELECT e.case_id
+            FROM biz_case_evaluations e
+            JOIN biz_case_prompt p ON e.case_id = p.case_id AND e.step_id = p.step_id
+            WHERE e.user_id = #{userId}
+            GROUP BY e.case_id
+            HAVING COUNT(DISTINCT e.step_id) = 3
+        ) AS high_scoring_exams
+    </select>
+
+    <select id="getRecentMonthTrainingStats" parameterType="long" resultType="java.util.HashMap">
+        WITH AllMonths AS (
+            SELECT DATE_FORMAT(NOW(), '%Y-%m') AS month_key
+            UNION ALL
+            SELECT DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m')
+            UNION ALL
+            SELECT DATE_FORMAT(NOW() - INTERVAL 2 MONTH, '%Y-%m')
+            UNION ALL
+            SELECT DATE_FORMAT(NOW() - INTERVAL 3 MONTH, '%Y-%m')
+            UNION ALL
+            SELECT DATE_FORMAT(NOW() - INTERVAL 4 MONTH, '%Y-%m')
+        )
+        SELECT
+            #{userId} AS user_id,
+            m.month_key AS month,
+            COUNT(s.session_id) AS training_count
+        FROM
+            AllMonths m
+        LEFT JOIN
+            biz_consultation_sessions s
+            ON m.month_key = DATE_FORMAT(s.create_time, '%Y-%m')
+            AND s.user_id = #{userId}
+            AND s.eval_mode = 1
+            AND s.status = 1
+        GROUP BY
+            m.month_key
+        ORDER BY
+            m.month_key ASC
+    </select>
 </mapper>
