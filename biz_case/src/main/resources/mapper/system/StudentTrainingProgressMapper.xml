@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bizcase.mapper.StudentTrainingProgressMapper">
+
+    <resultMap type="com.ruoyi.bizcase.domain.StudentTrainingProgress" id="StudentTrainingProgressResult">
+        <result property="progressCategoryId"    column="progress_category_id" />
+        <result property="studentCount"           column="student_count" />
+        <result property="percentage"             column="percentage" />
+    </resultMap>
+
+    <!-- 查询学生训练进度统计 -->
+    <select id="selectStudentTrainingProgress" resultMap="StudentTrainingProgressResult">
+        <![CDATA[
+        WITH student_progress AS (
+            SELECT 
+                u.user_id,
+                COUNT(DISTINCT cs.step_id) AS completed_stages
+            FROM 
+                sys_user u
+            JOIN 
+                sys_user_role ur ON u.user_id = ur.user_id
+            JOIN 
+                sys_role r ON ur.role_id = r.role_id
+            LEFT JOIN 
+                biz_consultation_sessions cs ON u.user_id = cs.user_id AND cs.status = 1
+            WHERE 
+                r.role_key = 'student'
+                AND u.status = '0'
+            GROUP BY 
+                u.user_id
+        ),
+        total_students AS (
+            SELECT COUNT(*) AS total FROM student_progress
+        ),
+        progress_categories AS (
+            SELECT 
+                user_id,
+                completed_stages,
+                CASE 
+                    WHEN completed_stages = (SELECT COUNT(DISTINCT step_id) FROM biz_case_step) THEN 1
+                    WHEN completed_stages = 2 THEN 2
+                    WHEN completed_stages = 1 THEN 3
+                    WHEN completed_stages = 0 OR completed_stages IS NULL THEN 4
+                END AS progress_category_id
+            FROM 
+                student_progress
+        ),
+        stage_counts AS (
+            SELECT 
+                progress_category_id,
+                COUNT(*) AS student_count
+            FROM 
+                progress_categories
+            GROUP BY 
+                progress_category_id
+        ),
+        all_categories AS (
+            SELECT 1 AS progress_category_id, 1 AS sort_order
+            UNION ALL SELECT 2, 2
+            UNION ALL SELECT 3, 3
+            UNION ALL SELECT 4, 4
+        )
+        SELECT 
+            ac.progress_category_id,
+            COALESCE(sc.student_count, 0) AS student_count,
+            CONCAT(ROUND(COALESCE(sc.student_count, 0) * 100.0 / ts.total, 0), '%') AS percentage
+        FROM 
+            all_categories ac
+        LEFT JOIN 
+            stage_counts sc ON ac.progress_category_id = sc.progress_category_id
+        CROSS JOIN 
+            total_students ts
+        ORDER BY 
+            ac.sort_order
+        ]]>
+    </select>
+
+</mapper>

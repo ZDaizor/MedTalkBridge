@@ -7,6 +7,7 @@ import com.ruoyi.bizcase.domain.DeptStudentStatistics;
 import com.ruoyi.bizcase.domain.MonthlyTrainingTrend;
 import com.ruoyi.bizcase.domain.ScoreRangeStatistics;
 import com.ruoyi.bizcase.domain.StageAssessmentStatistics;
+import com.ruoyi.bizcase.domain.StudentTrainingProgress;
 import com.ruoyi.bizcase.domain.TeachingDataOverview;
 import com.ruoyi.bizcase.domain.TopStudentsRanking;
 import com.ruoyi.bizcase.domain.dto.StudentStatisticsQueryDTO;
@@ -14,6 +15,7 @@ import com.ruoyi.bizcase.service.IActiveUsersWeeklyStatsService;
 import com.ruoyi.bizcase.service.ICaseTypeDistributionService;
 import com.ruoyi.bizcase.service.IDeptStudentStatisticsService;
 import com.ruoyi.bizcase.service.IMonthlyTrainingTrendService;
+import com.ruoyi.bizcase.service.IStudentTrainingProgressService;
 import com.ruoyi.bizcase.service.IScoreRangeStatisticsService;
 import com.ruoyi.bizcase.service.ITopStudentsRankingService;
 import com.ruoyi.bizcase.service.IStageAssessmentStatisticsService;
@@ -63,6 +65,9 @@ public class DashboardStatisticsController extends BaseController {
     
     @Autowired
     private ITopStudentsRankingService topStudentsRankingService;
+    
+    @Autowired
+    private IStudentTrainingProgressService studentTrainingProgressService;
 
 
     
@@ -172,6 +177,18 @@ public class DashboardStatisticsController extends BaseController {
     {
         List<TopStudentsRanking> ranking = topStudentsRankingService.selectTopStudentsRanking();
         return AjaxResult.success(ranking);
+    }
+
+    /***
+     * 查询学生训练进度统计
+     */
+    @ApiOperation("查询学生训练进度统计")
+    @PreAuthorize("@ss.hasPermi('system:dashboard:statistics')")
+    @GetMapping("/student-training-progress")
+    public AjaxResult getStudentTrainingProgress()
+    {
+        List<StudentTrainingProgress> progress = studentTrainingProgressService.selectStudentTrainingProgress();
+        return AjaxResult.success(progress);
     }
 
 

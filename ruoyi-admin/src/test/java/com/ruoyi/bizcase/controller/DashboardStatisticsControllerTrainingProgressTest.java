@@ -13,20 +13,28 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * 仪表板统计信息控制器优秀学生排行榜接口测试类
+ * Dashboard Statistics Controller Student Training Progress Interface Test Class
+ * 
+ * Progress Category IDs:
+ * 1 - All Stages Completed
+ * 2 - 2 Stages Completed  
+ * 3 - 1 Stage Completed
+ * 4 - Not Started
  *
  * @author ruoyi
  * @date 2025-09-26
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DashboardStatisticsControllerTopStudentsTest {
+public class DashboardStatisticsControllerTrainingProgressTest {
 
-    private static final Logger log = LoggerFactory.getLogger(DashboardStatisticsControllerTopStudentsTest.class);
+    private static final Logger log = LoggerFactory.getLogger(DashboardStatisticsControllerTrainingProgressTest.class);
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,8 +58,8 @@ public class DashboardStatisticsControllerTopStudentsTest {
     }
 
     @Test
-    void testGetTopStudentsRanking() throws Exception {
-        MvcResult result = mockMvc.perform(get("/system/dashboard/top-students-ranking")
+    void testGetStudentTrainingProgress() throws Exception {
+        MvcResult result = mockMvc.perform(get("/system/dashboard/student-training-progress")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
@@ -59,6 +67,6 @@ public class DashboardStatisticsControllerTopStudentsTest {
                 .andReturn();
 
         String responseContent = result.getResponse().getContentAsString();
-        log.info("优秀学生排行榜响应: {}", responseContent);
+        log.info("Student Training Progress Response: {}", responseContent);
     }
 }
