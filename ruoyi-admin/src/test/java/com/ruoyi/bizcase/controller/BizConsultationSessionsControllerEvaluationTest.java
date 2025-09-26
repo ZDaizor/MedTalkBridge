@@ -155,7 +155,7 @@ public class BizConsultationSessionsControllerEvaluationTest {
             BizEvScoreDetails queryCondition = new BizEvScoreDetails();
             queryCondition.setEvaluationId(evaluationId);
             List<BizEvScoreDetails> detailsList = bizEvScoreDetailsService.selectBizEvScoreDetailsList(queryCondition);
-            
+
             assertNotNull(detailsList, "分项详情列表不应为空");
             assertEquals(3, detailsList.size(), "应该有3条分项记录");
 

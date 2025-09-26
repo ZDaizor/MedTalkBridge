@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bizcase.mapper.MonthlyTrainingTrendMapper">
+
+    <resultMap type="com.ruoyi.bizcase.domain.MonthlyTrainingTrend" id="MonthlyTrainingTrendResult">
+        <result property="month"           column="month" />
+        <result property="trainingCount"   column="training_count" />
+        <result property="examCount"       column="exam_count" />
+    </resultMap>
+
+    <!-- 查询月度训练趋势 -->
+    <select id="selectMonthlyTrainingTrend" resultMap="MonthlyTrainingTrendResult">
+        SELECT 
+            DATE_FORMAT(dates.month_date, '%Y-%m') AS month,
+            COALESCE(training_counts.training_count, 0) AS training_count,
+            COALESCE(exam_counts.exam_count, 0) AS exam_count
+        FROM (
+            -- 生成过去12个月的日期
+            SELECT DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL n MONTH), '%Y-%m-01') AS month_date
+            FROM (
+                SELECT 0 AS n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION 
+                SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION 
+                SELECT 10 UNION SELECT 11
+            ) numbers
+        ) dates
+        LEFT JOIN (
+            -- 训练次数统计
+            SELECT 
+                DATE_FORMAT(create_time, '%Y-%m') AS month_str,
+                COUNT(*) AS training_count
+            FROM biz_consultation_sessions 
+            WHERE eval_mode = 1 AND status = 1
+            GROUP BY DATE_FORMAT(create_time, '%Y-%m')
+        ) training_counts ON DATE_FORMAT(dates.month_date, '%Y-%m') = training_counts.month_str
+        LEFT JOIN (
+            -- 考试次数统计
+            SELECT 
+                DATE_FORMAT(create_time, '%Y-%m') AS month_str,
+                COUNT(*) AS exam_count
+            FROM biz_consultation_sessions 
+            WHERE eval_mode = 2 AND status = 1
+            GROUP BY DATE_FORMAT(create_time, '%Y-%m')
+        ) exam_counts ON DATE_FORMAT(dates.month_date, '%Y-%m') = exam_counts.month_str
+        ORDER BY dates.month_date ASC
+    </select>
+
+</mapper>

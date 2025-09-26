@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bizcase.mapper.DeptStudentStatisticsMapper">
+
+    <resultMap type="com.ruoyi.bizcase.domain.DeptStudentStatistics" id="DeptStudentStatisticsResult">
+        <result property="departmentName"    column="department_name"    />
+        <result property="totalStudents"     column="total_students"     />
+        <result property="studentNames"      column="student_names"      />
+        <result property="averageScore"      column="average_score"      />
+        <result property="totalStudyDurationSeconds" column="total_study_duration_seconds" />
+        <result property="totalExamAttempts" column="total_exam_attempts" />
+    </resultMap>
+
+    <!-- 查询部门学生统计信息 -->
+    <select id="selectDeptStudentStatistics" resultMap="DeptStudentStatisticsResult">
+        SELECT
+            d.dept_name AS department_name,
+            COUNT(DISTINCT u.user_id) AS total_students,
+            GROUP_CONCAT(DISTINCT u.user_name ORDER BY u.user_name SEPARATOR ', ') AS student_names,
+            AVG(ce.totle_score) AS average_score,
+            COALESCE(SUM(cs.total_duration), 0) AS total_study_duration_seconds,
+            COUNT(ce.evaluation_id) AS total_exam_attempts
+        FROM
+            sys_dept d
+            LEFT JOIN sys_user u ON d.dept_id = u.dept_id
+            INNER JOIN sys_user_role ur ON u.user_id = ur.user_id
+            INNER JOIN sys_role r ON ur.role_id = r.role_id
+                AND r.role_key = 'student'
+            LEFT JOIN biz_consultation_sessions cs ON u.user_id = cs.user_id AND cs.status = 1
+            LEFT JOIN biz_case_evaluations ce ON cs.session_id = ce.session_id AND ce.eval_mode = 2
+        GROUP BY
+            d.dept_id, d.dept_name
+        ORDER BY
+            d.dept_name
+    </select>
+
+    <!-- 根据部门名称查询部门学生统计信息 -->
+    <select id="selectDeptStudentStatisticsByDeptName" parameterType="String" resultMap="DeptStudentStatisticsResult">
+        SELECT
+            d.dept_name AS department_name,
+            COUNT(DISTINCT u.user_id) AS total_students,
+            GROUP_CONCAT(DISTINCT u.user_name ORDER BY u.user_name SEPARATOR ', ') AS student_names,
+            AVG(ce.totle_score) AS average_score,
+            COALESCE(SUM(cs.total_duration), 0) AS total_study_duration_seconds,
+            COUNT(ce.evaluation_id) AS total_exam_attempts
+        FROM
+            sys_dept d
+            LEFT JOIN sys_user u ON d.dept_id = u.dept_id
+            INNER JOIN sys_user_role ur ON u.user_id = ur.user_id
+            INNER JOIN sys_role r ON ur.role_id = r.role_id
+                AND r.role_key = 'student'
+            LEFT JOIN biz_consultation_sessions cs ON u.user_id = cs.user_id AND cs.status = 1
+            LEFT JOIN biz_case_evaluations ce ON cs.session_id = ce.session_id AND ce.eval_mode = 2
+        WHERE
+            d.dept_name LIKE CONCAT('%', #{deptName}, '%')
+        GROUP BY
+            d.dept_id, d.dept_name
+        ORDER BY
+            d.dept_name
+    </select>
+
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bizcase.mapper.TeachingDataOverviewMapper">
+
+    <resultMap type="com.ruoyi.bizcase.domain.TeachingDataOverview" id="TeachingDataOverviewResult">
+        <result property="totalStudents"           column="total_students" />
+        <result property="activeStudents"          column="active_students" />
+        <result property="totalCompletedTrainings" column="total_completed_trainings" />
+        <result property="averageScore"            column="average_score" />
+        <result property="totalLearningDuration"   column="total_learning_duration" />
+        <result property="passRate"                column="pass_rate" />
+    </resultMap>
+
+    <!-- 查询教学数据总体概览 -->
+    <select id="selectTeachingDataOverview" resultMap="TeachingDataOverviewResult">
+        SELECT 
+            -- 总学生数
+            (SELECT COUNT(DISTINCT user_id) FROM sys_user) AS total_students,
+            
+            -- 活跃学生数（最近30天内有登录记录的学生）
+            (SELECT COUNT(DISTINCT user_name) 
+             FROM sys_logininfor 
+             WHERE login_time >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)) AS active_students,
+            
+            -- 总完成训练次数
+            (SELECT COUNT(*) FROM biz_consultation_sessions WHERE eval_mode = 1 AND status = 1) AS total_completed_trainings,
+            
+            -- 平均得分
+            (SELECT ROUND(AVG(totle_score), 2) FROM biz_case_evaluations WHERE totle_score > 0) AS average_score,
+            
+            -- 总学习时长（格式化为小时和分钟）
+            (SELECT 
+                CONCAT(
+                    FLOOR(SUM(TIMESTAMPDIFF(SECOND, create_time, end_time)) / 3600), '小时 ',
+                    FLOOR((SUM(TIMESTAMPDIFF(SECOND, create_time, end_time)) % 3600) / 60), '分钟'
+                )
+             FROM biz_consultation_sessions 
+             WHERE end_time IS NOT NULL) AS total_learning_duration,
+            
+            -- 通过率（假设80分以上为通过）
+            (SELECT 
+                CONCAT(ROUND(COUNT(CASE WHEN totle_score >= 80 THEN 1 END) * 100.0 / COUNT(*), 2), '%') 
+             FROM biz_case_evaluations 
+             WHERE totle_score > 0) AS pass_rate
+    </select>
+
+</mapper>

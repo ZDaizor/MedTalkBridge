@@ -27,4 +27,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              WHERE eval_mode = 2) AS totalExamCount
     </select>
 
+    <!-- 根据部门和学生姓名查询仪表板统计信息 -->
+    <select id="selectDashboardStatisticsByParams" resultType="java.util.HashMap">
+        SELECT 
+            -- 总学生数：从符合条件的学生中计算
+            (SELECT COUNT(DISTINCT su.userId) 
+             FROM sys_user su 
+             LEFT JOIN biz_consultation_sessions bcs ON su.userId = bcs.user_id
+             WHERE 
+                 (#{deptId} IS NULL OR su.dept_id = #{deptId})
+                 AND (#{studentName} IS NULL OR su.nick_name LIKE CONCAT('%', #{studentName}, '%'))
+                 AND bcs.status = 1) AS totalStudents,
+            
+            -- 平均成绩：符合条件学生的平均分
+            (SELECT IFNULL(AVG(bce.totle_score), 0) 
+             FROM sys_user su 
+             JOIN biz_case_evaluations bce ON su.userId = bce.user_id
+             WHERE 
+                 (#{deptId} IS NULL OR su.dept_id = #{deptId})
+                 AND (#{studentName} IS NULL OR su.nick_name LIKE CONCAT('%', #{studentName}, '%'))) AS averageScore,
+            
+            -- 总学习时长：符合条件学生的总学习时长（分钟）
+            (SELECT IFNULL(SUM(TIMESTAMPDIFF(MINUTE, bcs.create_time, bcs.end_time)), 0) 
+             FROM sys_user su 
+             JOIN biz_consultation_sessions bcs ON su.userId = bcs.user_id
+             WHERE 
+                 (#{deptId} IS NULL OR su.dept_id = #{deptId})
+                 AND (#{studentName} IS NULL OR su.nick_name LIKE CONCAT('%', #{studentName}, '%'))
+                 AND bcs.end_time IS NOT NULL) AS totalLearningDuration,
+            
+            -- 总考试次数：符合条件学生的考试次数
+            (SELECT COUNT(*) 
+             FROM sys_user su 
+             JOIN biz_consultation_sessions bcs ON su.userId = bcs.user_id
+             WHERE 
+                 (#{deptId} IS NULL OR su.dept_id = #{deptId})
+                 AND (#{studentName} IS NULL OR su.nick_name LIKE CONCAT('%', #{studentName}, '%'))
+                 AND bcs.eval_mode = 2) AS totalExamCount
+    </select>
+
 </mapper>
