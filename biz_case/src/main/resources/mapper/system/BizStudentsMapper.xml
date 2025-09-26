@@ -127,7 +127,7 @@
         WHEN 2 THEN '考试'
         ELSE '活动'
         END
-        ) AS activityType,s.case_title as castTitle,
+        ) AS activityType,s.case_title as caseTitle,
         CASE
         WHEN e.totle_score IS NULL THEN '未评分'
         WHEN e.totle_score >= 90 THEN '已评分 (优秀)'
