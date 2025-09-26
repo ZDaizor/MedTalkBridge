@@ -115,40 +115,40 @@
 
     <select id="getActivityList" parameterType="long" resultType="java.util.HashMap">
         SELECT
-            s.end_time AS activity_time,
-            CONCAT(
-                    '完成了 ',
-                    s.case_title,
-                    ' 的 ',
-                    cs.step_name,
-                    ' ',
-                    CASE s.eval_mode
-                        WHEN 1 THEN '训练'
-                        WHEN 2 THEN '考试'
-                        ELSE '活动'
-                        END
-            ) AS activity_type,s.case_title,
-            CASE
-                WHEN e.totle_score IS NULL THEN '未评分'
-                WHEN e.totle_score >= 90 THEN '已评分 (优秀)'
-                WHEN e.totle_score >= 80 THEN '已评分 (良好)'
-                WHEN e.totle_score >= 70 THEN '已评分 (中等)'
-                WHEN e.totle_score >= 60 THEN '已评分 (及格)'
-                ELSE '已评分 (不及格)'
-                END AS rating_status,
-           <!-- 您也可以选择性地显示原始分数 -->
-            e.totle_score AS score
+        s.end_time AS activity_time,
+        CONCAT(
+        '完成了 ',
+        s.case_title,
+        ' 的 ',
+        cs.step_name,
+        ' ',
+        CASE s.eval_mode
+        WHEN 1 THEN '训练'
+        WHEN 2 THEN '考试'
+        ELSE '活动'
+        END
+        ) AS activity_type,s.case_title,
+        CASE
+        WHEN e.totle_score IS NULL THEN '未评分'
+        WHEN e.totle_score >= 90 THEN '已评分 (优秀)'
+        WHEN e.totle_score >= 80 THEN '已评分 (良好)'
+        WHEN e.totle_score >= 70 THEN '已评分 (中等)'
+        WHEN e.totle_score >= 60 THEN '已评分 (及格)'
+        ELSE '已评分 (不及格)'
+        END AS rating_status,
+        <!-- 您也可以选择性地显示原始分数 -->
+        e.totle_score AS score
         FROM
-            biz_consultation_sessions s
-                LEFT JOIN
-            biz_case_step cs ON s.case_id = cs.case_id AND s.step_id = cs.step_id
-                LEFT JOIN
-            biz_case_evaluations e ON s.session_id = e.session_id and s.case_id = e.case_id
+        biz_consultation_sessions s
+        LEFT JOIN
+        biz_case_step cs ON s.case_id = cs.case_id AND s.step_id = cs.step_id
+        LEFT JOIN
+        biz_case_evaluations e ON s.session_id = e.session_id and s.case_id = e.case_id
         WHERE
-            s.user_id = #{userId}
-          AND s.status = 1 <!-- 1: 代表已完成 -->
+        s.user_id = #{userId}
+        AND s.status = 0 <!-- 0: 代表已完成 -->
         ORDER BY
-            s.end_time DESC <!-- 按活动完成时间降序排列-->
+        s.end_time DESC <!-- 按活动完成时间降序排列-->
         LIMIT 5; <!-- 新增：限制只返回前5条记录-->
     </select>
 
