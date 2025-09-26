@@ -113,6 +113,10 @@
         ) AS high_scoring_exams
     </select>
 
+
+
+
+
     <select id="getActivityList" parameterType="long" resultType="com.ruoyi.bizcase.domain.dto.UserActivity">
         SELECT
         s.end_time AS activityTime,

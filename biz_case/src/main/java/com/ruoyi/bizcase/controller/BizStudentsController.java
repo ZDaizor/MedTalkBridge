@@ -86,10 +86,12 @@ public class BizStudentsController extends BaseController {
         int trainingCount = bizStudentsService.countCompletedCasesByUserId(userId);
         int totalMinutes = bizStudentsService.sumTrainingMinutesByUserId(userId);
         Double averageScore = bizStudentsService.getTrainingAverageScoreByUserId(userId, 1);
+        int aLevelCount = bizStudentsService.countHighScoreTrainingSessionsByUserId(userId);
         Map<String, Object> result = new java.util.HashMap<>();
         result.put("trainingCount", trainingCount);
         result.put("totalMinutes", totalMinutes);
         result.put("averageScore", averageScore);
+        result.put("aLevelCount", aLevelCount);
         return AjaxResult.success(result);
     }
 

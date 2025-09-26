@@ -54,11 +54,15 @@ public interface IBizStudentsService {
     Double getAverageScoreExamByUserId(Long userId);
 
     /**
-     * 查询学生考试A（高分，>85分）次数
+     * 查询学生考试A（高分，>90分）次数
      * @param userId 学生ID
      * @return A级考试次数
      */
     int countHighScoreExamSessionsByUserId(Long userId);
+
+
+    int countHighScoreTrainingSessionsByUserId(Long userId);
+
 
     /**
      * 查询学生活跃列表

@@ -100,6 +100,12 @@ public class BizStudentsServiceImpl implements IBizStudentsService {
         return bizStudentsMapper.countHighScoreExamSessionsByUserId(userId,2);
     }
 
+
+    @Override
+    public int countHighScoreTrainingSessionsByUserId(Long userId) {
+        return bizStudentsMapper.countHighScoreExamSessionsByUserId(userId,1);
+    }
+
     @Override
     public java.util.List<UserActivity> getActivityList(Long userId) {
         return bizStudentsMapper.getActivityList(userId);
