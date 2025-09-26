@@ -2,6 +2,7 @@ package com.ruoyi.bizcase.controller;
 
 import com.ruoyi.bizcase.domain.BizCase;
 import com.ruoyi.bizcase.domain.dto.TrainExamInfo;
+import com.ruoyi.bizcase.domain.dto.UserActivity;
 import com.ruoyi.bizcase.service.IBizCaseService;
 import com.ruoyi.bizcase.service.IBizStudentsService;
 import com.ruoyi.common.annotation.Log;
@@ -112,7 +113,7 @@ public class BizStudentsController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:case:query')")
     @GetMapping("/active/list/{userId}")
     public AjaxResult getStudentActive(@PathVariable Long userId) {
-        List<Map<String, Object>> list = bizStudentsService.getActivityList(userId);
+        List<UserActivity> list = bizStudentsService.getActivityList(userId);
         return AjaxResult.success(list);
     }
 
