@@ -1,8 +1,5 @@
 package com.ruoyi.bizcase.service;
-import com.ruoyi.bizcase.domain.dto.TrainExamInfo;
-import com.ruoyi.bizcase.domain.dto.UserAchievementDTO;
-import com.ruoyi.bizcase.domain.dto.TrainingCaseCompletionDTO;
-import com.ruoyi.bizcase.domain.dto.CommunicationScoreTrendDTO;
+import com.ruoyi.bizcase.domain.dto.*;
 
 import java.util.List;
 import java.util.Map;
@@ -68,7 +65,7 @@ public interface IBizStudentsService {
      * @param userId 学生ID
      * @return 活跃列表
      */
-    List<Map<String, Object>> getActivityList(Long userId);
+    List<UserActivity> getActivityList(Long userId);
 
     Double getTrainingAverageScoreByUserId(Long userId,Integer evalMode);
 

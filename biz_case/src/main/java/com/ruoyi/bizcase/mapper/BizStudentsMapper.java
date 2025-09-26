@@ -1,9 +1,6 @@
 package com.ruoyi.bizcase.mapper;
 
-import com.ruoyi.bizcase.domain.dto.TrainExamInfo;
-import com.ruoyi.bizcase.domain.dto.UserAchievementDTO;
-import com.ruoyi.bizcase.domain.dto.TrainingCaseCompletionDTO;
-import com.ruoyi.bizcase.domain.dto.CommunicationScoreTrendDTO;
+import com.ruoyi.bizcase.domain.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -55,7 +52,7 @@ public interface BizStudentsMapper {
      * @param userId 学生ID
      * @return 活跃列表
      */
-    java.util.List<java.util.Map<String, Object>> getActivityList(Long userId);
+    List<UserActivity> getActivityList(Long userId);
 
     /**
      * 查询用户获得的徽章数量

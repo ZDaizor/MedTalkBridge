@@ -113,9 +113,9 @@
         ) AS high_scoring_exams
     </select>
 
-    <select id="getActivityList" parameterType="long" resultType="java.util.HashMap">
+    <select id="getActivityList" parameterType="long" resultType="com.ruoyi.bizcase.domain.dto.UserActivity">
         SELECT
-        s.end_time AS activity_time,
+        s.end_time AS activityTime,
         CONCAT(
         '完成了 ',
         s.case_title,
@@ -127,7 +127,7 @@
         WHEN 2 THEN '考试'
         ELSE '活动'
         END
-        ) AS activity_type,s.case_title,
+        ) AS activityType,s.caseTitle,
         CASE
         WHEN e.totle_score IS NULL THEN '未评分'
         WHEN e.totle_score >= 90 THEN '已评分 (优秀)'
@@ -135,7 +135,7 @@
         WHEN e.totle_score >= 70 THEN '已评分 (中等)'
         WHEN e.totle_score >= 60 THEN '已评分 (及格)'
         ELSE '已评分 (不及格)'
-        END AS rating_status,
+        END AS ratingStatus,
         <!-- 您也可以选择性地显示原始分数 -->
         e.totle_score AS score
         FROM
