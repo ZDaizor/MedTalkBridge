@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bizcase.mapper.LearningEffectivenessTrendMapper">
+
+    <resultMap type="com.ruoyi.bizcase.domain.LearningEffectivenessTrend" id="LearningEffectivenessTrendResult">
+        <result property="month"           column="month" />
+        <result property="avgScore"        column="avg_score" />
+    </resultMap>
+
+    <!-- 查询学习效果趋势 -->
+    <select id="selectLearningEffectivenessTrend" resultMap="LearningEffectivenessTrendResult">
+        WITH RECURSIVE months AS (
+            SELECT DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 5 MONTH), '%Y-%m-01') AS month_date
+            UNION ALL
+            SELECT DATE_ADD(month_date, INTERVAL 1 MONTH)
+            FROM months
+            WHERE month_date &lt; DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01')
+        ),
+        monthly_scores AS (
+            SELECT 
+                DATE_FORMAT(s.create_time, '%Y-%m') AS month,
+                AVG(e.totle_score) AS avg_score
+            FROM 
+                biz_case_evaluations e
+                JOIN biz_consultation_sessions s ON e.session_id = s.session_id
+                JOIN sys_user u ON s.user_id = u.user_id
+                JOIN sys_user_role ur ON u.user_id = ur.user_id
+                JOIN sys_role r ON ur.role_id = r.role_id
+            WHERE 
+                e.totle_score > 0  -- 只统计有效分数
+                AND s.create_time >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)  -- 最近六个月
+                AND r.role_key = 'student'  -- 只统计学生
+                AND u.status = '0'  -- 只统计正常状态的用户
+            GROUP BY 
+                DATE_FORMAT(s.create_time, '%Y-%m')
+        )
+        SELECT 
+            DATE_FORMAT(m.month_date, '%Y-%m') AS month,
+            COALESCE(ROUND(ms.avg_score, 1), 0) AS avg_score
+        FROM 
+            months m
+            LEFT JOIN monthly_scores ms ON DATE_FORMAT(m.month_date, '%Y-%m') = ms.month
+        ORDER BY 
+            m.month_date
+    </select>
+
+</mapper>

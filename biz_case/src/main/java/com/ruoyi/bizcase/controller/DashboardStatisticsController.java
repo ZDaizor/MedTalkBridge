@@ -5,6 +5,7 @@ import com.ruoyi.bizcase.domain.CaseTypeDistribution;
 import com.ruoyi.bizcase.domain.DashboardStatistics;
 import com.ruoyi.bizcase.domain.DeptStudentStatistics;
 import com.ruoyi.bizcase.domain.ExamStatistics;
+import com.ruoyi.bizcase.domain.LearningEffectivenessTrend;
 import com.ruoyi.bizcase.domain.MonthlyTrainingTrend;
 import com.ruoyi.bizcase.domain.ScoreRangeStatistics;
 import com.ruoyi.bizcase.domain.StageAssessmentStatistics;
@@ -16,6 +17,7 @@ import com.ruoyi.bizcase.service.IActiveUsersWeeklyStatsService;
 import com.ruoyi.bizcase.service.ICaseTypeDistributionService;
 import com.ruoyi.bizcase.service.IDeptStudentStatisticsService;
 import com.ruoyi.bizcase.service.IExamStatisticsService;
+import com.ruoyi.bizcase.service.ILearningEffectivenessTrendService;
 import com.ruoyi.bizcase.service.IMonthlyTrainingTrendService;
 import com.ruoyi.bizcase.service.IStudentTrainingProgressService;
 import com.ruoyi.bizcase.service.IScoreRangeStatisticsService;
@@ -73,6 +75,9 @@ public class DashboardStatisticsController extends BaseController {
     
     @Autowired
     private IExamStatisticsService examStatisticsService;
+    
+    @Autowired
+    private ILearningEffectivenessTrendService learningEffectivenessTrendService;
 
 
     
@@ -206,6 +211,18 @@ public class DashboardStatisticsController extends BaseController {
     {
         List<ExamStatistics> statistics = examStatisticsService.selectExamStatistics();
         return AjaxResult.success(statistics);
+    }
+
+    /***
+     * 查询学习效果趋势分析
+     */
+    @ApiOperation("查询学习效果趋势分析")
+    @PreAuthorize("@ss.hasPermi('system:dashboard:statistics')")
+    @GetMapping("/learning-effectiveness-trend")
+    public AjaxResult getLearningEffectivenessTrend()
+    {
+        List<LearningEffectivenessTrend> trend = learningEffectivenessTrendService.selectLearningEffectivenessTrend();
+        return AjaxResult.success(trend);
     }
 
 
