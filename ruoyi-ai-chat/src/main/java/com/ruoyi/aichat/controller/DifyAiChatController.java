@@ -68,7 +68,14 @@ public class DifyAiChatController extends BaseController {
      */
     @ApiOperation(value = "AI对话接口", notes = "与 Dify AI 进行对话，返回 AI 回复内容；若携带 sessionId，将把问和答写入对话明细表")
     @PostMapping("/chat")
-    public AjaxResult chat(@ApiParam(value = "用户输入问题", required = true) @RequestParam String query, @ApiParam(value = "Dify 会话ID，可选") @RequestParam(required = false) String conversationId, @ApiParam(value = "用户标识", required = true) @RequestParam String user, @ApiParam(value = "业务case主键", required = true) @RequestParam("caseId") Long caseId, @ApiParam(value = "步骤主键", required = true) @RequestParam("stepId") Long stepId, @ApiParam(value = "系统会话ID，可选", required = true) @RequestParam(value = "sessionId") Long sessionId) {
+    public AjaxResult chat(@ApiParam(value = "用户输入问题", required = true) @RequestParam String query, @ApiParam(value =
+                                   "Dify 会话ID，可选") @RequestParam(required = false) String conversationId,
+                           @ApiParam(value = "用户标识",
+                                   required = true) @RequestParam String user, @ApiParam(value = "业务case主键",
+                    required = true) @RequestParam(
+                                   "caseId") Long caseId,
+                           @ApiParam(value = "步骤主键", required = true) @RequestParam("stepId") Long stepId,
+                           @ApiParam(value = "系统会话ID，可选", required = true) @RequestParam(value = "sessionId") Long sessionId) {
         String apiKey = bizCasePromptService.getPromptKeyByCaseIdAndStepId(caseId, stepId);
         if (apiKey == null || apiKey.isEmpty()) {
             return AjaxResult.error(HttpStatus.NOT_FOUND.value(), "API key not found");
@@ -199,7 +206,8 @@ public class DifyAiChatController extends BaseController {
         // 若提供了 sessionId 且成功解析到开场白，则保存到 biz_consultation_se_messages
         if (sessionId != null && openingStatement != null && !openingStatement.isEmpty()) {
             try {
-                BizConsultationSeMessages message = getBizConsultationSeMessages(sessionId, openingStatement, stopWatch);
+                BizConsultationSeMessages message = getBizConsultationSeMessages(sessionId, openingStatement,
+                        stopWatch);
                 int rows = bizConsultationSeMessagesService.insertBizConsultationSeMessages(message);
                 log.info("开场白已保存，sessionId={}, rows={}", sessionId, rows);
             } catch (Exception e) {
@@ -213,13 +221,14 @@ public class DifyAiChatController extends BaseController {
             JSONObject result = new JSONObject();
             result.put("msg", "未获取到开场白");
             result.put("raw", response.getBody());
-            return new AjaxResult(response.getStatusCodeValue(), result.toJSONString());
-        }
+            return AjaxResult.error(HttpStatus.NO_CONTENT.value(), result.toJSONString());
 
-        return new AjaxResult(response.getStatusCodeValue(), response.getBody());
+        }
+        return AjaxResult.success(response.getBody());
     }
 
-    private static BizConsultationSeMessages getBizConsultationSeMessages(Long sessionId, String openingStatement, StopWatch stopWatch) {
+    private static BizConsultationSeMessages getBizConsultationSeMessages(Long sessionId, String openingStatement,
+                                                                          StopWatch stopWatch) {
 
         BizConsultationSeMessages message = new BizConsultationSeMessages();
         Date now = new Date();
@@ -240,7 +249,8 @@ public class DifyAiChatController extends BaseController {
     private int getNextMessageOrder(Long sessionId) {
         BizConsultationSeMessages filter = new BizConsultationSeMessages();
         filter.setSessionId(String.valueOf(sessionId));
-        List<BizConsultationSeMessages> list = bizConsultationSeMessagesService.selectBizConsultationSeMessagesList(filter);
+        List<BizConsultationSeMessages> list =
+                bizConsultationSeMessagesService.selectBizConsultationSeMessagesList(filter);
         int max = 0;
         if (list != null) {
             for (BizConsultationSeMessages m : list) {
