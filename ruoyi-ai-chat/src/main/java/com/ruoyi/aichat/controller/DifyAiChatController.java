@@ -206,8 +206,7 @@ public class DifyAiChatController extends BaseController {
         // 若提供了 sessionId 且成功解析到开场白，则保存到 biz_consultation_se_messages
         if (sessionId != null && openingStatement != null && !openingStatement.isEmpty()) {
             try {
-                BizConsultationSeMessages message = getBizConsultationSeMessages(sessionId, openingStatement,
-                        stopWatch);
+                BizConsultationSeMessages message = getBizConsultationSeMessages(sessionId, openingStatement, stopWatch);
                 int rows = bizConsultationSeMessagesService.insertBizConsultationSeMessages(message);
                 log.info("开场白已保存，sessionId={}, rows={}", sessionId, rows);
             } catch (Exception e) {
@@ -218,13 +217,15 @@ public class DifyAiChatController extends BaseController {
 
         // 若未获取到开场白，返回体中增加提示
         if (openingStatement == null || openingStatement.isEmpty()) {
-            JSONObject result = new JSONObject();
-            result.put("msg", "未获取到开场白");
-            result.put("raw", response.getBody());
-            return AjaxResult.error(HttpStatus.NO_CONTENT.value(), result.toJSONString());
-
+            // 仍然返回 Dify 完整响应，但增加提示信息
+            JSONObject difyResponse = JSON.parseObject(response.getBody());
+            difyResponse.put("openingStatementWarning", "未获取到开场白");
+            return AjaxResult.success(difyResponse);
         }
-        return AjaxResult.success(response.getBody());
+
+        // 解析 Dify 返回的数据，转换为 RuoYi 通用结构
+        JSONObject difyResponse = JSON.parseObject(response.getBody());
+        return AjaxResult.success(difyResponse);
     }
 
     private static BizConsultationSeMessages getBizConsultationSeMessages(Long sessionId, String openingStatement,
