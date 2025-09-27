@@ -2,7 +2,9 @@ package com.ruoyi.aichat.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.bizcase.domain.BizConsultationSeMessages;
 import com.ruoyi.bizcase.service.IBizCasePromptService;
+import com.ruoyi.bizcase.service.IBizConsultationSeMessagesService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -14,18 +16,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
-import java.util.Base64;
-
-import com.ruoyi.bizcase.domain.BizConsultationSeMessages;
-import com.ruoyi.bizcase.service.IBizConsultationSeMessagesService;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api(tags = "Dify AI 对话接口")
 @RestController
@@ -110,7 +108,7 @@ public class DifyAiChatController extends BaseController {
             }
         } catch (Exception e) {
             log.warn("解析AI回复失败: {}", e.getMessage());
-            return AjaxResult.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "AI回复解析失败: " + e.getMessage());
+            return AjaxResult.error(HttpStatus.NOT_FOUND.value(), "AI回复解析失败: " + e.getMessage());
         }
 
         // 将问（学生）与答（患者）写入对话明细表
@@ -147,7 +145,10 @@ public class DifyAiChatController extends BaseController {
             log.warn("保存问答对话失败，sessionId={}, error= {}", sessionId, e.getMessage());
             return AjaxResult.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "问答保存失败: " + e.getMessage());
         }
-        return new AjaxResult(response.getStatusCodeValue(), response.getBody());
+        
+        // 解析 Dify 返回的数据，转换为 RuoYi 通用结构
+        JSONObject difyResponse = JSON.parseObject(response.getBody());
+        return AjaxResult.success(difyResponse);
     }
 
     /**
