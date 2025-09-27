@@ -139,7 +139,7 @@ public class BizConsultationSessionsController extends BaseController {
      * 开始训练，新增学生问诊记录
      */
     @ApiOperation(value = "开始训练", notes = "新增学生问诊记录，自动补全病例标题和模拟患者姓名")
-    @PreAuthorize("@ss.hasPermi('system:sessions:add')")
+    @PreAuthorize("@ss.hasPermi('system:sessions:start')")
     @PostMapping("/start")
     public AjaxResult startTraining(@RequestBody StartTrainingDTO dto) {
         // 查询病例信息
