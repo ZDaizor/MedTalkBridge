@@ -6,6 +6,8 @@ import com.ruoyi.aichat.dto.QueryResponse;
 import com.ruoyi.aichat.service.AsrService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -152,7 +154,9 @@ public class TextSpeechController extends BaseController {
             org.springframework.http.ResponseEntity<String> response = restTemplate.postForEntity(url, entity,
                     String.class);
             logger.info("文字转语音返回: {}", response.getBody());
-            return AjaxResult.success("success", response.getBody());
+            // 解析返回的数据，转换为 RuoYi 通用结构
+            JSONObject ttsResponse = JSON.parseObject(response.getBody());
+            return AjaxResult.success(ttsResponse);
         } catch (Exception e) {
             logger.error("文字转语音失败", e);
             return AjaxResult.error();
