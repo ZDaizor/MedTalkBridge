@@ -228,6 +228,7 @@ public class DifyAiChatController extends BaseController {
         message.setSenderType(1L); // 1:患者（模拟患者）
         message.setMessageContent(openingStatement);
         message.setMessageType("text");
+        message.setTimestamp(now); // 设置时间戳
         message.setCreateBy(SecurityUtils.getUsername());
         message.setCreateTime(now);
         if (stopWatch != null) {

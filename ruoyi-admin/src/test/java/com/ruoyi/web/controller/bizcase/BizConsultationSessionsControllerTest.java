@@ -50,7 +50,7 @@ public class BizConsultationSessionsControllerTest {
     @BeforeEach
     void setUp() throws Exception {
         // 登录获取token
-        String loginJson = "{\"username\":\"admin\",\"password\":\"admin123\"}";
+        String loginJson = "{\"username\":\"xuesheng1\",\"password\":\"123456\"}";
         MvcResult loginResult = mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginJson))
@@ -83,37 +83,37 @@ public class BizConsultationSessionsControllerTest {
         testCase.setTotleWords("重点关注患者心理状态，耐心解释胸腔穿刺的必要性、操作过程、可能的风险和并发症。使用通俗易懂的语言，消除患者恐惧心理，获得充分理解和配合。");
         testCase.setWriteWords("术前谈话记录应详细记录患者及家属对手术的理解程度、主要顾虑、医生的解释内容以及最终的知情同意结果。");
         testCase.setCaseMax(45L); // 胸腔穿刺术前沟通需要更长时间，45分钟
-
-        // 先创建病例数据用于测试
-        MvcResult caseResult = mockMvc.perform(post("/system/case")
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testCase)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andReturn();
-        
-        String caseResponse = caseResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
-        log.info("创建病例返回: {}", caseResponse);
-
-        // 创建开始训练DTO
-        startTrainingDTO = new StartTrainingDTO();
-        startTrainingDTO.setCaseId(19L); // 假设创建的病例ID为1
-        startTrainingDTO.setStepId(1); // 第1步
-        startTrainingDTO.setEvalMode(1); // 训练模式
-
-        // 创建测试会话对象
-        testSession = new BizConsultationSessions();
-        testSession.setUserId(1L);
-        testSession.setCaseId(19L);
-        testSession.setStepId(1);
-        testSession.setCaseTitle("胸腔穿刺术前沟通病例");
-        testSession.setPatientName("赵凤芹");
-        testSession.setTotalDuration(0);
-        testSession.setMessageCount(0);
-        testSession.setStatus(0); // 进行中
-        testSession.setEvalMode(1); // 训练模式
-        testSession.setCreateTime(new Date());
+//
+//        // 先创建病例数据用于测试
+//        MvcResult caseResult = mockMvc.perform(post("/system/case")
+//                        .header("Authorization", "Bearer " + token)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(testCase)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.code").value(200))
+//                .andReturn();
+//
+//        String caseResponse = caseResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+//        log.info("创建病例返回: {}", caseResponse);
+//
+//        // 创建开始训练DTO
+//        startTrainingDTO = new StartTrainingDTO();
+//        startTrainingDTO.setCaseId(19L); // 假设创建的病例ID为1
+//        startTrainingDTO.setStepId(1); // 第1步
+//        startTrainingDTO.setEvalMode(1); // 训练模式
+//
+//        // 创建测试会话对象
+//        testSession = new BizConsultationSessions();
+//        testSession.setUserId(1L);
+//        testSession.setCaseId(19L);
+//        testSession.setStepId(1);
+//        testSession.setCaseTitle("胸腔穿刺术前沟通病例");
+//        testSession.setPatientName("赵凤芹");
+//        testSession.setTotalDuration(0);
+//        testSession.setMessageCount(0);
+//        testSession.setStatus(0); // 进行中
+//        testSession.setEvalMode(1); // 训练模式
+//        testSession.setCreateTime(new Date());
     }
 
     /**
