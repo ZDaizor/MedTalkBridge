@@ -15,7 +15,7 @@ public class TrainExamInfo {
     private String nickName;
     private String caseName;
     private String stepName;
-    private Double score;
+    private String score;
 
     public Integer getSessionId() {
         return sessionId;
@@ -49,11 +49,11 @@ public class TrainExamInfo {
         this.stepName = stepName;
     }
 
-    public Double getScore() {
+    public String getScore() {
         return score;
     }
 
-    public void setScore(Double score) {
+    public void setScore(String score) {
         this.score = score;
     }
 
