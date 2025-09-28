@@ -67,8 +67,18 @@ public interface BizCasePromptMapper
      */
     public String selectPromptKeyByCaseIdAndStepId(@Param("caseId") Long caseId, @Param("stepId") Long stepId);
 
-    /**
+    /***
      * 根据caseId和stepId查询评分promptKeyScore
      */
     String selectPromptKeyScoreByCaseIdAndStepId(@Param("caseId") Long caseId, @Param("stepId") Long stepId);
+
+    /***
+     * 根据caseId和stepId查询静态URL
+     */
+    String selectPromptStaticUrlByCaseIdAndStepId(@Param("caseId") Long caseId, @Param("stepId") Long stepId);
+
+    /***
+     * 根据caseId和stepId查询动态URL
+     */
+    String selectPromptDynamicUrlByCaseIdAndStepId(@Param("caseId") Long caseId, @Param("stepId") Long stepId);
 }

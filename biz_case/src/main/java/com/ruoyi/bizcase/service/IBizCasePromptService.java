@@ -68,7 +68,7 @@ public interface IBizCasePromptService {
      */
     String getPromptKeyByCaseIdAndStepId(Long caseId, Long stepId);
 
-    /**
+    /***
      * 根据caseId和stepId查询评分promptKeyScore
      *
      * @param caseId 病例ID
@@ -76,4 +76,22 @@ public interface IBizCasePromptService {
      * @return promptKeyScore（评分用的API Key）
      */
     String getPromptKeyScoreByCaseIdAndStepId(Long caseId, Long stepId);
+
+    /***
+     * 根据caseId和stepId查询静态URL
+     *
+     * @param caseId 病例ID
+     * @param stepId 步骤ID
+     * @return promptStaticUrl 静态URL
+     */
+    String getPromptStaticUrlByCaseIdAndStepId(Long caseId, Long stepId);
+
+    /***
+     * 根据caseId和stepId查询动态URL
+     *
+     * @param caseId 病例ID
+     * @param stepId 步骤ID
+     * @return promptDynamicUrl 动态URL
+     */
+    String getPromptDynamicUrlByCaseIdAndStepId(Long caseId, Long stepId);
 }

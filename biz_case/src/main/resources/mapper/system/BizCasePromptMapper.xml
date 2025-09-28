@@ -13,10 +13,12 @@
         <result property="promptKey" column="prompt_key_metting"/>
         <result property="promptKeyScore" column="prompt_key_score"/>
         <result property="promptPercentage" column="prompt_percentage"/>
+        <result property="promptStaticUrl" column="prompt_static_url"/>
+        <result property="promptDynamicUrl" column="prompt_dynamic_url"/>
     </resultMap>
 
     <sql id="selectBizCasePromptVo">
-        select prompt_id, prompt_content, prompt_type, case_id, step_id, prompt_key_metting, prompt_key_score, prompt_percentage
+        select prompt_id, prompt_content, prompt_type, case_id, step_id, prompt_key_metting, prompt_key_score, prompt_percentage, prompt_static_url, prompt_dynamic_url
         from biz_case_prompt
     </sql>
 
@@ -30,6 +32,8 @@
             <if test="promptKey != null and promptKey != ''">and prompt_key_metting = #{promptKey}</if>
             <if test="promptKeyScore != null and promptKeyScore != ''">and prompt_key_score = #{promptKeyScore}</if>
             <if test="promptPercentage != null">and prompt_percentage = #{promptPercentage}</if>
+            <if test="promptStaticUrl != null and promptStaticUrl != ''">and prompt_static_url = #{promptStaticUrl}</if>
+            <if test="promptDynamicUrl != null and promptDynamicUrl != ''">and prompt_dynamic_url = #{promptDynamicUrl}</if>
         </where>
     </select>
 
@@ -48,6 +52,8 @@
             <if test="promptKey != null">prompt_key_metting,</if>
             <if test="promptKeyScore != null">prompt_key_score,</if>
             <if test="promptPercentage != null">prompt_percentage,</if>
+            <if test="promptStaticUrl != null">prompt_static_url,</if>
+            <if test="promptDynamicUrl != null">prompt_dynamic_url,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="promptContent != null">#{promptContent},</if>
@@ -57,6 +63,8 @@
             <if test="promptKey != null">#{promptKey},</if>
             <if test="promptKeyScore != null">#{promptKeyScore},</if>
             <if test="promptPercentage != null">#{promptPercentage},</if>
+            <if test="promptStaticUrl != null">#{promptStaticUrl},</if>
+            <if test="promptDynamicUrl != null">#{promptDynamicUrl},</if>
         </trim>
     </insert>
 
@@ -70,6 +78,8 @@
             <if test="promptKey != null">prompt_key_metting = #{promptKey},</if>
             <if test="promptKeyScore != null">prompt_key_score = #{promptKeyScore},</if>
             <if test="promptPercentage != null">prompt_percentage = #{promptPercentage},</if>
+            <if test="promptStaticUrl != null">prompt_static_url = #{promptStaticUrl},</if>
+            <if test="promptDynamicUrl != null">prompt_dynamic_url = #{promptDynamicUrl},</if>
         </trim>
         where prompt_id = #{promptId}
     </update>
@@ -96,6 +106,20 @@
 
     <select id="selectPromptKeyScoreByCaseIdAndStepId" resultType="String">
         select prompt_key_score
+        from biz_case_prompt
+        where case_id = #{caseId}
+          and step_id = #{stepId} limit 1
+    </select>
+
+    <select id="selectPromptStaticUrlByCaseIdAndStepId" resultType="String">
+        select prompt_static_url
+        from biz_case_prompt
+        where case_id = #{caseId}
+          and step_id = #{stepId} limit 1
+    </select>
+
+    <select id="selectPromptDynamicUrlByCaseIdAndStepId" resultType="String">
+        select prompt_dynamic_url
         from biz_case_prompt
         where case_id = #{caseId}
           and step_id = #{stepId} limit 1

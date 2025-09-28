@@ -48,11 +48,23 @@ public class BizCasePrompt extends BaseEntity {
 
     private String promptKeyScore;
 
-    /**
+    /***
      * 步骤分数占总体的百分比
      */
     @Excel(name = "步骤分数占总体的百分比")
     private java.math.BigDecimal promptPercentage;
+
+    /**
+     * 静态url
+     */
+    @Excel(name = "静态url")
+    private String promptStaticUrl;
+
+    /**
+     * 动态 url
+     */
+    @Excel(name = "动态 url")
+    private String promptDynamicUrl;
 
     public void setPromptId(Long promptId) {
         this.promptId = promptId;
@@ -119,6 +131,22 @@ public class BizCasePrompt extends BaseEntity {
         this.promptPercentage = promptPercentage;
     }
 
+    public String getPromptStaticUrl() {
+        return promptStaticUrl;
+    }
+
+    public void setPromptStaticUrl(String promptStaticUrl) {
+        this.promptStaticUrl = promptStaticUrl;
+    }
+
+    public String getPromptDynamicUrl() {
+        return promptDynamicUrl;
+    }
+
+    public void setPromptDynamicUrl(String promptDynamicUrl) {
+        this.promptDynamicUrl = promptDynamicUrl;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -130,6 +158,8 @@ public class BizCasePrompt extends BaseEntity {
                 .append("promptKeyMetting", getPromptKey())
                 .append("promptKeyScore", getPromptKeyScore())
                 .append("promptPercentage", getPromptPercentage())
+                .append("promptStaticUrl", getPromptStaticUrl())
+                .append("promptDynamicUrl", getPromptDynamicUrl())
                 .toString();
     }
 }
