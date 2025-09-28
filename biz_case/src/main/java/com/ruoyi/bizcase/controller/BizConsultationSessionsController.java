@@ -152,6 +152,7 @@ public class BizConsultationSessionsController extends BaseController {
         session.setUserId(userId);
         session.setCaseId(dto.getCaseId());
         session.setStepId(dto.getStepId());
+        session.setEvalMode(dto.getEvalMode());
         session.setCaseTitle(bizCase.getCaseName());
         session.setPatientName(bizCase.getPatientName());
         session.setCreateTime(new java.util.Date());
