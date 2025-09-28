@@ -175,14 +175,26 @@ public class BizConsultationSessionsController extends BaseController {
             return error("未找到对应的会话信息");
         }
         session.setStatus(1); // 1代表已完成
-        session.setEndTime(new java.util.Date());
-        int result = bizConsultationSessionsService.updateBizConsultationSessions(session);
-
+        java.util.Date endTime = new java.util.Date();
+        session.setEndTime(endTime);
+        
+        // 计算总时长（秒）
+        java.util.Date startTime = session.getCreateTime();
+        if (startTime != null) {
+            long durationInMillis = endTime.getTime() - startTime.getTime();
+            int totalDurationInSeconds = (int) (durationInMillis / 1000);
+            session.setTotalDuration(totalDurationInSeconds);
+        }
+        
         // 查询当前会话的所有对话记录
         BizConsultationSeMessages queryCondition = new BizConsultationSeMessages();
         queryCondition.setSessionId(sessionId);
         List<BizConsultationSeMessages> conversationRecords =
                 bizConsultationSeMessagesService.selectBizConsultationSeMessagesList(queryCondition);
+
+        // 设置消息总数
+        int messageCount = conversationRecords.size();
+        session.setMessageCount(messageCount);
 
         // 打印对话记录日志
         logger.info("查询到会话ID[{}]的对话记录数量: {}", sessionId, conversationRecords.size());
@@ -194,6 +206,8 @@ public class BizConsultationSessionsController extends BaseController {
                     message.getMessageContent(),
                     message.getTimestamp());
         }
+
+        int result = bizConsultationSessionsService.updateBizConsultationSessions(session);
 
         try {
             String evaluationResult = bizConsultationSessionsService.evaluateSessionWithDify(
@@ -215,7 +229,7 @@ public class BizConsultationSessionsController extends BaseController {
     }
 
     /**
-     * 保存评分数据到数据库
+     * 保存评分数据到数据库行
      * 先在总分表中创建记录，再在分项表中保存详情
      *
      * @param difyResult Dify返回的评分JSON结果
