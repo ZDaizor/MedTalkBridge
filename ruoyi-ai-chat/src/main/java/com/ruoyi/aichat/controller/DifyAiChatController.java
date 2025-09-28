@@ -74,6 +74,8 @@ public class DifyAiChatController extends BaseController {
                                    "caseId") Long caseId,
                            @ApiParam(value = "步骤主键", required = true) @RequestParam("stepId") Long stepId,
                            @ApiParam(value = "系统会话ID，可选", required = true) @RequestParam(value = "sessionId") Long sessionId) {
+        StopWatch stopWatch = new StopWatch("DifyChatPerformance");
+
         String apiKey = bizCasePromptService.getPromptKeyByCaseIdAndStepId(caseId, stepId);
         if (apiKey == null || apiKey.isEmpty()) {
             return AjaxResult.error(HttpStatus.NOT_FOUND.value(), "API key not found");
@@ -92,13 +94,13 @@ public class DifyAiChatController extends BaseController {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
+        stopWatch.start("difyApiCall");
         ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
         stopWatch.stop();
 
         String aiAnswer = null;
         try {
+            stopWatch.start("parseAiResponse");
             JSONObject root = JSON.parseObject(response.getBody(), JSONObject.class);
             if (root != null) {
                 aiAnswer = root.getString("answer");
@@ -106,7 +108,9 @@ public class DifyAiChatController extends BaseController {
                     aiAnswer = root.getJSONObject("data").getString("answer");
                 }
             }
+            stopWatch.stop();
         } catch (Exception e) {
+            if(stopWatch.isRunning()) stopWatch.stop();
             log.warn("解析AI回复失败: {}", e.getMessage());
             return AjaxResult.error(HttpStatus.NOT_FOUND.value(), "AI回复解析失败: " + e.getMessage());
         }
@@ -117,6 +121,7 @@ public class DifyAiChatController extends BaseController {
                 int nextOrder = getNextMessageOrder(sessionId);
                 Date now = new Date();
                 // 学生发问
+                stopWatch.start("saveUserMessage");
                 BizConsultationSeMessages userMsg = new BizConsultationSeMessages();
                 userMsg.setSessionId(String.valueOf(sessionId));
                 userMsg.setMessageOrder(String.valueOf(nextOrder));
@@ -127,8 +132,10 @@ public class DifyAiChatController extends BaseController {
                 userMsg.setCreateBy(SecurityUtils.getUsername());
                 userMsg.setCreateTime(now);
                 bizConsultationSeMessagesService.insertBizConsultationSeMessages(userMsg);
+                stopWatch.stop();
 
                 // 患者回答（AI）
+                stopWatch.start("saveAiMessage");
                 BizConsultationSeMessages aiMsg = new BizConsultationSeMessages();
                 aiMsg.setSessionId(String.valueOf(sessionId));
                 aiMsg.setMessageOrder(String.valueOf(nextOrder + 1));
@@ -136,16 +143,20 @@ public class DifyAiChatController extends BaseController {
                 aiMsg.setMessageType("text");
                 aiMsg.setMessageContent(aiAnswer != null ? aiAnswer : "");
                 aiMsg.setTimestamp(new Date());
-                aiMsg.setResponseTime(String.valueOf(stopWatch.getTotalTimeMillis())); // 秒
+                aiMsg.setResponseTime(String.valueOf(stopWatch.getLastTaskTimeMillis())); // 记录AI接口调用耗时
                 aiMsg.setCreateBy("AI");
                 aiMsg.setCreateTime(new Date());
                 bizConsultationSeMessagesService.insertBizConsultationSeMessages(aiMsg);
+                stopWatch.stop();
             }
         } catch (Exception e) {
+            if(stopWatch.isRunning()) stopWatch.stop();
             log.warn("保存问答对话失败，sessionId={}, error= {}", sessionId, e.getMessage());
             return AjaxResult.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "问答保存失败: " + e.getMessage());
         }
-        
+
+        log.info("Dify chat performance: {}", stopWatch.prettyPrint());
+
         // 解析 Dify 返回的数据，转换为 RuoYi 通用结构
         JSONObject difyResponse = JSON.parseObject(response.getBody());
         return AjaxResult.success(difyResponse);
