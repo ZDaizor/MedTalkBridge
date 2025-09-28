@@ -6,7 +6,6 @@
 
     <resultMap id="BizCasePromptResult" type="BizCasePrompt">
         <result property="promptId" column="prompt_id"/>
-        <result property="promptContent" column="prompt_content"/>
         <result property="promptType" column="prompt_type"/>
         <result property="caseId" column="case_id"/>
         <result property="stepId" column="step_id"/>
@@ -18,14 +17,13 @@
     </resultMap>
 
     <sql id="selectBizCasePromptVo">
-        select prompt_id, prompt_content, prompt_type, case_id, step_id, prompt_key_metting, prompt_key_score, prompt_percentage, prompt_static_url, prompt_dynamic_url
+        select prompt_id, prompt_type, case_id, step_id, prompt_key_metting, prompt_key_score, prompt_percentage, prompt_static_url, prompt_dynamic_url
         from biz_case_prompt
     </sql>
 
     <select id="selectBizCasePromptList" parameterType="BizCasePrompt" resultMap="BizCasePromptResult">
         <include refid="selectBizCasePromptVo"/>
         <where>
-            <if test="promptContent != null and promptContent != ''">and prompt_content = #{promptContent}</if>
             <if test="promptType != null">and prompt_type = #{promptType}</if>
             <if test="caseId != null">and case_id = #{caseId}</if>
             <if test="stepId != null">and step_id = #{stepId}</if>
@@ -45,7 +43,6 @@
     <insert id="insertBizCasePrompt" parameterType="BizCasePrompt" useGeneratedKeys="true" keyProperty="promptId">
         insert into biz_case_prompt
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="promptContent != null">prompt_content,</if>
             <if test="promptType != null">prompt_type,</if>
             <if test="caseId != null">case_id,</if>
             <if test="stepId != null">step_id,</if>
@@ -56,7 +53,6 @@
             <if test="promptDynamicUrl != null">prompt_dynamic_url,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="promptContent != null">#{promptContent},</if>
             <if test="promptType != null">#{promptType},</if>
             <if test="caseId != null">#{caseId},</if>
             <if test="stepId != null">#{stepId},</if>
@@ -71,7 +67,6 @@
     <update id="updateBizCasePrompt" parameterType="BizCasePrompt">
         update biz_case_prompt
         <trim prefix="SET" suffixOverrides=",">
-            <if test="promptContent != null">prompt_content = #{promptContent},</if>
             <if test="promptType != null">prompt_type = #{promptType},</if>
             <if test="caseId != null">case_id = #{caseId},</if>
             <if test="stepId != null">step_id = #{stepId},</if>

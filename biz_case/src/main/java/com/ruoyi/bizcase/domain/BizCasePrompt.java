@@ -20,12 +20,6 @@ public class BizCasePrompt extends BaseEntity {
     private Long promptId;
 
     /**
-     * 提示词内容
-     */
-    @Excel(name = "提示词内容")
-    private String promptContent;
-
-    /**
      * 提示词类型（1：内容；2：整体；3：病志书写）
      */
     @Excel(name = "提示词类型", readConverterExp = "1=：内容；2：整体；3：病志书写")
@@ -72,14 +66,6 @@ public class BizCasePrompt extends BaseEntity {
 
     public Long getPromptId() {
         return promptId;
-    }
-
-    public void setPromptContent(String promptContent) {
-        this.promptContent = promptContent;
-    }
-
-    public String getPromptContent() {
-        return promptContent;
     }
 
     public void setPromptType(Long promptType) {
@@ -151,7 +137,6 @@ public class BizCasePrompt extends BaseEntity {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("promptId", getPromptId())
-                .append("promptContent", getPromptContent())
                 .append("promptType", getPromptType())
                 .append("caseId", getCaseId())
                 .append("stepId", getStepId())
