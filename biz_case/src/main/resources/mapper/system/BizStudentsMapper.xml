@@ -12,7 +12,7 @@
         FROM
             biz_consultation_sessions
         WHERE
-            user_id = 1
+            user_id = #{userId}
           AND eval_mode = 1  -- 模式（1：训练）
           AND status = 1;    -- 问诊状态（1：完成）
 
