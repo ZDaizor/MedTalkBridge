@@ -52,7 +52,6 @@ public class BizCasePromptControllerTest {
         for (int i = 0; i < contents.length; i++) {
             BizCasePrompt prompt = new BizCasePrompt();
             prompt.setCaseId(3L);
-            prompt.setPromptContent(contents[i]);
             prompt.setPromptType(1L); // 1：内容
             prompt.setStepId((long) stepIds[i]);
             prompt.setPromptKey(keys[i]);
@@ -76,7 +75,6 @@ public class BizCasePromptControllerTest {
     void testAddPromptWithPercentage() throws Exception {
         BizCasePrompt prompt = new BizCasePrompt();
         prompt.setCaseId(100L);
-        prompt.setPromptContent("测试步骤分数百分比");
         prompt.setPromptType(1L); // 1：内容
         prompt.setStepId(1L);
         prompt.setPromptKey("TEST_PERCENTAGE");
